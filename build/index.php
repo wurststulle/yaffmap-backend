@@ -134,18 +134,21 @@ try{
 				}
 				break;
 			case 'replicateEnv':
+				$response = new YaffmapResponse();
+				$response->setResponseCode(YaffmapResponse::OPERATION_SUCCEDED);
 				$backend = new YaffmapBackend();
 				if(isset($_GET['url'])){
 					$backend->getVersionMappingBackend($_GET['url']);
 					$backend->getVersionMappingAgent($_GET['url']);
 					$backend->getAgentRelease($_GET['url']);
-					$backend->getBackends($_GET['url']);
+					$response->setResponseMsg($backend->getBackends($_GET['url']));
 				}else{
 					$backend->getVersionMappingBackend();
 					$backend->getVersionMappingAgent();
 					$backend->getAgentRelease();
-					$backend->getBackends();
+					$response->setResponseMsg($backend->getBackends());
 				}
+				echo $response;
 				break;
 			case 'test':
 				break;

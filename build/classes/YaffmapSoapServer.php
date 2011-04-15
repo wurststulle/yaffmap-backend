@@ -153,9 +153,9 @@ class YaffmapSoapServer{
 		if(!$this->checkVersion($version)){
 			return new SoapFault(null, 'Your backend is outdated, please update it.');
 		}
+		$list = new sArrayOfBackends();
 		$backends = BackendsQuery::create()->find();
 		if($backends != null){
-			$list = new sArrayOfBackends();
 			foreach($backends as $backend){
 				$b = new sBackend();
 				$b->id = $backend->getId();
@@ -163,16 +163,14 @@ class YaffmapSoapServer{
 				$b->updatedAt = $backend->getUpdatedAt();
 				$list->backends[] = $b;
 			}
-			$b = new sBackend();
-			$b->id = $this->config->getId();
-			$b->url = $this->config->getUrl();
-			$dt = new DateTime();
-			$b->updatedAt = $dt->format('Y-m-d H:i:s');
-			$list->backends[] = $b;
-			return $list;
-		}else{
-			throw new YaffmapException('[getBackends()]: no backends found.');
 		}
+		$b = new sBackend();
+		$b->id = $this->config->getId();
+		$b->url = $this->config->getUrl();
+		$dt = new DateTime();
+		$b->updatedAt = $dt->format('Y-m-d H:i:s');
+		$list->backends[] = $b;
+		return $list;
 	}
 	
 	/**

@@ -55,28 +55,37 @@ class YaffmapBackend{
 			$conns = $client->getBackendConns();
 			$dbCon = Propel::getConnection(BackendsPeer::DATABASE_NAME);
 			$dbCon->beginTransaction();
+			$countBackendsAdded = 0;
+			$countBackendsUpdated = 0;
 			if(is_array($conns)){
 				foreach($conns as $conn){
-					$backends = $conn->getBackends($this->config->getVersion())->backends;
-					if(is_array($backends)){
-						foreach($backends as $backend){
-							$b = BackendsQuery::create()->filterById($backend->id)->findOneOrCreate($dbCon);
-							if(!$b->isNew() && $backend->updatedAt > $b->getUpdatedAt()){
-								// given backend is not new and younger
-								$b->setUpdatedAt($backend->updatedAt);
-								$b->save($dbCon);
-							}elseif($b->isNew() && $b->getId() != $this->config->getId()){
-								// backend was not known before and not this backend
-								$b->setUrl($backend->url);
-								$b->setUpdatedAt($backend->updatedAt);
-								$b->setCreatedAt($backend->updatedAt);
-								$b->save($dbCon);
-							}
+					$b = $conn->getBackends($this->config->getVersion())->backends;
+					if(!is_array($b)){
+						// TODO remove workaround
+						$backends[] = $b;
+					}else{
+						$backends = $b;
+					}
+					foreach($backends as $backend){
+						$b = BackendsQuery::create()->filterById($backend->id)->findOneOrCreate($dbCon);
+						if(!$b->isNew() && $backend->updatedAt > $b->getUpdatedAt()){
+							// given backend is not new and younger
+							$b->setUpdatedAt($backend->updatedAt);
+							$b->save($dbCon);
+							$countBackendsUpdated++;
+						}elseif($b->isNew() && $b->getId() != $this->config->getId()){
+							// backend was not known before and not this backend
+							$b->setUrl($backend->url);
+							$b->setUpdatedAt($backend->updatedAt);
+							$b->setCreatedAt($backend->updatedAt);
+							$b->save($dbCon);
+							$countBackendsAdded++;
 						}
 					}
 				}
 			}
 			$dbCon->commit();
+			return 'backends: added: '.$countBackendsAdded.', updated: '.$countBackendsUpdated;
 		}catch(SoapFault $e){
 			throw new YaffmapSoapException($e->getMessage());
 		}catch(Exception $e){
