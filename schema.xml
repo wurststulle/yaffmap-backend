@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="yaffmap" defaultIdMethod="native" tablePrefix="yaffmap_" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.propelorm.org/xsd/1.5/database.xsd">
+  <table name="node" phpName="FfNode">
+    <column name="ID_node" type="VARCHAR" size="32" required="true" primaryKey="true" phpName="Id" />
+    <column name="latitude" type="VARCHAR" size="32" />
+    <column name="longitude" type="VARCHAR" size="32" />
+    <column name="misc" type="LONGVARCHAR" />
+    <column name="updateIntervalNode" type="VARCHAR" size="5" defaultValue="12" phpName="UpdateIntervalNode" />
+    <column name="updateIntervalLink" type="VARCHAR" size="5" defaultValue="1" phpName="UpdateIntervalLink" />
+    <column name="timeout" type="INTEGER" required="true" defaultValue="5" />
+    <column name="hostname" type="VARCHAR" size="32" />
+    <column name="height" type="INTEGER" />
+    <column name="isHna" type="BOOLEAN" phpName="IsHna" defaultValue="false" />
+    <column name="defGateway" type="VARCHAR" size="40" phpName="DefGateway" />
+    <column name="agentRelease" type="VARCHAR" size="32" phpName="AgentRelease" />
+    <column name="tree" type="VARCHAR" size="32" phpName="UpgradeTree" />
+    <column name="version" type="VARCHAR" size="7" />
+    <column name="isGlobalUpdated" type="BOOLEAN" defaultValue="false" phpName="IsGlobalUpdated" />
+    <column name="replicatedBy" type="VARCHAR" size="60" phpName="ReplicatedBy" defaultValue="NULL" />
+    <column name="isDummy" type="INTEGER" phpName="IsDummy" defaultValue="0" />
+    <behavior name="timestampable" />
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+  <table name="wlDevice" phpName="WlDevice">
+    <column name="ID_wlDevice" type="INTEGER" required="true" primaryKey="true" autoIncrement="true" phpName="Id" />
+    <column name="f_nodeID" type="VARCHAR" size="32" phpName="NodeID" required="true" />
+    <column name="name" type="VARCHAR" size="20" required="true" />
+    <column name="txpower" type="VARCHAR" size="10" />
+    <column name="antDirection" type="LONGVARCHAR" />
+    <column name="antBeamH" type="LONGVARCHAR" />
+    <column name="antBeamV" type="LONGVARCHAR" />
+    <column name="antGain" type="LONGVARCHAR" />
+    <column name="antTilt" type="LONGVARCHAR" />
+    <column name="antPol" type="LONGVARCHAR" />
+    <column name="channel" type="INTEGER" size="3" />
+    <column name="wirelessStandard" type="VARCHAR" size="32" phpName="WirelessStandard" />
+    <column name="frequency" type="LONGVARCHAR" />
+    <column name="availFrequency" type="LONGVARCHAR" />
+    <column name="isDummy" type="INTEGER" phpName="IsDummy" defaultValue="0" />
+    <behavior name="timestampable" />
+    <foreign-key foreignTable="node" phpName="FfNode" refPhpName="WlDevice" onDelete="cascade" onUpdate="cascade">
+      <reference local="f_nodeID" foreign="ID_node" />
+    </foreign-key>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+  <table name="wlIface" phpName="WlIface">
+    <column name="ID_wlIface" type="INTEGER" required="true" primaryKey="true" autoIncrement="true" phpName="Id" />
+    <column name="f_wlDeviceID" type="INTEGER" phpName="WlDeviceID" required="true" />
+    <column name="f_addrMapID" type="INTEGER" phpName="AddrMapID" required="true" />
+    <column name="wlMacAddr" type="VARCHAR" size="30" phpName="WlMacAddr" />
+    <column name="name" type="VARCHAR" size="20" required="true" />
+    <column name="wlMode" type="VARCHAR" size="5" phpName="WlMode" />
+    <column name="bssid" type="VARCHAR" size="255" />
+    <column name="essid" type="VARCHAR" size="255" />
+    <column name="bridgeName" type="VARCHAR" size="30" phpName="BridgeName" required="true" />
+    <column name="isDummy" type="INTEGER" phpName="IsDummy" defaultValue="0" />
+    <behavior name="timestampable" />
+    <foreign-key foreignTable="wlDevice" phpName="WlDevice" refPhpName="WlIface" onDelete="cascade" onUpdate="cascade">
+      <reference local="f_wlDeviceID" foreign="ID_wlDevice" />
+    </foreign-key>
+    <foreign-key foreignTable="addrMap" phpName="AddrMap" refPhpName="WlIface" onDelete="cascade" onUpdate="cascade">
+      <reference local="f_addrMapID" foreign="ID_addrMap" />
+    </foreign-key>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+  <table name="wiredIface" phpName="WiredIface">
+    <column name="f_nodeID" type="VARCHAR" size="32" phpName="NodeID" required="true" primaryKey="true" />
+    <column name="f_addrMapID" type="INTEGER" phpName="AddrMapID" required="true" primaryKey="true" />
+    <column name="name" type="VARCHAR" size="20" required="true" />
+    <column name="bridgeName" type="VARCHAR" size="30" phpName="BridgeName" required="true" />
+    <column name="isDummy" type="INTEGER" phpName="IsDummy" defaultValue="0" />
+    <behavior name="timestampable" />
+    <foreign-key foreignTable="node" phpName="FfNode" refPhpName="WiredIface" onDelete="cascade" onUpdate="cascade">
+      <reference local="f_nodeID" foreign="ID_node" />
+    </foreign-key>
+    <foreign-key foreignTable="addrMap" phpName="AddrMap" refPhpName="WiredIface" onDelete="cascade" onUpdate="cascade">
+      <reference local="f_addrMapID" foreign="ID_addrMap" />
+    </foreign-key>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+  <table name="addrMap" phpName="AddrMap">
+    <column name="ID_addrMap" type="INTEGER" required="true" primaryKey="true" autoIncrement="true" phpName="Id" />
+    <column name="ipv4Addr" type="VARCHAR" size="15" />
+    <column name="ipv6Addr" type="VARCHAR" size="40" />
+    <column name="macAddr" type="VARCHAR" size="30" phpName="MacAddr" />
+    <column name="bridgeName" type="VARCHAR" size="30" phpName="BridgeName" />
+    <column name="isGlobalUpdated" type="BOOLEAN" defaultValue="false" phpName="IsGlobalUpdated" />
+    <behavior name="timestampable" />
+    <unique>
+      <unique-column name="ipv4Addr" />
+      <unique-column name="ipv6Addr" />
+      <unique-column name="macAddr" />
+    </unique>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+  <table name="ipAlias" phpName="IpAlias">
+  	<column name="ID_ipAlias" type="INTEGER" required="true" primaryKey="true" autoIncrement="true" phpName="Id" />
+    <column name="ipv4Addr" type="VARCHAR" size="15"  />
+    <column name="ipv6Addr" type="VARCHAR" size="40" />
+    <column name="f_addrMapID" type="INTEGER" phpName="AddrMapID" />
+    <column name="name" type="VARCHAR" size="20" required="true" />
+    <unique>
+      <unique-column name="ipv4Addr" />
+      <unique-column name="ipv6Addr" />
+      <unique-column name="f_addrMapID" />
+    </unique>
+    <foreign-key foreignTable="addrMap" phpName="AddrMap" onDelete="cascade" onUpdate="cascade">
+      <reference local="f_addrMapID" foreign="ID_addrMap" />
+    </foreign-key>
+    <behavior name="timestampable" />
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+  <table name="rfLink" phpName="RfLink">
+    <column name="f_sourceWlIfaceID" type="INTEGER" required="true" phpName="sourceWlIfaceID" primaryKey="true" />
+    <column name="f_destWlIfaceID" type="INTEGER" required="true" phpName="destWlIfaceID" primaryKey="true" />
+    <column name="rssi" type="INTEGER" required="true" />
+    <column name="txRate" type="VARCHAR" size="10" phpName="TxRate" />
+    <foreign-key foreignTable="wlIface" phpName="SourceWlIface" refPhpName="SourceIface" onDelete="cascade" onUpdate="cascade">
+      <reference local="f_sourceWlIfaceID" foreign="ID_wlIface" />
+    </foreign-key>
+    <foreign-key foreignTable="wlIface" phpName="DestWlIface" refPhpName="DestIface" onDelete="cascade" onUpdate="cascade">
+      <reference local="f_destWlIfaceID" foreign="ID_wlIface" />
+    </foreign-key>
+    <behavior name="timestampable" />
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+  <table name="rfLinkOneWay" phpName="RfLinkOneWay">
+    <column name="f_sourceWlIfaceID" type="INTEGER" required="true" phpName="sourceWlIfaceID" primaryKey="true" />
+    <column name="destMac" type="VARCHAR" size="30" required="true" phpName="DestMac" primaryKey="true" />
+    <column name="rssi" type="INTEGER"  required="true" />
+    <column name="txRate" type="VARCHAR" size="10" phpName="TxRate" />
+    <foreign-key foreignTable="wlIface" phpName="SourceWlIfaceOneWay" refPhpName="SourceIfaceOneWay" onDelete="cascade">
+      <reference local="f_sourceWlIfaceID" foreign="ID_wlIface" />
+    </foreign-key>
+    <behavior name="timestampable" />
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+  <table name="rpLink" phpName="RpLink">
+    <column name="f_sourceAddrMapID" type="INTEGER" required="true" phpName="sourceAddrMapID" primaryKey="true" />
+    <column name="f_destAddrMapID" type="INTEGER" required="true" phpName="destAddrMapID" primaryKey="true" />
+    <column name="f_rpID" type="INTEGER" required="true" primaryKey="true" />
+    <column name="cost" type="DOUBLE" required="true" />
+    <column name="rx" type="DOUBLE" required="true" />
+    <column name="tx" type="DOUBLE" required="true" />
+    <column name="isGlobalUpdated" type="BOOLEAN" defaultValue="false" phpName="IsGlobalUpdated" />
+    <foreign-key foreignTable="addrMap" phpName="SourceAddrMap" refPhpName="SourceAddrMap" onDelete="cascade" onUpdate="cascade">
+      <reference local="f_sourceAddrMapID" foreign="ID_addrMap" />
+    </foreign-key>
+    <foreign-key foreignTable="addrMap" phpName="DestAddrMap" refPhpName="DestAddrMap" onDelete="cascade" onUpdate="cascade">
+      <reference local="f_destAddrMapID" foreign="ID_addrMap" />
+    </foreign-key>
+    <foreign-key foreignTable="rp" phpName="Rp" refPhpName="RpLink">
+      <reference local="f_rpID" foreign="ID_rp" />
+    </foreign-key>
+    <behavior name="timestampable" />
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+  <table name="rp" phpName="Rp">
+    <column name="ID_rp" type="INTEGER" required="true" primaryKey="true" autoIncrement="true" phpName="Id"/>
+    <column name="f_metricID" type="INTEGER" required="true" />
+    <column name="ipv" type="INTEGER" required="true" />
+    <column name="name" type="VARCHAR" size="30" required="true" />
+    <foreign-key foreignTable="metricType" phpName="MetricType" refPhpName="Rp">
+      <reference local="f_metricID" foreign="ID_metricType" />
+    </foreign-key>
+    <unique>
+      <unique-column name="f_metricID" />
+      <unique-column name="ipv" />
+      <unique-column name="name" />
+    </unique>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+  <table name="metricType" phpName="MetricType">
+    <column name="ID_metricType" type="INTEGER" required="true" primaryKey="true" autoIncrement="true" phpName="Id" />
+    <column name="name" type="VARCHAR" size="30" required="true" />
+    <column name="desc" type="LONGVARCHAR" />
+    <unique>
+      <unique-column name="name" />
+    </unique>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+  <table name="upgrade" phpName="Upgrade">
+    <column name="release" type="VARCHAR" size="4" required="true" primaryKey="true" phpName="Release" />
+    <column name="subRelease" type="INTEGER" size="3" required="true" primaryKey="true" phpName="SubRelease" />
+    <column name="tree" type="VARCHAR" size="32" required="true" primaryKey="true" phpName="UpgradeTree" />
+    <column name="url" type="LONGVARCHAR" required="true" />
+    <column name="version" type="VARCHAR" size="7" required="true" primaryKey="true" />
+    <column name="isHead" type="BOOLEAN" required="true" phpName="IsHead" defaultValue="false" />
+    <column name="releaseDate" type="TIMESTAMP" phpName="ReleaseDate" required="true" />
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+  <table name="errorLog" phpName="ErrorLog" package="yaffmap/admin">
+    <column name="ID_errorLog" type="INTEGER" required="true" autoIncrement="true" primaryKey="true" phpName="Id" />
+    <column name="request" type="LONGVARCHAR" />
+    <column name="ip" type="VARCHAR" size="40" />
+    <column name="message" type="LONGVARCHAR" />
+    <column name="type" type="ENUM" defaultValue="exception" valueSet="exception, warning, notice, soap, replication, json, propel" />
+    <behavior name="timestampable" />
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+  <table name="v_addrMapNode" phpName="AddrMapNode" skipSql="true" package="yaffmap/views" >
+    <column name="ID_node" type="VARCHAR" size="32" phpName="NodeId" primaryKey="true" />
+    <column name="ID_addrMap" type="INTEGER" phpName="Id" primaryKey="true" />
+    <column name="ipv4Addr" type="VARCHAR" size="15"  />
+    <column name="ipv6Addr" type="VARCHAR" size="40" />
+    <column name="macAddr" type="VARCHAR" size="30" phpName="MacAddr" />
+    <column name="type" type="LONGVARCHAR" />
+    <foreign-key foreignTable="node" skipSql="true">
+      <reference local="ID_node" foreign="ID_node" />
+    </foreign-key>
+    <foreign-key foreignTable="addrMap" skipSql="true">
+      <reference local="ID_addrMap" foreign="ID_addrMap" />
+    </foreign-key>
+  </table>
+  <table name="v_rpLinkLocation" phpName="RpLinkLocation" skipSql="true" package="yaffmap/views" >
+ 	<column name="cost" type="DOUBLE" phpName="Cost" />
+ 	<column name="rx" type="DOUBLE" />
+    <column name="tx" type="DOUBLE" />
+    <column name="rp" type="VARCHAR" size="100" primaryKey="true" />
+    <column name="metric" type="VARCHAR" size="100" primaryKey="true" />
+    <column name="sourceNodeID" type="VARCHAR" size="32" phpName="SourceNodeID" primaryKey="true" />
+    <column name="sourceLat" type="VARCHAR" size="32" phpName="SourceLat" />
+    <column name="sourceLon" type="VARCHAR" size="32" phpName="SourceLon" />
+    <column name="destNodeID" type="VARCHAR" size="32" phpName="DestNodeID" primaryKey="true" />
+    <column name="destLat" type="VARCHAR" size="32" phpName="DestLat"/>
+    <column name="destLon" type="VARCHAR" size="32" phpName="DestLon" />
+    <foreign-key foreignTable="node" phpName="sourceNode" refPhpName="SourceNodeID" skipSql="true">
+      <reference local="sourceNodeID" foreign="ID_node" />
+    </foreign-key>
+    <foreign-key foreignTable="node" phpName="destNode" refPhpName="DestNodeID" skipSql="true">
+      <reference local="destNodeID" foreign="ID_node" />
+    </foreign-key>
+  </table>
+  <table name="v_unlocatedNodes" phpName="UnlocatedNodes" skipSql="true" package="yaffmap/views" >
+  	<column name="ID_node" type="VARCHAR" size="32" phpName="NodeID" primaryKey="true" />
+  	<column name="hostname" type="VARCHAR" size="32" />
+  	<column name="misc" type="LONGVARCHAR" />
+  	<column name="ipAddr" type="VARCHAR" size="100" />
+ 	<column name="addrType" type="VARCHAR" size="32" />
+ 	<foreign-key foreignTable="node" skipSql="true">
+      <reference local="ID_node" foreign="ID_node" />
+    </foreign-key>
+  </table>
+  <table name="accessLog" phpName="AccessLog" package="yaffmap/admin">
+    <column name="ID_accessLog" type="INTEGER" required="true" autoIncrement="true" primaryKey="true" phpName="Id" />
+    <column name="debug" type="LONGVARCHAR" />
+    <column name="request" type="LONGVARCHAR" />
+    <column name="requestString" type="LONGVARCHAR" phpName="RequestString" />
+    <column name="ip" type="VARCHAR" size="40" />
+    <behavior name="timestampable" />
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+  <table name="backends" phpName="Backends" package="yaffmap/admin">
+    <column name="ID_backend" type="VARCHAR" size="32" required="true" primaryKey="true" phpName="Id" />
+    <column name="url" type="VARCHAR" size="100" />
+    <behavior name="timestampable" />
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+  <table name="config" phpName="Config">
+    <column name="url" type="VARCHAR" size="100" primaryKey="true" />
+    <column name="version" type="VARCHAR" size="20" />
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+  <table name="versionMappingAgent" phpName="VersionMappingAgent">
+  	<column name="backendRelease" type="VARCHAR" size="20" primaryKey="true" phpName="BackendRelease" />
+    <column name="agentRelease" type="VARCHAR" size="4" required="true" primaryKey="true" phpName="AgentRelease" />
+    <column name="agentSubRelease" type="INTEGER" size="3" required="true" primaryKey="true" phpName="AgentSubRelease" />
+    <column name="agentTree" type="VARCHAR" size="32" required="true" primaryKey="true" phpName="AgentUpgradeTree" />
+    <column name="agentVersion" type="VARCHAR" size="7" required="true" primaryKey="true" phpName="AgentVersion" />
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+  <table name="versionMappingBackend" phpName="VersionMappingBackend">
+  	<column name="serverRelease" type="VARCHAR" size="100" primaryKey="true" phpName="ServerRelease" />
+    <column name="clientRelease" type="VARCHAR" size="100" required="true" primaryKey="true" phpName="ClientRelease" />
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB" />
+      <parameter name="Charset" value="utf8" />
+    </vendor>
+  </table>
+</database>

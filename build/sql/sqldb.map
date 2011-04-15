@@ -1,0 +1,6 @@
+# Sqlfile -> Database map
+schema.sql=yaffmap
+views.sql=yaffmap
+defaults.sql=yaffmap
+defaults.agentRelease.sql=yaffmap
+defaults.config.sql=yaffmap

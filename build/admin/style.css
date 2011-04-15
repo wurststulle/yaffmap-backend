@@ -1,0 +1,25 @@
+#menuDiv {
+	position:absolute;
+	left:0px;
+	top:70px;
+	width:150px;
+	height:176px;
+	z-index:1;
+}
+#content{
+	position:absolute;
+	left:153px;
+	top:70px;
+	//width:660px;
+	//height:600px;
+	z-index:1;
+	overflow: visible;
+}
+#i18nDiv {
+	position:absolute;
+	left:2px;
+	top:2px;
+	width:140px;
+	height:57px;
+	z-index:1;
+}

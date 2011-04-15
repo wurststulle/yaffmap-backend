@@ -1,0 +1,43 @@
+.yaffmapPane {
+  visibility: hidden;
+  border-style: solid;
+  border-color: #eee;
+  border-width: 1px;
+  position: absolute;
+  top: 20%;
+  right: 19px;
+  min-height: 65%;
+  width: 20%;
+  min-width: 180px;
+  background: #fff;
+  z-index: 2000;
+}
+
+.yaffmapPaneClose {
+  background: url("openlayers/theme/default/img/close.gif") no-repeat;
+  cursor: pointer;
+  width: 17px;
+  height: 17px;
+  position: absolute;
+  z-index: 1;
+  right: 5px;
+  top: 3px;
+}
+
+.yaffmapPaneTitle {
+  font-size: 110%;
+  font-weight: bold;
+  padding-top:5px;
+  padding-left:10%;
+}
+
+.yaffmapPaneContent {
+  font-size: 80%;
+  padding-top: 10px;
+  padding-right: 25px;
+  padding-left: 10px;
+  width: 90%;
+  word-wrap:break-word;
+  overflow: auto;
+  height: 90%;
+}
