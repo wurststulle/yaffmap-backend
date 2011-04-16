@@ -15,6 +15,9 @@ class Yaffmap{
 	protected $response = null;
 	protected $request = null;
 	
+	/**
+	 * @var Config
+	 */
 	protected $config = null;
 	
 	/**
@@ -35,12 +38,26 @@ class Yaffmap{
 			$this->response = $response;
 		}
 		$this->allowed = array('do');
-		$this->config = parse_ini_file('config.inc', true);
+		$this->config = Config::getConfig();
+//		$this->checkAgentCompatibility();
 	}
 	
 	public function checkInput($allowed){
 		$this->allowed = array_merge($this->allowed, $allowed);
 		Yaffmap::checkRequestArray($this->request, $this->allowed); // check request string for illegal stuff
+	}
+	
+	public function checkAgentCompatibility(){
+		$versionMapping = VersionMappingAgentQuery::create()
+			->filterByAgentRelease($this->request['release'])
+			->filterByAgentSubRelease($this->request['subRelease'])
+			->filterByAgentUpgradeTree($this->request['tree'])
+			->filterByAgentVersion($this->request['version'])
+			->filterByBackendRelease($this->config->getVersion())
+			->count();
+		if($versionMapping == 0){
+			throw new YaffmapException('agent('.$this->request['release'].'-'.$this->request['subRelease'].'_'.$this->request['tree'].'_'.$this->request['version'].') is not compatible to backend('.$this->config->getVersion().').');
+		}
 	}
 	
 	/**

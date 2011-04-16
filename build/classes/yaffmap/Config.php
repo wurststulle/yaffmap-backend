@@ -22,11 +22,21 @@ class Config extends BaseConfig {
 	protected $id;
 	
 	/**
+	 * version of backend
+	 * @var string
+	 */
+	protected $version;
+	
+	/**
 	 * get the backends id
 	 * @return string
 	 */
 	public function getId(){
 		return md5($this->url);
+	}
+	
+	public function getVersion(){
+		return $this->version;
 	}
 	
 	/**
@@ -36,6 +46,10 @@ class Config extends BaseConfig {
 	 */
 	public static function getConfig(){
 		$conf = ConfigQuery::create()->findOne();
+		$confFromFile = parse_ini_file('config.inc', true);
+		foreach($confFromFile as $key => $value){
+			$conf->$key = $value;
+		}
 		if($conf == null){
 			throw new YaffmapException('config not found.');
 		}else{

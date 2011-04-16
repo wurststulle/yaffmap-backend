@@ -303,7 +303,6 @@
   </table>
   <table name="config" phpName="Config">
     <column name="url" type="VARCHAR" size="100" primaryKey="true" />
-    <column name="version" type="VARCHAR" size="20" />
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB" />
       <parameter name="Charset" value="utf8" />

@@ -1,3 +1,5 @@
+version = '0.1.1-2'
+
 [deleteOld]
 addrMap			= '24'
 ffNode			= '24'

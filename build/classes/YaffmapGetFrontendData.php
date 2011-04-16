@@ -9,11 +9,11 @@ class YaffmapGetFrontendData extends Yaffmap{
 	
 	public function getFrontendData(){
 		// delete old data
-//		AddrMapQuery::deleteOld($this->config['deleteOld']['addrMap']);
-//		FfNodeQuery::deleteOld($this->config['deleteOld']['ffNode']);
-//		RpLinkQuery::deleteOld($this->config['deleteOld']['rpLink']);
-//		RfLinkQuery::deleteOld($this->config['deleteOld']['rfLink']);
-//		RfLinkOneWayQuery::deleteOld($this->config['deleteOld']['rfLinkOneWay']);
+//		AddrMapQuery::deleteOld($this->config->deleteOld['addrMap']);
+//		FfNodeQuery::deleteOld($this->config->deleteOld['ffNode']);
+//		RpLinkQuery::deleteOld($this->config->deleteOld['rpLink']);
+//		RfLinkQuery::deleteOld($this->config->deleteOld['rfLink']);
+//		RfLinkOneWayQuery::deleteOld($this->config->deleteOld['rfLinkOneWay']);
 		
 		$request = Yaffmap::decodeJson('{"ul":"52.762709,12.1234","lr":"48.1234,16.1234","node":["latitude","longitude","id","hostname"],"rpLinkFilter": {
 	         "cost":[["<","10"],[">=", "1"]],"rp":[{"type":"olsr","metrics":["etx_ff"]}]},
