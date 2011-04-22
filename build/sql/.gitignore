@@ -1,3 +1,4 @@
 /defaults.agentRelease.sql
 /schema.sql
 /defaults.config.sql
+/defaults.upgrade.sql
