@@ -25,6 +25,12 @@ define('DEBUG', true);
 //	}
 //}
 //set_error_handler('exceptions_error_handler'); 
+
+if(DEBUG){
+	error_reporting(E_ALL);
+	ini_set('display_errors','On');
+}
+
 try{
 	if(isset($_REQUEST['do'])){
 		switch($_REQUEST['do']){
