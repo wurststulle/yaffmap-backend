@@ -70,6 +70,7 @@ try{
 					throw new YaffmapLoggedException("Can't get PUT data."); 
 				}
 				$tot_write = 0;
+				@mkdir('download/debug', 0755, true);
 	            $destFile = 'download/debug/'.date('Y-m-d H:i:s').'.tar.gz'; 
 	            if(!is_file($destFile)){
 	                fclose(fopen($destFile, "x"));
