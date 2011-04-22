@@ -27,7 +27,7 @@ define('DEBUG', true);
 //set_error_handler('exceptions_error_handler'); 
 
 if(DEBUG){
-	error_reporting(E_ALL);
+	error_reporting(E_ALL & ~E_NOTICE);
 	ini_set('display_errors','On');
 }
 
