@@ -55,8 +55,8 @@ class YaffmapNewAgentRelease extends Yaffmap{
 				throw new YaffmapLoggedException("Can't get PUT data."); 
 			}
 			$tot_write = 0;
-			@mkdir('download/'.$relName, 0644, true);
-			@mkdir('download/.backup/'.$relName, 0644, true);
+			@mkdir('download/'.$relName, 0755, true);
+			@mkdir('download/.backup/'.$relName, 0755, true);
             $destFile = 'download/'.$relName.'/'.$this->assembleFileName(); 
             if(!is_file($destFile)){
                 fclose(fopen($destFile, "x"));
