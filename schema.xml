@@ -213,13 +213,20 @@
     </vendor>
   </table>
   <table name="agentRelease" phpName="AgentRelease">
-    <column name="release" type="VARCHAR" size="4" required="true" primaryKey="true" phpName="Release" />
-    <column name="subRelease" type="INTEGER" size="3" required="true" primaryKey="true" phpName="SubRelease" />
-    <column name="tree" type="VARCHAR" size="32" required="true" primaryKey="true" phpName="UpgradeTree" />
+    <column name="release" type="VARCHAR" size="4" required="true" phpName="Release" />
+    <column name="subRelease" type="INTEGER" size="3" required="true" phpName="SubRelease" />
+    <column name="tree" type="VARCHAR" size="32" required="true" phpName="UpgradeTree" />
     <column name="url" type="LONGVARCHAR" required="true" />
-    <column name="version" type="VARCHAR" size="7" required="true" primaryKey="true" />
+    <column name="version" type="VARCHAR" size="7" required="true" />
     <column name="isHead" type="BOOLEAN" required="true" phpName="IsHead" defaultValue="false" />
     <column name="releaseDate" type="TIMESTAMP" phpName="ReleaseDate" required="true" />
+    <behavior name="auto_add_pk" />
+    <unique>
+      <unique-column name="release" />
+      <unique-column name="subRelease" />
+      <unique-column name="tree" />
+      <unique-column name="version" />
+    </unique>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB" />
       <parameter name="Charset" value="utf8" />
@@ -309,19 +316,32 @@
     </vendor>
   </table>
   <table name="versionMappingAgent" phpName="VersionMappingAgent">
-  	<column name="backendRelease" type="VARCHAR" size="20" primaryKey="true" phpName="BackendRelease" />
-    <column name="agentRelease" type="VARCHAR" size="4" required="true" primaryKey="true" phpName="AgentRelease" />
-    <column name="agentSubRelease" type="INTEGER" size="3" required="true" primaryKey="true" phpName="AgentSubRelease" />
-    <column name="agentTree" type="VARCHAR" size="32" required="true" primaryKey="true" phpName="AgentUpgradeTree" />
-    <column name="agentVersion" type="VARCHAR" size="7" required="true" primaryKey="true" phpName="AgentVersion" />
+  	<column name="backendRelease" type="VARCHAR" size="20" required="true" phpName="BackendRelease" />
+    <column name="agentRelease" type="VARCHAR" size="4" required="true" phpName="AgentRelease" />
+    <column name="agentSubRelease" type="INTEGER" size="3" required="true" phpName="AgentSubRelease" />
+    <column name="agentTree" type="VARCHAR" size="32" required="true" phpName="AgentUpgradeTree" />
+    <column name="agentVersion" type="VARCHAR" size="7" required="true" phpName="AgentVersion" />
+    <behavior name="auto_add_pk" />
+    <unique>
+      <unique-column name="backendRelease" />
+      <unique-column name="agentRelease" />
+      <unique-column name="agentSubRelease" />
+      <unique-column name="agentTree" />
+      <unique-column name="agentVersion" />
+    </unique>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB" />
       <parameter name="Charset" value="utf8" />
     </vendor>
   </table>
   <table name="versionMappingBackend" phpName="VersionMappingBackend">
-  	<column name="serverRelease" type="VARCHAR" size="100" primaryKey="true" phpName="ServerRelease" />
-    <column name="clientRelease" type="VARCHAR" size="100" required="true" primaryKey="true" phpName="ClientRelease" />
+  	<column name="serverRelease" type="VARCHAR" size="100" required="true" phpName="ServerRelease" />
+    <column name="clientRelease" type="VARCHAR" size="100" required="true" phpName="ClientRelease" />
+    <behavior name="auto_add_pk" />
+    <unique>
+      <unique-column name="serverRelease" />
+      <unique-column name="clientRelease" />
+    </unique>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB" />
       <parameter name="Charset" value="utf8" />

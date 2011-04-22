@@ -30,6 +30,7 @@ $menu = new KMenu();
 $menu->addMenuTitle('Administration');
 $menu->addMenuItem('javascript:load(\'nodes\', false);', 'Nodes with agent');
 $menu->addMenuItem('javascript:load(\'releases\', false);', 'releases');
+$menu->addMenuItem('javascript:load(\'mapping\', false);', 'mapping');
 $menu->addMenuItem('javascript:load(\'unlocatedNodes\', false);', 'unlocatedNodes');
 $menu->addMenuItem('javascript:load(\'changeLog\', false);', 'changeLog');
 //if($_SERVER['REMOTE_ADDR'] == '192.168.2.21'){
