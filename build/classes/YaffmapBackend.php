@@ -112,7 +112,7 @@ class YaffmapBackend{
 						$path = dirname(__FILE__).'/../download/'.$release->agentRelease->release.'/yaffmap_'.$release->agentRelease->release.'-'.$release->agentRelease->subRelease.'_'.$release->agentRelease->version.'_'.$release->agentRelease->tree.'.tar.gz';
 						if(!file_exists($path)){
 							// download remote file
-							mkdir(dirname(__FILE__).'/../download/'.$release->agentRelease->release, 0755, true);
+							@mkdir(dirname(__FILE__).'/../download/'.$release->agentRelease->release, 0644, true);
 						    if($fp = fopen($path, 'w')){
 							    $ch = curl_init($release->agentRelease->url);
 							    curl_setopt($ch, CURLOPT_FILE, $fp);
