@@ -108,8 +108,8 @@ class YaffmapNewAgentRelease extends Yaffmap{
 	}
 	
 	public static function write_sql_defaults(){
-		if(!($fh = fopen('sql/defaults.upgrade.sql', 'w'))){
-			throw new YaffmapLoggedException("Can't create sql/defaults.upgrade.sql."); 
+		if(!($fh = fopen('sql/defaults.agentRelease.sql', 'w'))){
+			throw new YaffmapLoggedException("Can't create sql/defaults.agentRelease.sql."); 
 		}
 		fwrite($fh, "INSERT INTO `yaffmap_upgrade` (`release`, `subRelease`, `tree`, `url`, `version`, `isHead`, `releaseDate`) VALUES \n");
 		$upgrades = AgentReleaseQuery::create()->find();
