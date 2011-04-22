@@ -3,7 +3,7 @@
 
 
 /**
- * Skeleton subclass for representing a row from the 'yaffmap_upgrade' table.
+ * Skeleton subclass for representing a row from the 'yaffmap_agentRelease' table.
  *
  * 
  *
@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.yaffmap
  */
-class Upgrade extends BaseUpgrade {
-
+class AgentRelease extends BaseAgentRelease {
+	
 	/**
 	 * @return sAgentRelease
 	 */
@@ -28,4 +28,4 @@ class Upgrade extends BaseUpgrade {
 		$ar->version = $this->getVersion();
 		return $ar;
 	}
-} // Upgrade
+} // AgentRelease

@@ -30,7 +30,7 @@ $ajax = new PHPLiveX();
 $ajax->AjaxifyObjects(array('admin'));
 $ajax->Run("../classes/PHPLiveX/phplivex.js");
 
-$trees = UpgradeQuery::create()->groupByUpgradeTree()->find();
+$trees = AgentReleaseQuery::create()->groupByUpgradeTree()->find();
 echo $releases;
 
 $table = new KTable();
@@ -39,10 +39,10 @@ $table->addThRow(array('Release', 'Version', 'Date', new KBlanc()));
 
 foreach($trees as $tree){
 	$td = new KTd();
-	$td->addItem('UpgradeTree: '.$tree->getUpgradeTree());
+	$td->addItem('AgentReleaseTree: '.$tree->getUpgradeTree());
 	$td->addAttribute(array(new KAttributeColspan('4')));
 	$table->addThRow(array($td));
-	$releases = UpgradeQuery::create()->filterByUpgradeTree($tree->getUpgradeTree())
+	$releases = AgentReleaseQuery::create()->filterByUpgradeTree($tree->getUpgradeTree())
 	->filterByIsHead(true)
 	->orderByVersion()
 	->orderByRelease('desc')->orderBySubRelease('desc')->find();

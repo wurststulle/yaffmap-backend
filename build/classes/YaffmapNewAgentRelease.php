@@ -16,12 +16,12 @@ class YaffmapNewAgentRelease extends Yaffmap{
 			throw new EIsufficientQuery('tree, release or version missing.');
 		}
 		if(isset($this->request['isHead']) && $this->request['isHead'] == 'true'){
-			$oldHead = UpgradeQuery::create()
+			$oldHead = AgentReleaseQuery::create()
 				->filterByIsHead(true)
 				->filterByUpgradeTree($this->request['tree'])
 				->filterByVersion($this->request['version'])
 				->findOne();
-			$release = UpgradeQuery::create()
+			$release = AgentReleaseQuery::create()
 				->filterByUpgradeTree($this->request['tree'])
 				->filterByRelease($relName)
 				->filterBySubRelease($relSubName)
@@ -33,7 +33,7 @@ class YaffmapNewAgentRelease extends Yaffmap{
 			$release->setIsHead(true);
 		}else{
 			// release will not be head release
-			$release = UpgradeQuery::create()
+			$release = AgentReleaseQuery::create()
 				->filterByUpgradeTree($this->request['tree'])
 				->filterByRelease($relName)
 				->filterBySubRelease($relSubName)
@@ -112,7 +112,7 @@ class YaffmapNewAgentRelease extends Yaffmap{
 			throw new YaffmapLoggedException("Can't create sql/defaults.upgrade.sql."); 
 		}
 		fwrite($fh, "INSERT INTO `yaffmap_upgrade` (`release`, `subRelease`, `tree`, `url`, `version`, `isHead`, `releaseDate`) VALUES \n");
-		$upgrades = UpgradeQuery::create()->find();
+		$upgrades = AgentReleaseQuery::create()->find();
 		$num = $upgrades->count();
 		$i = 0;
 		foreach($upgrades as $upgrade){

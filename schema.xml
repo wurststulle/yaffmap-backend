@@ -212,7 +212,7 @@
       <parameter name="Charset" value="utf8" />
     </vendor>
   </table>
-  <table name="upgrade" phpName="Upgrade">
+  <table name="agentRelease" phpName="AgentRelease">
     <column name="release" type="VARCHAR" size="4" required="true" primaryKey="true" phpName="Release" />
     <column name="subRelease" type="INTEGER" size="3" required="true" primaryKey="true" phpName="SubRelease" />
     <column name="tree" type="VARCHAR" size="32" required="true" primaryKey="true" phpName="UpgradeTree" />

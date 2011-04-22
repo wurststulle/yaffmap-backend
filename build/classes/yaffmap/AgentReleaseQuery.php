@@ -3,7 +3,7 @@
 
 
 /**
- * Skeleton subclass for performing query and update operations on the 'yaffmap_upgrade' table.
+ * Skeleton subclass for performing query and update operations on the 'yaffmap_agentRelease' table.
  *
  * 
  *
@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.yaffmap
  */
-class UpgradeQuery extends BaseUpgradeQuery {
+class AgentReleaseQuery extends BaseAgentReleaseQuery {
 
-} // UpgradeQuery
+} // AgentReleaseQuery

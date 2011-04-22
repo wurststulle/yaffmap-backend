@@ -122,12 +122,12 @@ class YaffmapBackend{
 						    }else{
 						    	throw new YaffmapException('failed to open file.');
 						    }
-						    $oldHead = UpgradeQuery::create()->filterByIsHead(true)->findOne();
+						    $oldHead = AgentReleaseQuery::create()->filterByIsHead(true)->findOne();
 						    if($oldHead != null){
 						    	$oldHead->setIsHead(false);
 						    	$oldHead->save();
 						    }
-						    $ar = new Upgrade();
+						    $ar = new AgentRelease();
 						    $ar->setRelease($release->agentRelease->release);
 						    $ar->setSubRelease($release->agentRelease->subRelease);
 						    $ar->setUpgradeTree($release->agentRelease->tree);

@@ -75,7 +75,7 @@ class YaffmapSoapServer{
 		if(!$this->checkVersion($version)){
 			return new SoapFault(null, 'Your backend is outdated, please update it.');
 		}
-		$releases = UpgradeQuery::create()->filterByIsHead(true)->find();
+		$releases = AgentReleaseQuery::create()->filterByIsHead(true)->find();
 		if($releases == null){
 			return new SoapFault('no agent release found.');
 		}else{

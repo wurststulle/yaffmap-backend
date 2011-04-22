@@ -8,7 +8,7 @@ class YaffmapAdmin{
 	public function deleteRelease($release, $tree, $version){
 		$hasError = false;
 		$response = new KoboldResponseJson();
-		$release = UpgradeQuery::create()
+		$release = AgentReleaseQuery::create()
 			->filterByRelease($release)
 			->filterByUpgradeTree($tree)
 			->filterByVersion($version)
@@ -28,7 +28,7 @@ class YaffmapAdmin{
 				$release->delete();
 				if($release->getIsHead()){
 					// add head attribute to one release before
-					$old = UpgradeQuery::create()
+					$old = AgentReleaseQuery::create()
 						->filterByRelease($relName[0].($relName[1]-1))
 						->filterByUpgradeTree($tree)
 						->filterByVersion($version)

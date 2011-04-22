@@ -21,7 +21,7 @@ class YaffmapGetUpgrade extends Yaffmap{
 				$relName = $tmp[0];
 				$relSubName = $tmp[1];
 				// installed release given, do not force update to specified release
-				$installedVersion = UpgradeQuery::create()
+				$installedVersion = AgentReleaseQuery::create()
 					->filterByVersion($this->request['version'])
 					->filterByUpgradeTree($this->request['tree'])
 					->filterByRelease($relName)
@@ -29,7 +29,7 @@ class YaffmapGetUpgrade extends Yaffmap{
 					->findOneOrCreate();
 				if(!$installedVersion->getIsHead()){
 					// installed release is not up to date, install head of given tree
-					$updateTo = UpgradeQuery::create()
+					$updateTo = AgentReleaseQuery::create()
 						->filterByUpgradeTree($this->request['tree'])
 						->filterByIsHead(true)
 						->filterByVersion($this->request['version'])
@@ -55,7 +55,7 @@ class YaffmapGetUpgrade extends Yaffmap{
 				}
 			}elseif(!isset($this->request['rel']) && !isset($this->request['updateToRel'])){
 				// installed release not given, install head of given tree
-				$updateTo = UpgradeQuery::create()
+				$updateTo = AgentReleaseQuery::create()
 					->filterByUpgradeTree($this->request['tree'])
 					->filterByIsHead(true)
 					->filterByVersion($this->request['version'])
@@ -74,7 +74,7 @@ class YaffmapGetUpgrade extends Yaffmap{
 				$relName = $tmp[0];
 				$relSubName = $tmp[1];
 				// force to update to a given release
-				$updateTo = UpgradeQuery::create()
+				$updateTo = AgentReleaseQuery::create()
 					->filterByVersion($this->request['version'])
 					->filterByRelease($relName)
 					->filterBySubRelease($relSubName)
