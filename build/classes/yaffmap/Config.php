@@ -25,7 +25,7 @@ class Config extends BaseConfig {
 	 * version of backend
 	 * @var string
 	 */
-	protected $version;
+	public $version;
 	
 	/**
 	 * get the backends id
@@ -39,20 +39,14 @@ class Config extends BaseConfig {
 		return $this->version;
 	}
 	
+	public function setVersion($version){
+		$this->version = $version;
+	}
+	
 	/**
-	 * get configuration from database
-	 * @return Config
-	 * @throws YaffmapException
+	 * @deprecated
 	 */
 	public static function getConfig(){
-		$conf = ConfigQuery::create()->findOne();
-		if($conf == null){
-			throw new YaffmapException('config not found.');
-		}
-		$confFromFile = parse_ini_file('config.inc', true);
-		foreach($confFromFile as $key => $value){
-			$conf->$key = $value;
-		}
-		return $conf;
+		return YaffmapConfig::getConfig();
 	}
 } // Config
