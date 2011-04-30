@@ -172,7 +172,7 @@ try{
 		$table = new KTable();
 		$table->addAttribute(array(new KAttribute('border', 1)));
 		$table->addThRow(array('Knoten: ', FfNodeQuery::create()->count()));
-		$table->addRow(array('- davon mit Agent', FfNodeQuery::create()->filterByIsGlobalUpdated(false)->count()));
+		$table->addRow(array('- davon mit Agent', FfNodeQuery::create()->filterByAgentRelease(null, Criteria::NOT_EQUAL)->count()));
 		$table->addRow(array('- davon mit Koordinaten', FfNodeQuery::create()->filterByLatitude(null, Criteria::NOT_EQUAL)->count()));
 		$table->addRow(array('- davon ohne Koordinaten', FfNodeQuery::create()->filterByLatitude(null)->count()));
 		$table->addThRow(array('RP Links: ', RpLinkQuery::create()->count()));
