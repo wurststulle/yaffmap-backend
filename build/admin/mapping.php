@@ -6,8 +6,7 @@ require_once '../classes/Yaffmap.php';
 require_once '../classes/kobold/Kobold.php';
 require_once '../classes/PHPLiveX/PHPLiveX.php';
 require_once 'YaffmapAdmin.php';
-
-$config = Config::getConfig();
+require_once 'YaffmapConfig.php';
 
 switch($_REQUEST['do']){
 	case 'deleteAgentMap':
@@ -75,13 +74,13 @@ $backendMap->addAttribute(array(new KAttributeName('backendMap')));
 $backendRelease = VersionMappingAgentQuery::create()->groupByBackendRelease()->orderByBackendRelease(Criteria::DESC)->find();
 $currVersionExisting = false;
 foreach($backendRelease as $release){
-	if($release->getBackendRelease() == $config->getVersion()){
+	if($release->getBackendRelease() == YaffmapConfig::get('version')){
 		$currVersionExisting = true;
 	}
 	$backendMap->addOption($release->getBackendRelease(), $release->getBackendRelease());
 }
 if(!$currVersionExisting){
-	$backendMap->addOption($config->getVersion(), $config->getVersion());
+	$backendMap->addOption(YaffmapConfig::get('version'), YaffmapConfig::get('version'));
 }
 
 $backendMapServer = clone $backendMap;

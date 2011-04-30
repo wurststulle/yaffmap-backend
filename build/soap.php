@@ -6,8 +6,6 @@ Propel::init("conf/yaffmap-conf.php");
 set_include_path("classes" . PATH_SEPARATOR . get_include_path());
 include dirname(__FILE__).'/classes/Autoloader.php';
 
-$config = Config::getConfig();
-
 $server = new YaffmapSoapServer();
 
 $classmap = SoapClassMap::getMap();
@@ -19,18 +17,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	case 'wsdl':
 		header('Content-Type: application/xml; charset=UTF-8');
 		$s = new YaffmapWsdlCreator($classmap);
-		echo $s->createWsdl($config->getUrl());
+		echo $s->createWsdl(YaffmapConfig::get('url'));
 		break;
 	case 'schema':
 		header('Content-Type: application/xml; charset=UTF-8');
 		$s = new YaffmapWsdlCreator($classmap);
-		echo $s->createWsdlSchema($config->getUrl());
+		echo $s->createWsdlSchema(YaffmapConfig::get('url'));
 		break;
 	case 'test':
 		echo Kobold::dump($_SERVER);
 		break;
 	default:
-		$client = new SoapClient($config->getUrl().'/soap.php?wsdl', array('location' => $config->getUrl().'/soap.php', 'classmap' => $classmap));
+		$client = new SoapClient(YaffmapConfig::get('url').'/soap.php?wsdl', array('location' => YaffmapConfig::get('url').'/soap.php', 'classmap' => $classmap));
 		echo Kobold::dump('====================== METHODS =============================<br>');
 		echo Kobold::dump($client->__getFunctions());
 		echo Kobold::dump('====================== TYPES =============================<br>');

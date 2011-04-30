@@ -4,10 +4,6 @@ require_once 'soapClasses.php';
 
 class YaffmapSoapClient{
 	
-	/**
-	 * @var Config
-	 */
-	protected $config = null;
 	protected $classmap = null;
 	
 	/**
@@ -27,13 +23,12 @@ class YaffmapSoapClient{
 	
 	public function __construct($url = null){
 		$this->url = $url;
-		$this->config = Config::getConfig();
 		$this->classmap = SoapClassMap::getMap();
 		$this->checkEnv();
 	}
 	
 	public function checkEnv(){
-		if($this->config->getUrl() == ''){
+		if(YaffmapConfig::get('url') == ''){
 			// check existing of backend identification id
 			throw new YaffmapReplicationException('backend env check failed.');
 		}

@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * Skeleton subclass for representing a row from the 'yaffmap_config' table.
  *
@@ -41,12 +39,5 @@ class Config extends BaseConfig {
 	
 	public function setVersion($version){
 		$this->version = $version;
-	}
-	
-	/**
-	 * @deprecated
-	 */
-	public static function getConfig(){
-		return YaffmapConfig::getConfig();
 	}
 } // Config

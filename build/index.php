@@ -118,10 +118,9 @@ try{
 				
 				break;
 			case 'knock':
-				$config = Config::getConfig();
 				$response = new YaffmapResponse();
 				$response->setResponseCode(YaffmapResponse::OPERATION_SUCCEDED);
-				$response->setResponseMsg('Yaffmap Backend v'.$config->getVersion());
+				$response->setResponseMsg('Yaffmap Backend v'.YaffmapConfig::get('version'));
 				echo $response;
 				break;
 			case 'getVersionMappingAgent':
