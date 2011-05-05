@@ -23,4 +23,20 @@ class WlIface extends BaseWlIface {
 		$dummyWlInterface->save();
 		return $dummyWlInterface;
 	}
+	
+	/**
+	 * @return sWlIface
+	 */
+	public function getSoapClass(){
+		$n = new sWlIface();
+		$n->wlMacAddr = $this->getWlMacAddr();
+		$n->name = $this->getName();
+		$n->wlMode = $this->getWlMode();
+		$n->bssid = $this->getBssid();
+		$n->essid = $this->getEssid();
+		$n->bridgeName = $this->getBridgeName();
+		$n->createdAt = $this->getCreatedAt();
+		$n->updatedAt = $this->getUpdatedAt();
+		return $n;
+	}
 } // WlIface

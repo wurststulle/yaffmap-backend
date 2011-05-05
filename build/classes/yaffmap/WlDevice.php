@@ -22,4 +22,26 @@ class WlDevice extends BaseWlDevice {
 		$dummyWlDevice->save();
 		return $dummyWlDevice;
 	}
+	
+	/**
+	 * @return sWlDevice
+	 */
+	public function getSoapClass(){
+		$n = new sWlDevice();
+		$n->name = $this->getName();
+		$n->txpower = $this->getTxpower();
+		$n->antDirection = $this->getAntDirection();
+		$n->antBeamH = $this->getAntBeamH();
+		$n->antBeamV = $this->getAntBeamV();
+		$n->antGain = $this->getAntGain();
+		$n->antTilt = $this->getAntTilt();
+		$n->antPol = $this->getAntPol();
+		$n->channel = $this->getChannel();
+		$n->wirelessStandard = $this->getWirelessStandard();
+		$n->frequency = $this->getFrequency();
+		$n->availFrequency = $this->getAvailFrequency();
+		$n->createdAt = $this->getCreatedAt();
+		$n->updatedAt = $this->getUpdatedAt();
+		return $n;
+	}
 } // WlDevice

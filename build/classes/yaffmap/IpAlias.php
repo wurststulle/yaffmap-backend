@@ -46,4 +46,17 @@ class IpAlias extends BaseIpAlias {
 			return $ipAlias->findOneOrCreate();
 		}
 	}
+	
+	/**
+	 * @return sIpAlias
+	 */
+	public function getSoapClass(){
+		$n = new sIpAlias();
+		$n->ipv4Addr = $this->getIpv4Addr();
+		$n->ipv6Addr = $this->getIpv6Addr();
+		$n->name = $this->getName();
+		$n->createdAt = $this->getCreatedAt();
+		$n->updatedAt = $this->getUpdatedAt();
+		return $n;
+	}
 } // IpAlias

@@ -65,7 +65,7 @@ class YaffmapWsdlCreator{
     			if($doc->type == 'array'){
     				$out .= '<xsd:element name="'.$prop->getName().'" minOccurs="0" maxOccurs="unbounded" type="xsd:'.substr($doc->typeOf, 1).'" />';
     			}elseif($doc->type == 'object'){
-    				$out .= '<xsd:element name="'.$prop->getName().'" minOccurs="0" maxOccurs="unbounded" type="xsd:'.substr($doc->typeOf, 1).'" />';
+    				$out .= '<xsd:element name="'.$prop->getName().'" minOccurs="0" maxOccurs="1" type="xsd:'.substr($doc->typeOf, 1).'" />';
     			}else{	
     				$out .= '<xsd:element name="'.$prop->getName().'" type="xsd:'.$doc->type.'" />';
     			}

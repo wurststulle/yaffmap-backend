@@ -15,4 +15,15 @@
  */
 class WiredIface extends BaseWiredIface {
 
+	/**
+	 * @return sWiredIface
+	 */
+	public function getSoapClass(){
+		$n = new sWiredIface();
+		$n->name = $this->getName();
+		$n->bridgeName = $this->getBridgeName();
+		$n->createdAt = $this->getCreatedAt();
+		$n->updatedAt = $this->getUpdatedAt();
+		return $n;
+	}
 } // WiredIface

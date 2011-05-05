@@ -78,4 +78,23 @@ class AddrMap extends BaseAddrMap {
 		}
 		return false;
 	}
+	
+	/**
+	 * @return sAddrMap
+	 */
+	public function getSoapClass(){
+		$n = new sAddrMap();
+		$n->ipv4Addr = $this->getIpv4Addr();
+		$n->ipv6Addr = $this->getIpv6Addr();
+		$n->macAddr = $this->getMacAddr();
+		$n->bridgeName = $this->getBridgeName();
+		if($this->getIsGlobalUpdated()){
+			$n->isGlobalUpdated = 'true';
+		}else{
+			$n->isGlobalUpdated = 'false';
+		}
+		$n->createdAt = $this->getCreatedAt();
+		$n->updatedAt = $this->getUpdatedAt();
+		return $n;
+	}
 } // AddrMap

@@ -269,5 +269,52 @@ class YaffmapSoapServer{
 			return new Exception($e);
 		}
 	}
+	
+	/**
+	 * @param string $version
+	 * @return ArrayOfFfNodes
+	 */
+	public function replicateNodes($version){
+		if(!$this->checkVersion($version)){
+			return new SoapFault(null, 'Your backend is outdated, please update it.');
+		}
+		$arrayOfNodes = new sArrayOfFfNodes();
+		$nodes = FfNodeQuery::create()
+			->find();
+		if($nodes != null){
+			foreach($nodes as $node){
+				$n = $node->getSoapClass();
+				$wiredIfaces = $node->getWiredIfaces();
+				foreach($wiredIfaces as $wiredIface){
+					$wif = $wiredIface->getSoapClass();
+					$addrMap = $wiredIface->getAddrMap();
+					$wif->addrMap = $addrMap->getSoapClass();
+					$ipAlias = $addrMap->getIpAliass();
+					foreach($ipAlias as $alias){
+						$wif->addrMap->ipAlias[] = $alias->getSoapClass();
+					}
+					$n->wiredIfaces[] = $wif;
+				}
+				$wlDevices = $node->getWlDevices();
+				foreach($wlDevices as $wlDevice){
+					$wld = $wlDevice->getSoapClass();
+					$wlIfaces = $wlDevice->getWlIfaces();
+					foreach($wlIfaces as $wlIface){
+						$wli = $wlIface->getSoapClass();
+						$addrMap = $wlIface->getAddrMap();
+						$wli->addrMap = $addrMap->getSoapClass();
+						$ipAlias = $addrMap->getIpAliass();
+						foreach($ipAlias as $alias){
+							$wli->addrMap->ipAlias[] = $alias->getSoapClass();
+						}
+						$wld->wlIfaces[] = $wli;
+					}
+					$n->wlDevices[] = $wld;
+				}
+				$arrayOfNodes->ffNodes[] = $n;
+			}
+		}
+		return $arrayOfNodes;
+	}
 }
 ?>

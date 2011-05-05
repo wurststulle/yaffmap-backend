@@ -16,7 +16,13 @@ class SoapClassMap{
 			'VersionMappingBackend' => 'sVersionMappingBackend', 
 			'RpLink' => 'sRpLink', 
 			'ArrayOfRpLinks' => 'sArrayOfRpLinks', 
-			'ArrayOfBackends' => 'sArrayOfBackends');
+			'ArrayOfBackends' => 'sArrayOfBackends',
+			'ArrayOfWiredIfaces' => 'sArrayOfWiredIfaces',
+			'WiredIface' => 'sWiredIface',
+			'AddrMap' => 'sAddrMap',
+			'IpAlias' => 'sIpAlias',
+			'WlDevice' => 'sWlDevice',
+			'WlIface' => 'sWlIface');
 	}
 }
 
@@ -116,12 +122,264 @@ class sFfNode{
 	 * @var string
 	 */
 	public $updatedAt;
+	
+	/**
+	 * @var array sWiredIfaces
+	 */
+	public $wiredIfaces;
+	
+	/**
+	 * @var array sWlDevices
+	 */
+	public $wlDevices;
+}
+
+class sArrayOfWiredIfaces{
+	
+	/**
+	 * @var array sWiredIface
+	 */
+	public $wiredIfaces = array();
+}
+
+class sArrayOfWlDevices{
+	
+	/**
+	 * @var array sWlDevice
+	 */
+	public $wlDevices = array();
+}
+
+class sWlDevice{
+	
+	/**
+	 * @var string
+	 */
+	public $name;
+	
+	/**
+	 * @var string
+	 */
+	public $txpower;
+	
+	/**
+	 * @var string
+	 */
+	public $antDirection;
+	
+	/**
+	 * @var string
+	 */
+	public $antBeamH;
+	
+	/**
+	 * @var string
+	 */
+	public $antBeamV;
+	
+	/**
+	 * @var string
+	 */
+	public $antGain;
+	
+	/**
+	 * @var string
+	 */
+	public $antTilt;
+	
+	/**
+	 * @var string
+	 */
+	public $antPol;
+	
+	/**
+	 * @var string
+	 */
+	public $channel;
+	
+	/**
+	 * @var string
+	 */
+	public $wirelessStandard;
+	
+	/**
+	 * @var string
+	 */
+	public $frequency;
+	
+	/**
+	 * @var string
+	 */
+	public $availFrequency;
+	
+	/**
+	 * @var string
+	 */
+	public $createdAt;
+	
+	/**
+	 * @var string
+	 */
+	public $updatedAt;
+	
+	/**
+	 * @var array sWlIface
+	 */
+	public $wlIfaces;
+}
+
+class sWlIface{
+	
+	/**
+	 * @var array sWlIface
+	 */
+	public $wlMacAddr;
+	
+	/**
+	 * @var array sWlIface
+	 */
+	public $name;
+	
+	/**
+	 * @var array sWlIface
+	 */
+	public $wlMode;
+	
+	/**
+	 * @var array sWlIface
+	 */
+	public $bssid;
+	
+	/**
+	 * @var array sWlIface
+	 */
+	public $essid;
+	
+	/**
+	 * @var array sWlIface
+	 */
+	public $bridgeName;
+	
+	/**
+	 * @var string
+	 */
+	public $createdAt;
+	
+	/**
+	 * @var string
+	 */
+	public $updatedAt;
+	
+	/**
+	 * @var object sAddrMap
+	 */
+	public $addrMap;
+}
+
+class sWiredIface{
+	
+	/**
+	 * @var string
+	 */
+	public $name;
+	
+	/**
+	 * @var string
+	 */
+	public $bridgeName;
+	
+	/**
+	 * @var string
+	 */
+	public $createdAt;
+	
+	/**
+	 * @var string
+	 */
+	public $updatedAt;
+	
+	/**
+	 * @var object sAddrMap
+	 */
+	public $addrMap;
+}
+
+class sAddrMap{
+	
+	/**
+	 * @var string
+	 */
+	public $ipv4Addr;
+	
+	/**
+	 * @var string
+	 */
+	public $ipv6Addr;
+	
+	/**
+	 * @var string
+	 */
+	public $macAddr;
+	
+	/**
+	 * @var string
+	 */
+	public $bridgeName;
+	
+	/**
+	 * @var string
+	 */
+	public $isGlobalUpdated;
+	
+	/**
+	 * @var string
+	 */
+	public $createdAt;
+	
+	/**
+	 * @var string
+	 */
+	public $updatedAt;
+	
+	/**
+	 * @var array sIpAlias
+	 */
+	public $ipAlias;
+}
+
+class sIpAlias{
+	
+	/**
+	 * @var string
+	 */
+	public $ipv4Addr;
+	
+	/**
+	 * @var string
+	 */
+	public $ipv6Addr;
+	
+	/**
+	 * @var string
+	 */
+	public $name;
+	
+	/**
+	 * @var string
+	 */
+	public $createdAt;
+	
+	/**
+	 * @var string
+	 */
+	public $updatedAt;
+	
 }
 
 class sArrayOfFfNodes{
 	
 	/**
-	 * @var array sFfNodes
+	 * @var array sFfNode
 	 */
 	public $ffNodes = array();
 }

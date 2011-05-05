@@ -468,7 +468,11 @@ class FfNode extends BaseFfNode {
 		$n->agentRelease = $this->getAgentRelease();
 		$n->upgradeTree = $this->getUpgradeTree();
 		$n->version = $this->getVersion();
-		$n->isGlobalUpdated = $this->getIsGlobalUpdated();
+		if($this->getIsGlobalUpdated()){
+			$n->isGlobalUpdated = 'true';
+		}else{
+			$n->isGlobalUpdated = 'false';
+		}
 		$n->replicatedBy = $this->getReplicatedBy();
 		$n->isDummy = $this->getIsDummy();
 		$n->createdAt = $this->getCreatedAt();
