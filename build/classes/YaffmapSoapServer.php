@@ -265,14 +265,18 @@ class YaffmapSoapServer{
 	
 	/**
 	 * @param string $version
+	 * @param string $clientId
 	 * @return ArrayOfFfNodes
 	 */
-	public function replicateNodes($version){
+	public function replicateNodes($version, $clientId){
 		if(!$this->checkVersion($version)){
 			return new SoapFault(null, 'Your backend is outdated, please update it.');
 		}
 		$arrayOfNodes = new sArrayOfFfNodes();
 		$nodes = FfNodeQuery::create()
+			->where('FfNode.ReplicatedBy NOT LIKE ?', '%'.$clientId.'%')
+			->_or()
+			->where(FfNodePeer::REPLICATEDBY.' IS NULL')
 			->find();
 		if($nodes != null){
 			foreach($nodes as $node){
