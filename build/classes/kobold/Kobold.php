@@ -25,6 +25,7 @@ require_once 'KoboldTemplate.php';
 require_once 'KoboldCookie.php';
 require_once 'KoboldSession.php';
 require_once 'KoboldAuth.php';
+require_once 'KoboldUtils.php';
 
 class Kobold{
 	

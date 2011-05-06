@@ -4,14 +4,24 @@ require_once 'KoboldSession.php';
 
 class KoboldAuth{
 	
-	protected $userName;
+	private static $auth = null;
+	
+	private static $salt = 'qwertz';
+	
+	private $userName = null;
+	private $userId = null;
+	
+	private $loggedIn = false;
 
 	public function __construct(){
 		
 	}
 	
-	public function checkAuth(){
-		
+	public static function getAuth(){
+		if(is_null(self::$auth)){
+			self::$auth = new KoboldAuth();
+		}
+		return self::$auth;
 	}
 	
 	public function login($userName, $passwd, $setCookie = false){
