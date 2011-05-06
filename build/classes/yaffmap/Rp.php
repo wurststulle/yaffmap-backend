@@ -15,4 +15,8 @@
  */
 class Rp extends BaseRp {
 
+	public function preInsert(PropelPDO $con = null){
+    	$this->setId(md5(mt_rand(1, 1000).date('U')));
+    	return true;
+	}
 } // Rp

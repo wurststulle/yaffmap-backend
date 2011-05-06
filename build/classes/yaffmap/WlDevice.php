@@ -15,6 +15,11 @@
  */
 class WlDevice extends BaseWlDevice {
 	
+	public function preInsert(PropelPDO $con = null){
+    	$this->setId(md5(mt_rand(1, 1000).date('U')));
+    	return true;
+	}
+	
 	public static function createDummy(FfNode $node){
 		$dummyWlDevice = new WlDevice();
 		$dummyWlDevice->setFfNode($node);

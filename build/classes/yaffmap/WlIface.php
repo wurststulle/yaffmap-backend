@@ -15,6 +15,11 @@
  */
 class WlIface extends BaseWlIface {
 
+	public function preInsert(PropelPDO $con = null){
+    	$this->setId(md5(mt_rand(1, 1000).date('U')));
+    	return true;
+	}
+	
 	public static function createDummy(WlDevice $wlDevice, AddrMap $addrMap){
 		$dummyWlInterface = new WlIface();
 		$dummyWlInterface->setAddrMap($addrMap);
