@@ -118,10 +118,9 @@ try{
 				
 				break;
 			case 'knock':
-				$config = Config::getConfig();
 				$response = new YaffmapResponse();
 				$response->setResponseCode(YaffmapResponse::OPERATION_SUCCEDED);
-				$response->setResponseMsg('Yaffmap Backend v'.$config->getVersion());
+				$response->setResponseMsg('Yaffmap Backend v'.YaffmapConfig::get('version'));
 				echo $response;
 				break;
 			case 'getVersionMappingAgent':
@@ -165,9 +164,23 @@ try{
 	}else{
 		$div = new KDiv();
 		$div->addAttribute(array(new KAttribute('align', 'center')));
-		$div->addItem('<font color="red">Y</font>et <font color="red">A</font>nother <font color="red">F</font>rei<font color="red">f</font>unk <font color="red">Map</font> Server');
+		$div->addItem('<font color="red">Y</font>et <font color="red">A</font>nother <font color="red">F</font>rei<font color="red">f</font>unk <font color="red">Map</font> Backend');
 		$div->addItem(array(new KHr().new KBr()));
 		$div->addItem('see '.new KSimpleLink('http://wurststulle.dyndns.org/yaffmap/trac', 'documentation').' for help');
+		$div->addItem(new KBr());
+		$div->addItem(new KBr());
+		$table = new KTable();
+		$table->addAttribute(array(new KAttribute('border', 1)));
+		$table->addThRow(array('Knoten: ', FfNodeQuery::create()->count()));
+		$table->addRow(array('- davon mit Agent', FfNodeQuery::create()->filterByAgentRelease(null, Criteria::NOT_EQUAL)->count()));
+		$table->addRow(array('- davon mit Koordinaten', FfNodeQuery::create()->filterByLatitude(null, Criteria::NOT_EQUAL)->count()));
+		$table->addRow(array('- davon ohne Koordinaten', FfNodeQuery::create()->filterByLatitude(null)->count()));
+		$table->addThRow(array('RP Links: ', RpLinkQuery::create()->count()));
+		$rpLinks = RpQuery::create()->joinRpLink()->groupByIpv()->withColumn('count('.RpPeer::IPV.')', 'CountIpv')->find();
+		foreach($rpLinks as $t){
+			$table->addRow(array('- davon '.$t->getName().' (IPv'.$t->getIpv().')', $t->getCountIpv()));
+		}
+		$div->addItem($table);
 		echo $div;
 	}
 }catch(PropelException $e){

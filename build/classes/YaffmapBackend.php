@@ -3,17 +3,8 @@ ini_set("soap.wsdl_cache_enabled", "0");
 
 class YaffmapBackend{
 	
-	/**
-	 * @var Config
-	 */
-	protected $config = null;
-	
-	public function __construct(){
-		$this->config = Config::getConfig();
-	}
-	
 	public function generateId(){
-		return $this->config->getId();
+		return YaffmapConfig::get('id');
 	}
 	
 	/**
@@ -29,7 +20,7 @@ class YaffmapBackend{
 			$conns = $client->getBackendConns();
 			if(is_array($conns)){
 				foreach($conns as $conn){
-					$result = $conn->announceBackend($this->config->getId(), $this->config->getUrl(), $this->config->getVersion());
+					$result = $conn->announceBackend(YaffmapConfig::get('id'), YaffmapConfig::get('url'), YaffmapConfig::get('version'));
 					echo Kobold::dump($result);
 				}
 			}else{
@@ -59,7 +50,7 @@ class YaffmapBackend{
 			$countBackendsUpdated = 0;
 			if(is_array($conns)){
 				foreach($conns as $conn){
-					$b = $conn->getBackends($this->config->getVersion())->backends;
+					$b = $conn->getBackends(YaffmapConfig::get('version'))->backends;
 					if(!is_array($b)){
 						// TODO remove workaround
 						$backends[] = $b;
@@ -73,7 +64,7 @@ class YaffmapBackend{
 							$b->setUpdatedAt($backend->updatedAt);
 							$b->save($dbCon);
 							$countBackendsUpdated++;
-						}elseif($b->isNew() && $b->getId() != $this->config->getId()){
+						}elseif($b->isNew() && $b->getId() != YaffmapConfig::get('id')){
 							// backend was not known before and not this backend
 							$b->setUrl($backend->url);
 							$b->setUpdatedAt($backend->updatedAt);
@@ -108,7 +99,7 @@ class YaffmapBackend{
 			if(is_writable(dirname(__FILE__).'/../')){
 				if(is_array($conns)){
 					foreach($conns as $conn){
-						$release = $conn->getAgentRelease($this->config->getVersion());
+						$release = $conn->getAgentRelease(YaffmapConfig::get('version'));
 						$path = dirname(__FILE__).'/../download/'.$release->agentRelease->release.'/yaffmap_'.$release->agentRelease->release.'-'.$release->agentRelease->subRelease.'_'.$release->agentRelease->version.'_'.$release->agentRelease->tree.'.tar.gz';
 						if(!file_exists($path)){
 							// download remote file
@@ -157,7 +148,7 @@ class YaffmapBackend{
 			$dbCon->beginTransaction();
 			if(is_array($conns)){
 				foreach($conns as $conn){
-					$v = $conn->getVersionMappingAgent($this->config->getVersion())->ArrayOfVersionMappingAgent;
+					$v = $conn->getVersionMappingAgent(YaffmapConfig::get('version'))->ArrayOfVersionMappingAgent;
 					if(!is_array($v)){
 						// TODO remove workaround
 						$versions[] = $v;
@@ -208,7 +199,7 @@ class YaffmapBackend{
 			$dbCon->beginTransaction();
 			if(is_array($conns)){
 				foreach($conns as $conn){
-					$v = $conn->getVersionMappingBackend($this->config->getVersion())->ArrayOfVersionMappingBackend;
+					$v = $conn->getVersionMappingBackend(YaffmapConfig::get('version'))->ArrayOfVersionMappingBackend;
 					if(!is_array($v)){
 						// TODO remove workaround
 						$versions[] = $v;
