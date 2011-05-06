@@ -463,7 +463,11 @@ class FfNode extends BaseFfNode {
 		$n->timeout = $this->getTimeout();
 		$n->hostname = $this->getHostname();
 		$n->height = $this->getHeight();
-		$n->isHna = $this->getIsHna();
+		if($this->getIsHna()){
+			$n->isHna = 'true';
+		}else{
+			$n->isHna = 'false';
+		}
 		$n->defGateway = $this->getDefGateway();
 		$n->agentRelease = $this->getAgentRelease();
 		$n->upgradeTree = $this->getUpgradeTree();
@@ -473,7 +477,7 @@ class FfNode extends BaseFfNode {
 		}else{
 			$n->isGlobalUpdated = 'false';
 		}
-		$n->replicatedBy = $this->getReplicatedBy();
+		$n->replicatedBy = $this->getReplicatedBy().'|'.YaffmapConfig::get('id');
 		$n->isDummy = $this->getIsDummy();
 		$n->createdAt = $this->getCreatedAt();
 		$n->updatedAt = $this->getUpdatedAt();
