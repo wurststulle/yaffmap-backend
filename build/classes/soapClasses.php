@@ -155,6 +155,11 @@ class sWlDevice{
 	/**
 	 * @var string
 	 */
+	public $id;
+	
+	/**
+	 * @var string
+	 */
 	public $name;
 	
 	/**
@@ -229,6 +234,11 @@ class sWlDevice{
 }
 
 class sWlIface{
+	
+	/**
+	 * @var string
+	 */
+	public $id;
 	
 	/**
 	 * @var array sWlIface
@@ -309,6 +319,11 @@ class sAddrMap{
 	/**
 	 * @var string
 	 */
+	public $id;
+	
+	/**
+	 * @var string
+	 */
 	public $ipv4Addr;
 	
 	/**
@@ -348,6 +363,11 @@ class sAddrMap{
 }
 
 class sIpAlias{
+	
+	/**
+	 * @var string
+	 */
+	public $id;
 	
 	/**
 	 * @var string

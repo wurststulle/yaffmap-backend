@@ -16,7 +16,9 @@
 class WlDevice extends BaseWlDevice {
 	
 	public function preInsert(PropelPDO $con = null){
-    	$this->setId(md5(mt_rand(1, 1000).date('U')));
+		if($this->getId() == null){
+		 	$this->setId(md5(mt_rand(1, 1000).date('U')));
+		}
     	return true;
 	}
 	
@@ -33,6 +35,7 @@ class WlDevice extends BaseWlDevice {
 	 */
 	public function getSoapClass(){
 		$n = new sWlDevice();
+		$n->id = $this->getId();
 		$n->name = $this->getName();
 		$n->txpower = $this->getTxpower();
 		$n->antDirection = $this->getAntDirection();

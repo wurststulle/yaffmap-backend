@@ -16,7 +16,9 @@
 class IpAlias extends BaseIpAlias {
 	
 	public function preInsert(PropelPDO $con = null){
-    	$this->setId(md5(mt_rand(1, 1000).date('U')));
+		if($this->getId() == null){
+		 	$this->setId(md5(mt_rand(1, 1000).date('U')));
+		}
     	return true;
 	}	
 	
@@ -57,6 +59,7 @@ class IpAlias extends BaseIpAlias {
 	 */
 	public function getSoapClass(){
 		$n = new sIpAlias();
+		$n->id = $this->getId();
 		$n->ipv4Addr = $this->getIpv4Addr();
 		$n->ipv6Addr = $this->getIpv6Addr();
 		$n->name = $this->getName();

@@ -16,7 +16,9 @@
 class WlIface extends BaseWlIface {
 
 	public function preInsert(PropelPDO $con = null){
-    	$this->setId(md5(mt_rand(1, 1000).date('U')));
+		if($this->getId() == null){
+		 	$this->setId(md5(mt_rand(1, 1000).date('U')));
+		}
     	return true;
 	}
 	
@@ -34,6 +36,7 @@ class WlIface extends BaseWlIface {
 	 */
 	public function getSoapClass(){
 		$n = new sWlIface();
+		$n->id = $this->getId();
 		$n->wlMacAddr = $this->getWlMacAddr();
 		$n->name = $this->getName();
 		$n->wlMode = $this->getWlMode();
