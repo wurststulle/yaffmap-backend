@@ -4,12 +4,6 @@ ini_set("soap.wsdl_cache_enabled", "0");
 class YaffmapSoapServer{
 	
 	/**
-	 * @var Config
-	 * @ignore wsdl
-	 */
-	protected $config = null;
-	
-	/**
 	 * @var object SoapServer
 	 * @ignore wsdl
 	 */
@@ -31,8 +25,7 @@ class YaffmapSoapServer{
 	 * @ignore wsdl
 	 */
 	public function __construct(){
-		$this->config = Config::getConfig();
-		$this->url = $this->config->getUrl().$this->path;
+		$this->url = YaffmapConfig::get('url').$this->path;
 	}
 	
 	/**
@@ -60,7 +53,7 @@ class YaffmapSoapServer{
 	 * @param string $version
 	 */
 	private function checkVersion($version){
-		if(VersionMappingBackendQuery::create()->filterByServerRelease($this->config->getVersion())->filterByClientRelease($version)->count() == 0){
+		if(VersionMappingBackendQuery::create()->filterByServerRelease(YaffmapConfig::get('version'))->filterByClientRelease($version)->count() == 0){
 			return false;
 		}else{
 			return true;
@@ -136,11 +129,11 @@ class YaffmapSoapServer{
 			// publish new backend
 			$backend->setUrl($url);
 			$backend->save();
-			return '['.$this->config->getUrl().']: backend ('.$url.') added.';
+			return '['.YaffmapConfig::get('url').']: backend ('.$url.') added.';
 		}else{
 			$backend->setUpdatedAt(new DateTime());
 			$backend->save();
-			return '['.$this->config->getUrl().']: backend ('.$url.') updated.';
+			return '['.YaffmapConfig::get('url').']: backend ('.$url.') updated.';
 		}
 	}
 	
@@ -165,8 +158,8 @@ class YaffmapSoapServer{
 			}
 		}
 		$b = new sBackend();
-		$b->id = $this->config->getId();
-		$b->url = $this->config->getUrl();
+		$b->id = YaffmapConfig::get('id');
+		$b->url = YaffmapConfig::get('url');
 		$dt = new DateTime();
 		$b->updatedAt = $dt->format('Y-m-d H:i:s');
 		$list->backends[] = $b;

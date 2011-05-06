@@ -16,11 +16,6 @@ class Yaffmap{
 	protected $request = null;
 	
 	/**
-	 * @var Config
-	 */
-	protected $config = null;
-	
-	/**
 	 * allowed keys in request
 	 * @var array
 	 */
@@ -38,7 +33,6 @@ class Yaffmap{
 			$this->response = $response;
 		}
 		$this->allowed = array('do');
-		$this->config = Config::getConfig();
 //		$this->checkAgentCompatibility();
 	}
 	
@@ -53,10 +47,10 @@ class Yaffmap{
 			->filterByAgentSubRelease($this->request['subRelease'])
 			->filterByAgentUpgradeTree($this->request['tree'])
 			->filterByAgentVersion($this->request['version'])
-			->filterByBackendRelease($this->config->getVersion())
+			->filterByBackendRelease(YaffmapConfig::get('version'))
 			->count();
 		if($versionMapping == 0){
-			throw new YaffmapException('agent('.$this->request['release'].'-'.$this->request['subRelease'].'_'.$this->request['tree'].'_'.$this->request['version'].') is not compatible to backend('.$this->config->getVersion().').');
+			throw new YaffmapException('agent('.$this->request['release'].'-'.$this->request['subRelease'].'_'.$this->request['tree'].'_'.$this->request['version'].') is not compatible to backend('.YaffmapConfig::get('version').').');
 		}
 	}
 	

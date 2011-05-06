@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * Skeleton subclass for representing a row from the 'yaffmap_config' table.
  *
@@ -25,7 +23,7 @@ class Config extends BaseConfig {
 	 * version of backend
 	 * @var string
 	 */
-	protected $version;
+	public $version;
 	
 	/**
 	 * get the backends id
@@ -39,20 +37,7 @@ class Config extends BaseConfig {
 		return $this->version;
 	}
 	
-	/**
-	 * get configuration from database
-	 * @return Config
-	 * @throws YaffmapException
-	 */
-	public static function getConfig(){
-		$conf = ConfigQuery::create()->findOne();
-		if($conf == null){
-			throw new YaffmapException('config not found.');
-		}
-		$confFromFile = parse_ini_file('config.inc', true);
-		foreach($confFromFile as $key => $value){
-			$conf->$key = $value;
-		}
-		return $conf;
+	public function setVersion($version){
+		$this->version = $version;
 	}
 } // Config
