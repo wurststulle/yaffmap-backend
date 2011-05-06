@@ -274,6 +274,7 @@ class YaffmapSoapServer{
 		}
 		$arrayOfNodes = new sArrayOfFfNodes();
 		$nodes = FfNodeQuery::create()
+			->setFormatter(ModelCriteria::FORMAT_ON_DEMAND)
 			->where('FfNode.ReplicatedBy NOT LIKE ?', '%'.$clientId.'%')
 			->_or()
 			->where(FfNodePeer::REPLICATEDBY.' IS NULL')

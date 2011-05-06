@@ -31,6 +31,20 @@ class WlDevice extends BaseWlDevice {
 	}
 	
 	/**
+	 * 
+	 * @param unknown_type $device
+	 * @param unknown_type $node
+	 * @return WlDevice
+	 */
+	public static function createOne($device, $node){
+		$wlDevice = new WlDevice();
+		$wlDevice->setId($device->id);
+		$wlDevice->setName($device->name);
+		$wlDevice->setFfNode($node);
+		return $wlDevice;
+	}
+	
+	/**
 	 * @return sWlDevice
 	 */
 	public function getSoapClass(){

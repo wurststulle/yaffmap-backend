@@ -32,6 +32,27 @@ class WlIface extends BaseWlIface {
 	}
 	
 	/**
+	 * 
+	 * @param unknown_type $device
+	 * @param unknown_type $node
+	 * @return WlIface
+	 */
+	public static function createOne($device, $wlDevice){
+		$wlIface = new WlIface();
+		$wlIface->setId($device->id);
+		$wlIface->setName($device->name);
+		$wlIface->getWlMacAddr($device->wlMacAddr);
+		$wlIface->getWlMode($device->wlMode);
+		$wlIface->getBssid($device->bssid);
+		$wlIface->getEssid($device->essid);
+		$wlIface->getBridgeName($device->bridgeName);
+		$wlIface->getCreatedAt($device->createdAt);
+		$wlIface->getUpdatedAt($device->updatedAt);
+		$wlIface->setWlDevice($wlDevice);
+		return $wlIface;
+	}
+	
+	/**
 	 * @return sWlIface
 	 */
 	public function getSoapClass(){

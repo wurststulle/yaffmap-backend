@@ -3,6 +3,9 @@ ini_set("soap.wsdl_cache_enabled", "0");
 
 class YaffmapBackend{
 	
+	/**
+	 * @deprecated
+	 */
 	public function generateId(){
 		return YaffmapConfig::get('id');
 	}
@@ -215,6 +218,90 @@ class YaffmapBackend{
 						$stmt = $dbCon->prepare($sql);
 						$stmt->execute(array(':SERVERRELEASE' => $version->serverRelease, ':CLIENTRELEASE' => $version->clientRelease));
 					}
+				}
+			}
+			$dbCon->commit();
+		}catch(SoapFault $e){
+			throw new YaffmapSoapException($e->getMessage());
+		}catch(Exception $e){
+			throw $e;
+		}
+	}
+	
+	public function replicateNodes($url = null){
+		try{
+			$client = new YaffmapSoapClient($url);
+			$conns = $client->getBackendConns();
+			$dbCon = Propel::getConnection(FfNodePeer::DATABASE_NAME);
+			$dbCon->beginTransaction();
+			if(is_array($conns)){
+				foreach($conns as $conn){
+					$n = $conn->replicateNodes(YaffmapConfig::get('version'), YaffmapConfig::get('id'))->ffNodes;
+					if(is_array($n)){
+						foreach($n as $node){
+							$localNode = FfNodeQuery::create()->filterById($node->id)->findOne();
+							if($localNode == null){
+								// node to be replicated does not exist, create it
+								echo Kobold::dump($node);
+								$localNode = new FfNode();
+								$localNode->setId($node->id);
+								$localNode->setAgentRelease($node->agentRelease);
+								$localNode->setCreatedAt($node->createdAt);
+								$localNode->setDefGateway($node->defGateway);
+								$localNode->setHeight($node->height);
+								$localNode->setHostname($node->hostname);
+								$localNode->setIsGlobalUpdated($node->isGlobalUpdated);
+								$localNode->setIsHna($node->isHna);
+								$localNode->setLatitude($node->latitude);
+								$localNode->setLongitude($node->longitude);
+								$localNode->setMisc($node->misc);
+								$localNode->setReplicatedBy($node->replicatedBy);
+								$localNode->setTimeout($node->timeout);
+								$localNode->setUpdatedAt($node->updatedAt);
+								$localNode->setUpgradeTree($node->upgradeTree);
+								$localNode->setVersion($node->version);
+								$localNode->setUpdateIntervalNode($node->updateIntervalNode);
+								$localNode->setUpdateIntervalLink($node->updateIntervalLink);
+								$localNode->save();
+								$wlDevices = array();
+								if(is_array($node->wlDevices)){
+									$wlDevices = $node->wlDevices;
+								}elseif(empty($node->wlDevices)){
+									// there is no wlDevice, do nothing
+								}else{
+									// only one wlDevice given
+									$wlDevices[] = $node->wlDevices;
+								}
+								foreach($wlDevices as $wld){
+									$wlDevice = WlDevice::createOne($wld, $localNode);
+									$wlDevice->save();
+									$wlIfaces = array();
+									if(is_array($wld->wlIfaces)){
+										$wlIfaces = $wld->wlIfaces;
+									}elseif(empty($wld->wlIfaces)){
+										// there is no wlIface, do nothing
+									}else{
+										// only one wlDevice given
+										$wlIfaces[] = $wld->wlIfaces;
+									}
+									foreach($wlIfaces as $wli){
+										$wlIface = WlIface::createOne($wli, $wlDevice);
+										$wlIface->save();
+									}
+								}
+							}elseif($localNode->getIsGlobalUpdated() && $node->isGlobalUpdated == 'true'){
+								// local and to be replicated node are global updated, skip!
+								continue;
+							}elseif($localNode->getIsGlobalUpdated() && $node->isGlobalUpdated == 'false'){
+								
+							}elseif(!$localNode->getIsGlobalUpdated() && $node->isGlobalUpdated == 'true'){
+								
+							}
+						}
+					}else{
+						
+					}
+//					echo Kobold::dump($n);
 				}
 			}
 			$dbCon->commit();

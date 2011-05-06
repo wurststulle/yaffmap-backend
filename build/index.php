@@ -6,7 +6,7 @@ include dirname(__FILE__) . '/classes/Autoloader.php';
 
 define('DEBUG', true);
 
-//if($_SERVER['REMOTE_ADDR'] == '192.168.2.10' || $_SERVER['REMOTE_ADDR'] == '192.168.2.20'){
+//if($_SERVER['REMOTE_ADDR'] == '192.168.2.10' || $_SERVER['REMOTE_ADDR'] == '192.168.2.21'){
 //	
 //}else{
 //	$response = new Response();
@@ -155,6 +155,10 @@ try{
 					$response->setResponseMsg($backend->getBackends());
 				}
 				echo $response;
+				break;
+			case 'replicateNodes':
+				$backend = new YaffmapBackend();
+				$backend->replicateNodes('http://yaffmap.gross-holger.de');
 				break;
 			case 'test':
 				break;
