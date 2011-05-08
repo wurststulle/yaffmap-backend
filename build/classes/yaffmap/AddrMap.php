@@ -105,4 +105,20 @@ class AddrMap extends BaseAddrMap {
 		$n->updatedAt = $this->getUpdatedAt();
 		return $n;
 	}
+	
+	/**
+	 * @return AddrMap
+	 */
+	public static function createOne($device){
+		$addrMap = new AddrMap();
+		$addrMap->setId($device->id);
+		$addrMap->setIpv4Addr($device->ipv4Addr);
+		$addrMap->setIpv6Addr($device->ipv6Addr);
+		$addrMap->setMacAddr($device->macAddr);
+		$addrMap->setBridgeName($device->bridgeName);
+		$addrMap->setIsGlobalUpdated($device->isGlobalUpdated);
+		$addrMap->setCreatedAt($device->createdAt);
+		$addrMap->setUpdatedAt($device->updatedAt);
+		return $addrMap;
+	}
 } // AddrMap

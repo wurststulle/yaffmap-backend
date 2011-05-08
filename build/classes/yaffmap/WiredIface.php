@@ -26,4 +26,18 @@ class WiredIface extends BaseWiredIface {
 		$n->updatedAt = $this->getUpdatedAt();
 		return $n;
 	}
+	
+	/**
+	 * @return WiredIface
+	 */
+	public static function createOne($device, $node, $addrMap){
+		$wiredIface = new WiredIface();
+		$wiredIface->setName($device->name);
+		$wiredIface->setBridgeName($device->bridgeName);
+		$wiredIface->setCreatedAt($device->createdAt);
+		$wiredIface->setUpdatedAt($device->updatedAt);
+		$wiredIface->setFfNode($node);
+		$wiredIface->setAddrMap($addrMap);
+		return $wiredIface;
+	}
 } // WiredIface

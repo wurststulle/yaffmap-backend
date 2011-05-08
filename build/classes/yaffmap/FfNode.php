@@ -483,4 +483,30 @@ class FfNode extends BaseFfNode {
 		$n->updatedAt = $this->getUpdatedAt();
 		return $n;
 	}
+	
+	/**
+	 * @return FfNode
+	 */
+	public static function createOne($node){
+		$localNode = new FfNode();
+		$localNode->setId($node->id);
+		$localNode->setAgentRelease($node->agentRelease);
+		$localNode->setCreatedAt($node->createdAt);
+		$localNode->setDefGateway($node->defGateway);
+		$localNode->setHeight($node->height);
+		$localNode->setHostname($node->hostname);
+		$localNode->setIsGlobalUpdated($node->isGlobalUpdated);
+		$localNode->setIsHna($node->isHna);
+		$localNode->setLatitude($node->latitude);
+		$localNode->setLongitude($node->longitude);
+		$localNode->setMisc($node->misc);
+		$localNode->setReplicatedBy($node->replicatedBy);
+		$localNode->setTimeout($node->timeout);
+		$localNode->setUpdatedAt($node->updatedAt);
+		$localNode->setUpgradeTree($node->upgradeTree);
+		$localNode->setVersion($node->version);
+		$localNode->setUpdateIntervalNode($node->updateIntervalNode);
+		$localNode->setUpdateIntervalLink($node->updateIntervalLink);
+		return $localNode;
+	}
 } // FfNode

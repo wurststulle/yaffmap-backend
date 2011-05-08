@@ -37,18 +37,19 @@ class WlIface extends BaseWlIface {
 	 * @param unknown_type $node
 	 * @return WlIface
 	 */
-	public static function createOne($device, $wlDevice){
+	public static function createOne($device, $wlDevice, $addrMap){
 		$wlIface = new WlIface();
 		$wlIface->setId($device->id);
 		$wlIface->setName($device->name);
-		$wlIface->getWlMacAddr($device->wlMacAddr);
-		$wlIface->getWlMode($device->wlMode);
-		$wlIface->getBssid($device->bssid);
-		$wlIface->getEssid($device->essid);
-		$wlIface->getBridgeName($device->bridgeName);
-		$wlIface->getCreatedAt($device->createdAt);
-		$wlIface->getUpdatedAt($device->updatedAt);
+		$wlIface->setWlMacAddr($device->wlMacAddr);
+		$wlIface->setWlMode($device->wlMode);
+		$wlIface->setBssid($device->bssid);
+		$wlIface->setEssid($device->essid);
+		$wlIface->setBridgeName($device->bridgeName);
+		$wlIface->setCreatedAt($device->createdAt);
+		$wlIface->setUpdatedAt($device->updatedAt);
 		$wlIface->setWlDevice($wlDevice);
+		$wlIface->setAddrMap($addrMap);
 		return $wlIface;
 	}
 	

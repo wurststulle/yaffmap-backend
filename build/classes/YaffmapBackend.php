@@ -239,30 +239,12 @@ class YaffmapBackend{
 					$n = $conn->replicateNodes(YaffmapConfig::get('version'), YaffmapConfig::get('id'))->ffNodes;
 					if(is_array($n)){
 						foreach($n as $node){
-							$localNode = FfNodeQuery::create()->filterById($node->id)->findOne();
+							$localNode = FfNodeQuery::create()->filterById($node->id)->findOne($dbCon);
 							if($localNode == null){
 								// node to be replicated does not exist, create it
-								echo Kobold::dump($node);
-								$localNode = new FfNode();
-								$localNode->setId($node->id);
-								$localNode->setAgentRelease($node->agentRelease);
-								$localNode->setCreatedAt($node->createdAt);
-								$localNode->setDefGateway($node->defGateway);
-								$localNode->setHeight($node->height);
-								$localNode->setHostname($node->hostname);
-								$localNode->setIsGlobalUpdated($node->isGlobalUpdated);
-								$localNode->setIsHna($node->isHna);
-								$localNode->setLatitude($node->latitude);
-								$localNode->setLongitude($node->longitude);
-								$localNode->setMisc($node->misc);
-								$localNode->setReplicatedBy($node->replicatedBy);
-								$localNode->setTimeout($node->timeout);
-								$localNode->setUpdatedAt($node->updatedAt);
-								$localNode->setUpgradeTree($node->upgradeTree);
-								$localNode->setVersion($node->version);
-								$localNode->setUpdateIntervalNode($node->updateIntervalNode);
-								$localNode->setUpdateIntervalLink($node->updateIntervalLink);
-								$localNode->save();
+//								echo Kobold::dump($node);
+								$localNode = FfNode::createOne($node);
+								$localNode->save($dbCon);
 								$wlDevices = array();
 								if(is_array($node->wlDevices)){
 									$wlDevices = $node->wlDevices;
@@ -274,7 +256,7 @@ class YaffmapBackend{
 								}
 								foreach($wlDevices as $wld){
 									$wlDevice = WlDevice::createOne($wld, $localNode);
-									$wlDevice->save();
+									$wlDevice->save($dbCon);
 									$wlIfaces = array();
 									if(is_array($wld->wlIfaces)){
 										$wlIfaces = $wld->wlIfaces;
@@ -285,8 +267,59 @@ class YaffmapBackend{
 										$wlIfaces[] = $wld->wlIfaces;
 									}
 									foreach($wlIfaces as $wli){
-										$wlIface = WlIface::createOne($wli, $wlDevice);
-										$wlIface->save();
+										// check, if addrMap belongs to a bridge
+										$addrMap = AddrMapQuery::create()->filterById($wli->addrMap->id)->findOne($dbCon);
+										if($addrMap == null){
+											$addrMap = AddrMap::createOne($wli->addrMap);
+											$addrMap->save($dbCon);
+										}
+										$wlIface = WlIface::createOne($wli, $wlDevice, $addrMap);
+										$wlIface->save($dbCon);
+										$ipAliase = array();
+										if(is_array($wli->addrMap->ipAlias)){
+											$ipAliase = $wli->addrMap->ipAlias;
+										}elseif(empty($wli->addrMap->ipAlias)){
+											// there is no wlIface, do nothing
+										}else{
+											// only one wlDevice given
+											$ipAliase[] = $wli->addrMap->ipAlias;
+										}
+										foreach($ipAliase as $ipAlias){
+											$ipa = IpAlias::createOne($ipAlias, $addrMap);
+											$ipa->save($dbCon);
+										}
+									}
+								}
+								$wiredIfaces = array();
+								if(is_array($node->wiredIfaces)){
+									$wiredIfaces = $node->wiredIfaces;
+								}elseif(empty($node->wiredIfaces)){
+									// there is no wlDevice, do nothing
+								}else{
+									// only one wlDevice given
+									$wiredIfaces[] = $node->wiredIfaces;
+								}
+								foreach($wiredIfaces as $wiredIface){
+									// check, if addrMap belongs to a bridge
+									$addrMap = AddrMapQuery::create()->filterById($wiredIface->addrMap->id)->findOne($dbCon);
+									if($addrMap == null){
+										$addrMap = AddrMap::createOne($wiredIface->addrMap);
+										$addrMap->save($dbCon);
+									}
+									$wiIf = WiredIface::createOne($wiredIface, $localNode, $addrMap);
+									$wiIf->save($dbCon);
+									$ipAliase = array();
+									if(is_array($wiredIface->addrMap->ipAlias)){
+										$ipAliase = $wiredIface->addrMap->ipAlias;
+									}elseif(empty($wiredIface->addrMap->ipAlias)){
+										// there is no wlIface, do nothing
+									}else{
+										// only one wlDevice given
+										$ipAliase[] = $wiredIface->addrMap->ipAlias;
+									}
+									foreach($ipAliase as $ipAlias){
+										$ipa = IpAlias::createOne($ipAlias, $addrMap);
+										$ipa->save($dbCon);
 									}
 								}
 							}elseif($localNode->getIsGlobalUpdated() && $node->isGlobalUpdated == 'true'){
