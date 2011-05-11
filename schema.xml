@@ -76,7 +76,7 @@
     <column name="f_nodeID" type="VARCHAR" size="32" phpName="NodeID" required="true" primaryKey="true" />
     <column name="f_addrMapID" type="VARCHAR" size="32" phpName="AddrMapID" required="true" primaryKey="true" />
     <column name="name" type="VARCHAR" size="20" required="true" />
-    <column name="bridgeName" type="VARCHAR" size="30" phpName="BridgeName" required="true" />
+    <column name="bridgeName" type="VARCHAR" size="30" phpName="BridgeName" defaultValue="NULL"  />
     <column name="isDummy" type="INTEGER" phpName="IsDummy" defaultValue="0" />
     <behavior name="timestampable" />
     <foreign-key foreignTable="node" phpName="FfNode" refPhpName="WiredIface" onDelete="cascade" onUpdate="cascade">

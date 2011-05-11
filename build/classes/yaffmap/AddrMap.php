@@ -127,10 +127,10 @@ class AddrMap extends BaseAddrMap {
 	public static function createOne($device){
 		$addrMap = new AddrMap();
 		$addrMap->setId($device->id);
-		$addrMap->setIpv4Addr($device->ipv4Addr);
-		$addrMap->setIpv6Addr($device->ipv6Addr);
-		$addrMap->setMacAddr($device->macAddr);
-		$addrMap->setBridgeName($device->bridgeName);
+		$addrMap->setIpv4Addr((($device->ipv4Addr == '')?NULL:$device->ipv4Addr));
+		$addrMap->setIpv6Addr((($device->ipv6Addr == '')?NULL:$device->ipv6Addr));
+		$addrMap->setMacAddr((($device->macAddr == '')?NULL:$device->macAddr));
+		$addrMap->setBridgeName((($device->bridgeName == '')?NULL:$device->bridgeName));
 		$addrMap->setIsGlobalUpdated($device->isGlobalUpdated);
 		$addrMap->setCreatedAt($device->createdAt);
 		$addrMap->setUpdatedAt($device->updatedAt);

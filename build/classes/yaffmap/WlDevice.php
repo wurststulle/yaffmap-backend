@@ -39,7 +39,7 @@ class WlDevice extends BaseWlDevice {
 	public static function createOne($device, $node){
 		$wlDevice = new WlDevice();
 		$wlDevice->setId($device->id);
-		$wlDevice->setName($device->name);
+		$wlDevice->setName((($device->name == '')?NULL:$device->name));
 		$wlDevice->setFfNode($node);
 		return $wlDevice;
 	}

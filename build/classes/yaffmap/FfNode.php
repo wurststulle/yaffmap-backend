@@ -478,23 +478,23 @@ class FfNode extends BaseFfNode {
 	public function getSoapClass(){
 		$n = new sFfNode();
 		$n->id = $this->getId();
-		$n->latitude = ((is_null($this->getLatitude()))?'NULL':$this->getLatitude());
-		$n->longitude = ((is_null($this->getLongitude()))?'NULL':$this->getLongitude());
-		$n->misc = ((is_null($this->getMisc()))?'NULL':$this->getMisc());
-		$n->updateIntervalNode = ((is_null($this->getUpdateIntervalNode()))?'NULL':$this->getUpdateIntervalNode());
-		$n->updateIntervalLink = ((is_null($this->getUpdateIntervalLink()))?'NULL':$this->getUpdateIntervalLink());
+		$n->latitude = $this->getLatitude();
+		$n->longitude = $this->getLongitude();
+		$n->misc = $this->getMisc();
+		$n->updateIntervalNode = $this->getUpdateIntervalNode();
+		$n->updateIntervalLink = $this->getUpdateIntervalLink();
 		$n->timeout = $this->getTimeout();
-		$n->hostname = ((is_null($this->getHostname()))?'NULL':$this->getHostname());
-		$n->height = ((is_null($this->getHeight()))?'NULL':$this->getHeight());
+		$n->hostname = $this->getHostname();
+		$n->height = $this->getHeight();
 		if($this->getIsHna()){
 			$n->isHna = 'true';
 		}else{
 			$n->isHna = 'false';
 		}
-		$n->defGateway = ((is_null($this->getDefGateway()))?'NULL':$this->getDefGateway());
-		$n->agentRelease = ((is_null($this->getAgentRelease()))?'NULL':$this->getAgentRelease());
-		$n->upgradeTree = ((is_null($this->getUpgradeTree()))?'NULL':$this->getUpgradeTree());
-		$n->version = ((is_null($this->getVersion()))?'NULL':$this->getVersion());
+		$n->defGateway = $this->getDefGateway();
+		$n->agentRelease = $this->getAgentRelease();
+		$n->upgradeTree = $this->getUpgradeTree();
+		$n->version = $this->getVersion();
 		if($this->getIsGlobalUpdated()){
 			$n->isGlobalUpdated = 'true';
 		}else{
@@ -513,23 +513,23 @@ class FfNode extends BaseFfNode {
 	public static function createOne($node){
 		$localNode = new FfNode();
 		$localNode->setId($node->id);
-		$localNode->setAgentRelease((($node->agentRelease == '')?'NULL':$node->agentRelease));
-		$localNode->setCreatedAt((($node->createdAt == '')?'NULL':$node->createdAt));
-		$localNode->setDefGateway((($node->defGateway == '')?'NULL':$node->defGateway));
-		$localNode->setHeight((($node->height == '')?'NULL':$node->height));
-		$localNode->setHostname((($node->hostname == '')?'NULL':$node->hostname));
-		$localNode->setIsGlobalUpdated((($node->isGlobalUpdated == '')?'NULL':$node->isGlobalUpdated));
-		$localNode->setIsHna((($node->isHna == '')?'NULL':$node->isHna));
-		$localNode->setLatitude((($node->latitude == '')?'NULL':$node->latitude));
-		$localNode->setLongitude((($node->longitude == '')?'NULL':$node->longitude));
-		$localNode->setMisc((($node->misc == '')?'NULL':$node->misc));
-		$localNode->setReplicatedBy((($node->replicatedBy == '')?'NULL':$node->replicatedBy));
+		$localNode->setAgentRelease((($node->agentRelease == '')?NULL:$node->agentRelease));
+		$localNode->setCreatedAt($node->createdAt);
+		$localNode->setDefGateway((($node->defGateway == '')?NULL:$node->defGateway));
+		$localNode->setHeight((($node->height == '')?NULL:$node->height));
+		$localNode->setHostname((($node->hostname == '')?NULL:$node->hostname));
+		$localNode->setIsGlobalUpdated((($node->isGlobalUpdated == '')?NULL:$node->isGlobalUpdated));
+		$localNode->setIsHna((($node->isHna == '')?NULL:$node->isHna));
+		$localNode->setLatitude((($node->latitude == '')?NULL:$node->latitude));
+		$localNode->setLongitude((($node->longitude == '')?NULL:$node->longitude));
+		$localNode->setMisc((($node->misc == '')?NULL:$node->misc));
+		$localNode->setReplicatedBy((($node->replicatedBy == '')?NULL:$node->replicatedBy));
 		$localNode->setTimeout($node->timeout);
 		$localNode->setUpdatedAt($node->updatedAt);
-		$localNode->setUpgradeTree((($node->upgradeTree == '')?'NULL':$node->upgradeTree));
-		$localNode->setVersion((($node->version == '')?'NULL':$node->version));
-		$localNode->setUpdateIntervalNode((($node->updateIntervalNode == '')?'NULL':$node->updateIntervalNode));
-		$localNode->setUpdateIntervalLink((($node->updateIntervalLink == '')?'NULL':$node->updateIntervalLink));
+		$localNode->setUpgradeTree((($node->upgradeTree == '')?NULL:$node->upgradeTree));
+		$localNode->setVersion((($node->version == '')?NULL:$node->version));
+		$localNode->setUpdateIntervalNode((($node->updateIntervalNode == '')?NULL:$node->updateIntervalNode));
+		$localNode->setUpdateIntervalLink((($node->updateIntervalLink == '')?NULL:$node->updateIntervalLink));
 		return $localNode;
 	}
 } // FfNode

@@ -33,7 +33,7 @@ class WiredIface extends BaseWiredIface {
 	public static function createOne($device, $node, $addrMap){
 		$wiredIface = new WiredIface();
 		$wiredIface->setName($device->name);
-		$wiredIface->setBridgeName($device->bridgeName);
+		$wiredIface->setBridgeName((($device->bridgeName == '')?NULL:$device->bridgeName));
 		$wiredIface->setCreatedAt($device->createdAt);
 		$wiredIface->setUpdatedAt($device->updatedAt);
 		$wiredIface->setFfNode($node);

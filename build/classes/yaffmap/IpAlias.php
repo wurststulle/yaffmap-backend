@@ -74,8 +74,8 @@ class IpAlias extends BaseIpAlias {
 	public static function createOne($device, $addrMap){
 		$ipAlias = new IpAlias();
 		$ipAlias->setId($device->id);
-		$ipAlias->setIpv4Addr($device->ipv4Addr);
-		$ipAlias->setIpv6Addr($device->ipv6Addr);
+		$ipAlias->setIpv4Addr((($device->ipv4Addr == '')?NULL:$device->ipv4Addr));
+		$ipAlias->setIpv6Addr((($device->ipv6Addr == '')?NULL:$device->ipv6Addr));
 		$ipAlias->setName($device->name);
 		$ipAlias->setCreatedAt($device->createdAt);
 		$ipAlias->setUpdatedAt($device->updatedAt);

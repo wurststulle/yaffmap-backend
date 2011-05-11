@@ -40,12 +40,12 @@ class WlIface extends BaseWlIface {
 	public static function createOne($device, $wlDevice, $addrMap){
 		$wlIface = new WlIface();
 		$wlIface->setId($device->id);
-		$wlIface->setName($device->name);
-		$wlIface->setWlMacAddr($device->wlMacAddr);
-		$wlIface->setWlMode($device->wlMode);
-		$wlIface->setBssid($device->bssid);
-		$wlIface->setEssid($device->essid);
-		$wlIface->setBridgeName($device->bridgeName);
+		$wlIface->setName((($device->name == '')?NULL:$device->name));
+		$wlIface->setWlMacAddr((($device->wlMacAddr == '')?NULL:$device->wlMacAddr));
+		$wlIface->setWlMode((($device->wlMode == '')?NULL:$device->wlMode));
+		$wlIface->setBssid((($device->bssid == '')?NULL:$device->bssid));
+		$wlIface->setEssid((($device->essid == '')?NULL:$device->essid));
+		$wlIface->setBridgeName((($device->bridgeName == '')?NULL:$device->bridgeName));
 		$wlIface->setCreatedAt($device->createdAt);
 		$wlIface->setUpdatedAt($device->updatedAt);
 		$wlIface->setWlDevice($wlDevice);
