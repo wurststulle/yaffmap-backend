@@ -51,7 +51,7 @@ class AddrMap extends BaseAddrMap {
 		}else{
 			return $addrMap->findOneOrCreate();
 		}
-	} 
+	}
 	
 	public static function isValidIpv4Addr($ip){
 		if(preg_match("/^(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$/", $ip)){
@@ -61,7 +61,7 @@ class AddrMap extends BaseAddrMap {
 	}
 	
 	public static function isValidIpv6Addr($ip){
-		if(reg_match('/^\s*((([0-9A-Fa-f]{1,4}:){7}
+		if(preg_match('/^\s*((([0-9A-Fa-f]{1,4}:){7}
 (([0-9A-Fa-f]{1,4})|:))|(([0-9A-Fa-f]{1,4}:){6}
 (:|((25[0-5]|2[0-4]\d|[01]?\d{1,2})(\.(25[0-5]|2[0-4]\d|
 [01]?\d{1,2})){3})|(:[0-9A-Fa-f]{1,4})))|
@@ -80,7 +80,7 @@ class AddrMap extends BaseAddrMap {
 ((:[0-9A-Fa-f]{1,4}){1,2})))|(:(:[0-9A-Fa-f]{1,4}){0,5}((:((25[0-5]|2[0-4]\d|
 [01]?\d{1,2})(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})?)|
 ((:[0-9A-Fa-f]{1,4}){1,2})))|(((25[0-5]|2[0-4]\d|[01]?\d{1,2})
-(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})))(%.+)?\s*$/')){
+(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})))(%.+)?\s*$/', $ip)){
 			return true;
 		}
 		return false;
