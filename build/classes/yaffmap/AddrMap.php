@@ -53,6 +53,21 @@ class AddrMap extends BaseAddrMap {
 		}
 	}
 	
+	/**
+	 * returns one address (mac or ipv4/6) of this addressMap that is not null
+	 */
+	public function getAddr(){
+		if($this->getIpv4addr() != null && $this->getIpv4addr() != ''){
+			return $this->getIpv4addr();
+		}elseif($this->getIpv6addr() != null && $this->getIpv6addr() != ''){
+			return $this->getIpv6addr();
+		}elseif($this->getMacAddr() != null && $this->getMacAddr() != ''){
+			return $this->getMacAddr();
+		}else{
+			return null;
+		}
+	}
+	
 	public static function isValidIpv4Addr($ip){
 		if(preg_match("/^(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$/", $ip)){
 			return true;

@@ -239,7 +239,8 @@ class YaffmapBackend{
 					$n = $conn->replicateNodes(YaffmapConfig::get('version'), YaffmapConfig::get('id'))->ffNodes;
 					if(is_array($n)){
 						foreach($n as $node){
-							$localNode = FfNodeQuery::create()->filterById($node->id)->findOne($dbCon);
+							/* @var $node FfNode */
+							$localNode = FfNode::findOneByAddr($node->addr, $dbCon);
 							if($localNode == null){
 								// node to be replicated does not exist, create it
 //								echo Kobold::dump($node);
@@ -263,7 +264,7 @@ class YaffmapBackend{
 									}elseif(empty($wld->wlIfaces)){
 										// there is no wlIface, do nothing
 									}else{
-										// only one wlDevice given
+										// only one wlIface given
 										$wlIfaces[] = $wld->wlIfaces;
 									}
 									foreach($wlIfaces as $wli){
@@ -279,9 +280,9 @@ class YaffmapBackend{
 										if(is_array($wli->addrMap->ipAlias)){
 											$ipAliase = $wli->addrMap->ipAlias;
 										}elseif(empty($wli->addrMap->ipAlias)){
-											// there is no wlIface, do nothing
+											// there is no ipAlias, do nothing
 										}else{
-											// only one wlDevice given
+											// only one ipAlias given
 											$ipAliase[] = $wli->addrMap->ipAlias;
 										}
 										foreach($ipAliase as $ipAlias){
@@ -294,9 +295,9 @@ class YaffmapBackend{
 								if(is_array($node->wiredIfaces)){
 									$wiredIfaces = $node->wiredIfaces;
 								}elseif(empty($node->wiredIfaces)){
-									// there is no wlDevice, do nothing
+									// there is no wiredIface, do nothing
 								}else{
-									// only one wlDevice given
+									// only one wiredIface given
 									$wiredIfaces[] = $node->wiredIfaces;
 								}
 								foreach($wiredIfaces as $wiredIface){
@@ -312,9 +313,9 @@ class YaffmapBackend{
 									if(is_array($wiredIface->addrMap->ipAlias)){
 										$ipAliase = $wiredIface->addrMap->ipAlias;
 									}elseif(empty($wiredIface->addrMap->ipAlias)){
-										// there is no wlIface, do nothing
+										// there is no ipAliase, do nothing
 									}else{
-										// only one wlDevice given
+										// only one ipAliase given
 										$ipAliase[] = $wiredIface->addrMap->ipAlias;
 									}
 									foreach($ipAliase as $ipAlias){
@@ -326,6 +327,7 @@ class YaffmapBackend{
 								// local and to be replicated node are global updated, skip!
 								continue;
 							}elseif($localNode->getIsGlobalUpdated() && $node->isGlobalUpdated == 'false'){
+								// overwrite global updated node
 								
 							}elseif(!$localNode->getIsGlobalUpdated() && $node->isGlobalUpdated == 'true'){
 								

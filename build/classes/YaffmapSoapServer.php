@@ -281,11 +281,17 @@ class YaffmapSoapServer{
 			->find();
 		if($nodes != null){
 			foreach($nodes as $node){
+				/* @var $node FfNode */
+				$oneAddr = null;
 				$n = $node->getSoapClass();
 				$wiredIfaces = $node->getWiredIfaces();
 				foreach($wiredIfaces as $wiredIface){
 					$wif = $wiredIface->getSoapClass();
 					$addrMap = $wiredIface->getAddrMap();
+					/* @var $addrMap AddrMap */
+					if($oneAddr == null){
+						$oneAddr = $addrMap->getAddr();
+					}
 					$wif->addrMap = $addrMap->getSoapClass();
 					$ipAlias = $addrMap->getIpAliass();
 					foreach($ipAlias as $alias){
@@ -300,6 +306,10 @@ class YaffmapSoapServer{
 					foreach($wlIfaces as $wlIface){
 						$wli = $wlIface->getSoapClass();
 						$addrMap = $wlIface->getAddrMap();
+						/* @var $addrMap AddrMap */
+						if($oneAddr == null){
+							$oneAddr = $addrMap->getAddr();
+						}
 						$wli->addrMap = $addrMap->getSoapClass();
 						$ipAlias = $addrMap->getIpAliass();
 						foreach($ipAlias as $alias){
@@ -309,6 +319,7 @@ class YaffmapSoapServer{
 					}
 					$n->wlDevices[] = $wld;
 				}
+				$n->addr = $oneAddr;
 				$arrayOfNodes->ffNodes[] = $n;
 			}
 		}

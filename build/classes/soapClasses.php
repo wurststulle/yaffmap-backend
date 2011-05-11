@@ -114,6 +114,13 @@ class sFfNode{
 	public $isDummy;
 	
 	/**
+	 * one of the nodes addresses(mac or ipv4/6), used to identify the node while replication
+	 * 
+	 * @var string
+	 */
+	public $addr;
+	
+	/**
 	 * @var string
 	 */
 	public $createdAt;
