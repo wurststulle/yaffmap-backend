@@ -224,6 +224,27 @@ class YaffmapSoapServer{
 	}
 	
 	/**
+	 * get rpLinks with given node source id
+	 * 
+	 * @param string $id
+	 * @return ArrayOfRpLinks
+	 */
+	public function getRpLinksByNode($id){
+		try{
+			$rpLinks = RpLinkLocationQuery::create()->filterBySourceNodeID($id)->find();
+			$arrayOfRpLinks = new sArrayOfRpLinks();
+			if($rpLinks != null){
+				foreach($rpLinks as $rpLink){
+					$arrayOfRpLinks->arrayOfRpLinks[] = $rpLink->getSoapClass();
+				}
+			}
+			return $arrayOfRpLinks;
+		}catch(Exception $e){
+			return new Exception($e);
+		}
+	}
+	
+	/**
 	 * @param string $hostName
 	 * @param string $data
 	 * @return string
