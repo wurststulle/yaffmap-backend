@@ -232,7 +232,10 @@ class YaffmapSoapServer{
 		try{
 			$node = FfNodeQuery::create()->filterByHostname($hostName)->findOne();
 			if($node != null){
-				$dataJson = Yaffmap::decodeJson($data);
+				//$dataJson = Yaffmap::decodeJson($data);
+				$node->setMisc($data);
+				$node->save();
+				/*
 				$miscJson = Yaffmap::decodeJson($node->getMisc());
 				$keyFound = false;
 				if(is_array($miscJson)){
@@ -254,6 +257,7 @@ class YaffmapSoapServer{
 					$node->setMisc('['.$data.']');
 					$node->save();
 				}
+				*/
 				return true;
 			}else{
 				return false;
