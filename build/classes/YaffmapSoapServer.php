@@ -224,7 +224,7 @@ class YaffmapSoapServer{
 	}
 	
 	/**
-	 * get rpLinks with given node source id
+	 * get rpLinks with given source node id
 	 * 
 	 * @param string $id
 	 * @return ArrayOfRpLinks
