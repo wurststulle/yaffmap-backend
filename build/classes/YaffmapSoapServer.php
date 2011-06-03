@@ -225,6 +225,27 @@ class YaffmapSoapServer{
 	}
 	
 	/**
+	 * get rpLinks with given node source id
+	 * 
+	 * @param string $id
+	 * @return ArrayOfRpLinks
+	 */
+	public function getRpLinksByNode($id){
+		try{
+			$rpLinks = RpLinkLocationQuery::create()->filterBySourceNodeID($id)->find();
+			$arrayOfRpLinks = new sArrayOfRpLinks();
+			if($rpLinks != null){
+				foreach($rpLinks as $rpLink){
+					$arrayOfRpLinks->arrayOfRpLinks[] = $rpLink->getSoapClass();
+				}
+			}
+			return $arrayOfRpLinks;
+		}catch(Exception $e){
+			return new Exception($e);
+		}
+	}
+	
+	/**
 	 * @param string $hostName
 	 * @param string $data
 	 * @return string
@@ -233,7 +254,10 @@ class YaffmapSoapServer{
 		try{
 			$node = FfNodeQuery::create()->filterByHostname($hostName)->findOne();
 			if($node != null){
-				$dataJson = Yaffmap::decodeJson($data);
+				//$dataJson = Yaffmap::decodeJson($data);
+				$node->setMisc($data);
+				$node->save();
+				/*
 				$miscJson = Yaffmap::decodeJson($node->getMisc());
 				$keyFound = false;
 				if(is_array($miscJson)){
@@ -255,6 +279,7 @@ class YaffmapSoapServer{
 					$node->setMisc('['.$data.']');
 					$node->save();
 				}
+				*/
 				return true;
 			}else{
 				return false;
