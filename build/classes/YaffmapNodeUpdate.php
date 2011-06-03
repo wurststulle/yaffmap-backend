@@ -7,7 +7,7 @@ class YaffmapNodeUpdate extends Yaffmap{
 //		$this->checkInput($allowed);
 	}
 	
-	public function nodeUpdate(){
+	public function nodeUpdate($version, $tree, $release){
 		if(!isset($this->request->id) || $this->request->id == ''){
 			throw new EIsufficientQuery('NodeID missing.');
 		}
@@ -21,7 +21,7 @@ class YaffmapNodeUpdate extends Yaffmap{
 		}
 		$node->setUpdatedAt(new DateTime("now"));
 		// update node
-		$node->updateNode($this->request);
+		$node->updateNode($this->request, $version, $tree, $release);
 		$node->save();
 		$this->response->addData('id="'.$node->getId().'"');
 		// update wired interfaces

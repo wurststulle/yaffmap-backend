@@ -15,6 +15,13 @@
  */
 class IpAlias extends BaseIpAlias {
 	
+	public function preInsert(PropelPDO $con = null){
+		if($this->getId() == null){
+		 	$this->setId(md5(mt_rand(1, 1000).date('U')));
+		}
+    	return true;
+	}	
+	
 	/**
 	 * 
 	 * Enter description here ...
@@ -45,5 +52,34 @@ class IpAlias extends BaseIpAlias {
 		}else{
 			return $ipAlias->findOneOrCreate();
 		}
+	}
+	
+	/**
+	 * @return sIpAlias
+	 */
+	public function getSoapClass(){
+		$n = new sIpAlias();
+		$n->id = $this->getId();
+		$n->ipv4Addr = $this->getIpv4Addr();
+		$n->ipv6Addr = $this->getIpv6Addr();
+		$n->name = $this->getName();
+		$n->createdAt = $this->getCreatedAt();
+		$n->updatedAt = $this->getUpdatedAt();
+		return $n;
+	}
+	
+	/**
+	 * @return IpAlias
+	 */
+	public static function createOne($device, $addrMap){
+		$ipAlias = new IpAlias();
+		$ipAlias->setId($device->id);
+		$ipAlias->setIpv4Addr((($device->ipv4Addr == '')?NULL:$device->ipv4Addr));
+		$ipAlias->setIpv6Addr((($device->ipv6Addr == '')?NULL:$device->ipv6Addr));
+		$ipAlias->setName($device->name);
+		$ipAlias->setCreatedAt($device->createdAt);
+		$ipAlias->setUpdatedAt($device->updatedAt);
+		$ipAlias->setAddrMap($addrMap);
+		return $addrMap;
 	}
 } // IpAlias

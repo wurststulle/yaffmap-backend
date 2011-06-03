@@ -3,6 +3,9 @@ ini_set("soap.wsdl_cache_enabled", "0");
 
 class YaffmapBackend{
 	
+	/**
+	 * @deprecated
+	 */
 	public function generateId(){
 		return YaffmapConfig::get('id');
 	}
@@ -215,6 +218,125 @@ class YaffmapBackend{
 						$stmt = $dbCon->prepare($sql);
 						$stmt->execute(array(':SERVERRELEASE' => $version->serverRelease, ':CLIENTRELEASE' => $version->clientRelease));
 					}
+				}
+			}
+			$dbCon->commit();
+		}catch(SoapFault $e){
+			throw new YaffmapSoapException($e->getMessage());
+		}catch(Exception $e){
+			throw $e;
+		}
+	}
+	
+	public function replicateNodes($url = null){
+		try{
+			$client = new YaffmapSoapClient($url);
+			$conns = $client->getBackendConns();
+			$dbCon = Propel::getConnection(FfNodePeer::DATABASE_NAME);
+			$dbCon->beginTransaction();
+			if(is_array($conns)){
+				foreach($conns as $conn){
+					$n = $conn->replicateNodes(YaffmapConfig::get('version'), YaffmapConfig::get('id'))->ffNodes;
+					if(is_array($n)){
+						foreach($n as $node){
+							/* @var $node FfNode */
+							$localNode = FfNode::findOneByAddr($node->addr, $dbCon);
+							if($localNode == null){
+								// node to be replicated does not exist, create it
+//								echo Kobold::dump($node);
+								$localNode = FfNode::createOne($node);
+								$localNode->save($dbCon);
+								$wlDevices = array();
+								if(is_array($node->wlDevices)){
+									$wlDevices = $node->wlDevices;
+								}elseif(empty($node->wlDevices)){
+									// there is no wlDevice, do nothing
+								}else{
+									// only one wlDevice given
+									$wlDevices[] = $node->wlDevices;
+								}
+								foreach($wlDevices as $wld){
+									$wlDevice = WlDevice::createOne($wld, $localNode);
+									$wlDevice->save($dbCon);
+									$wlIfaces = array();
+									if(is_array($wld->wlIfaces)){
+										$wlIfaces = $wld->wlIfaces;
+									}elseif(empty($wld->wlIfaces)){
+										// there is no wlIface, do nothing
+									}else{
+										// only one wlIface given
+										$wlIfaces[] = $wld->wlIfaces;
+									}
+									foreach($wlIfaces as $wli){
+										// check, if addrMap belongs to a bridge
+										$addrMap = AddrMapQuery::create()->filterById($wli->addrMap->id)->findOne($dbCon);
+										if($addrMap == null){
+											$addrMap = AddrMap::createOne($wli->addrMap);
+											$addrMap->save($dbCon);
+										}
+										$wlIface = WlIface::createOne($wli, $wlDevice, $addrMap);
+										$wlIface->save($dbCon);
+										$ipAliase = array();
+										if(is_array($wli->addrMap->ipAlias)){
+											$ipAliase = $wli->addrMap->ipAlias;
+										}elseif(empty($wli->addrMap->ipAlias)){
+											// there is no ipAlias, do nothing
+										}else{
+											// only one ipAlias given
+											$ipAliase[] = $wli->addrMap->ipAlias;
+										}
+										foreach($ipAliase as $ipAlias){
+											$ipa = IpAlias::createOne($ipAlias, $addrMap);
+											$ipa->save($dbCon);
+										}
+									}
+								}
+								$wiredIfaces = array();
+								if(is_array($node->wiredIfaces)){
+									$wiredIfaces = $node->wiredIfaces;
+								}elseif(empty($node->wiredIfaces)){
+									// there is no wiredIface, do nothing
+								}else{
+									// only one wiredIface given
+									$wiredIfaces[] = $node->wiredIfaces;
+								}
+								foreach($wiredIfaces as $wiredIface){
+									// check, if addrMap belongs to a bridge
+									$addrMap = AddrMapQuery::create()->filterById($wiredIface->addrMap->id)->findOne($dbCon);
+									if($addrMap == null){
+										$addrMap = AddrMap::createOne($wiredIface->addrMap);
+										$addrMap->save($dbCon);
+									}
+									$wiIf = WiredIface::createOne($wiredIface, $localNode, $addrMap);
+									$wiIf->save($dbCon);
+									$ipAliase = array();
+									if(is_array($wiredIface->addrMap->ipAlias)){
+										$ipAliase = $wiredIface->addrMap->ipAlias;
+									}elseif(empty($wiredIface->addrMap->ipAlias)){
+										// there is no ipAliase, do nothing
+									}else{
+										// only one ipAliase given
+										$ipAliase[] = $wiredIface->addrMap->ipAlias;
+									}
+									foreach($ipAliase as $ipAlias){
+										$ipa = IpAlias::createOne($ipAlias, $addrMap);
+										$ipa->save($dbCon);
+									}
+								}
+							}elseif($localNode->getIsGlobalUpdated() && $node->isGlobalUpdated == 'true'){
+								// local and to be replicated node are global updated, skip!
+								continue;
+							}elseif($localNode->getIsGlobalUpdated() && $node->isGlobalUpdated == 'false'){
+								// overwrite global updated node
+								
+							}elseif(!$localNode->getIsGlobalUpdated() && $node->isGlobalUpdated == 'true'){
+								
+							}
+						}
+					}else{
+						
+					}
+//					echo Kobold::dump($n);
 				}
 			}
 			$dbCon->commit();

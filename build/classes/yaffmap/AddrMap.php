@@ -15,6 +15,13 @@
  */
 class AddrMap extends BaseAddrMap {
 	
+	public function preInsert(PropelPDO $con = null){
+		if($this->getId() == null){
+		 	$this->setId(md5(mt_rand(1, 1000).date('U')));
+		}
+    	return true;
+	}
+	
 	/**
 	 * 
 	 * @param string $mac
@@ -44,7 +51,22 @@ class AddrMap extends BaseAddrMap {
 		}else{
 			return $addrMap->findOneOrCreate();
 		}
-	} 
+	}
+	
+	/**
+	 * returns one address (mac or ipv4/6) of this addressMap that is not null
+	 */
+	public function getAddr(){
+		if($this->getIpv4addr() != null && $this->getIpv4addr() != ''){
+			return $this->getIpv4addr();
+		}elseif($this->getIpv6addr() != null && $this->getIpv6addr() != ''){
+			return $this->getIpv6addr();
+		}elseif($this->getMacAddr() != null && $this->getMacAddr() != ''){
+			return $this->getMacAddr();
+		}else{
+			return null;
+		}
+	}
 	
 	public static function isValidIpv4Addr($ip){
 		if(preg_match("/^(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$/", $ip)){
@@ -54,7 +76,7 @@ class AddrMap extends BaseAddrMap {
 	}
 	
 	public static function isValidIpv6Addr($ip){
-		if(reg_match('/^\s*((([0-9A-Fa-f]{1,4}:){7}
+		if(preg_match('/^\s*((([0-9A-Fa-f]{1,4}:){7}
 (([0-9A-Fa-f]{1,4})|:))|(([0-9A-Fa-f]{1,4}:){6}
 (:|((25[0-5]|2[0-4]\d|[01]?\d{1,2})(\.(25[0-5]|2[0-4]\d|
 [01]?\d{1,2})){3})|(:[0-9A-Fa-f]{1,4})))|
@@ -73,9 +95,45 @@ class AddrMap extends BaseAddrMap {
 ((:[0-9A-Fa-f]{1,4}){1,2})))|(:(:[0-9A-Fa-f]{1,4}){0,5}((:((25[0-5]|2[0-4]\d|
 [01]?\d{1,2})(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})?)|
 ((:[0-9A-Fa-f]{1,4}){1,2})))|(((25[0-5]|2[0-4]\d|[01]?\d{1,2})
-(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})))(%.+)?\s*$/')){
+(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})))(%.+)?\s*$/', $ip)){
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * @return sAddrMap
+	 */
+	public function getSoapClass(){
+		$n = new sAddrMap();
+		$n->id = $this->getId();
+		$n->ipv4Addr = $this->getIpv4Addr();
+		$n->ipv6Addr = $this->getIpv6Addr();
+		$n->macAddr = $this->getMacAddr();
+		$n->bridgeName = $this->getBridgeName();
+		if($this->getIsGlobalUpdated()){
+			$n->isGlobalUpdated = 'true';
+		}else{
+			$n->isGlobalUpdated = 'false';
+		}
+		$n->createdAt = $this->getCreatedAt();
+		$n->updatedAt = $this->getUpdatedAt();
+		return $n;
+	}
+	
+	/**
+	 * @return AddrMap
+	 */
+	public static function createOne($device){
+		$addrMap = new AddrMap();
+		$addrMap->setId($device->id);
+		$addrMap->setIpv4Addr((($device->ipv4Addr == '')?NULL:$device->ipv4Addr));
+		$addrMap->setIpv6Addr((($device->ipv6Addr == '')?NULL:$device->ipv6Addr));
+		$addrMap->setMacAddr((($device->macAddr == '')?NULL:$device->macAddr));
+		$addrMap->setBridgeName((($device->bridgeName == '')?NULL:$device->bridgeName));
+		$addrMap->setIsGlobalUpdated($device->isGlobalUpdated);
+		$addrMap->setCreatedAt($device->createdAt);
+		$addrMap->setUpdatedAt($device->updatedAt);
+		return $addrMap;
 	}
 } // AddrMap

@@ -30,6 +30,7 @@ class YaffmapGlobalUpdate extends Yaffmap{
 							// node does not exist
 							// create new addrMap and wl interface
 							$addrMap = new AddrMap();
+							$addrMap->setId(md5(mt_rand(1, 100000).$if->ipv4Addr.date('U')));
 							$addrMap->setIpv4addr($if->ipv4Addr);
 							$addrMap->setIsGlobalUpdated(true);
 							$addrMap->save();
@@ -53,6 +54,7 @@ class YaffmapGlobalUpdate extends Yaffmap{
 							// node does not exist
 							// create new addrMap and wl interface
 							$addrMap = new AddrMap();
+							$addrMap->setId(md5(mt_rand(1, 100000).$if->ipv4Addr.date('U')));
 							$addrMap->setIpv6addr($if->ipv6Addr);
 							$addrMap->setIsGlobalUpdated(true);
 							$addrMap->save();

@@ -25,7 +25,7 @@
     </vendor>
   </table>
   <table name="wlDevice" phpName="WlDevice">
-    <column name="ID_wlDevice" type="INTEGER" required="true" primaryKey="true" autoIncrement="true" phpName="Id" />
+    <column name="ID_wlDevice" type="VARCHAR" size="32" required="true" primaryKey="true" phpName="Id" />
     <column name="f_nodeID" type="VARCHAR" size="32" phpName="NodeID" required="true" />
     <column name="name" type="VARCHAR" size="20" required="true" />
     <column name="txpower" type="VARCHAR" size="10" />
@@ -50,9 +50,9 @@
     </vendor>
   </table>
   <table name="wlIface" phpName="WlIface">
-    <column name="ID_wlIface" type="INTEGER" required="true" primaryKey="true" autoIncrement="true" phpName="Id" />
-    <column name="f_wlDeviceID" type="INTEGER" phpName="WlDeviceID" required="true" />
-    <column name="f_addrMapID" type="INTEGER" phpName="AddrMapID" required="true" />
+    <column name="ID_wlIface" type="VARCHAR" size="32" required="true" primaryKey="true"  phpName="Id" />
+    <column name="f_wlDeviceID" type="VARCHAR" size="32" phpName="WlDeviceID" required="true" />
+    <column name="f_addrMapID" type="VARCHAR" size="32" phpName="AddrMapID" required="true" />
     <column name="wlMacAddr" type="VARCHAR" size="30" phpName="WlMacAddr" />
     <column name="name" type="VARCHAR" size="20" required="true" />
     <column name="wlMode" type="VARCHAR" size="5" phpName="WlMode" />
@@ -74,9 +74,9 @@
   </table>
   <table name="wiredIface" phpName="WiredIface">
     <column name="f_nodeID" type="VARCHAR" size="32" phpName="NodeID" required="true" primaryKey="true" />
-    <column name="f_addrMapID" type="INTEGER" phpName="AddrMapID" required="true" primaryKey="true" />
+    <column name="f_addrMapID" type="VARCHAR" size="32" phpName="AddrMapID" required="true" primaryKey="true" />
     <column name="name" type="VARCHAR" size="20" required="true" />
-    <column name="bridgeName" type="VARCHAR" size="30" phpName="BridgeName" required="true" />
+    <column name="bridgeName" type="VARCHAR" size="30" phpName="BridgeName" defaultValue="NULL"  />
     <column name="isDummy" type="INTEGER" phpName="IsDummy" defaultValue="0" />
     <behavior name="timestampable" />
     <foreign-key foreignTable="node" phpName="FfNode" refPhpName="WiredIface" onDelete="cascade" onUpdate="cascade">
@@ -91,7 +91,7 @@
     </vendor>
   </table>
   <table name="addrMap" phpName="AddrMap">
-    <column name="ID_addrMap" type="INTEGER" required="true" primaryKey="true" autoIncrement="true" phpName="Id" />
+    <column name="ID_addrMap" type="VARCHAR" size="32" required="true" primaryKey="true" phpName="Id" />
     <column name="ipv4Addr" type="VARCHAR" size="15" />
     <column name="ipv6Addr" type="VARCHAR" size="40" />
     <column name="macAddr" type="VARCHAR" size="30" phpName="MacAddr" />
@@ -109,10 +109,10 @@
     </vendor>
   </table>
   <table name="ipAlias" phpName="IpAlias">
-  	<column name="ID_ipAlias" type="INTEGER" required="true" primaryKey="true" autoIncrement="true" phpName="Id" />
+  	<column name="ID_ipAlias" type="VARCHAR" size="32" required="true" primaryKey="true" phpName="Id" />
     <column name="ipv4Addr" type="VARCHAR" size="15"  />
     <column name="ipv6Addr" type="VARCHAR" size="40" />
-    <column name="f_addrMapID" type="INTEGER" phpName="AddrMapID" />
+    <column name="f_addrMapID" type="VARCHAR" size="32" phpName="AddrMapID" />
     <column name="name" type="VARCHAR" size="20" required="true" />
     <unique>
       <unique-column name="ipv4Addr" />
@@ -129,8 +129,8 @@
     </vendor>
   </table>
   <table name="rfLink" phpName="RfLink">
-    <column name="f_sourceWlIfaceID" type="INTEGER" required="true" phpName="sourceWlIfaceID" primaryKey="true" />
-    <column name="f_destWlIfaceID" type="INTEGER" required="true" phpName="destWlIfaceID" primaryKey="true" />
+    <column name="f_sourceWlIfaceID" type="VARCHAR" size="32" required="true" phpName="sourceWlIfaceID" primaryKey="true" />
+    <column name="f_destWlIfaceID" type="VARCHAR" size="32" required="true" phpName="destWlIfaceID" primaryKey="true" />
     <column name="rssi" type="INTEGER" required="true" />
     <column name="txRate" type="VARCHAR" size="10" phpName="TxRate" />
     <foreign-key foreignTable="wlIface" phpName="SourceWlIface" refPhpName="SourceIface" onDelete="cascade" onUpdate="cascade">
@@ -146,7 +146,7 @@
     </vendor>
   </table>
   <table name="rfLinkOneWay" phpName="RfLinkOneWay">
-    <column name="f_sourceWlIfaceID" type="INTEGER" required="true" phpName="sourceWlIfaceID" primaryKey="true" />
+    <column name="f_sourceWlIfaceID" type="VARCHAR" size="32" required="true" phpName="sourceWlIfaceID" primaryKey="true" />
     <column name="destMac" type="VARCHAR" size="30" required="true" phpName="DestMac" primaryKey="true" />
     <column name="rssi" type="INTEGER"  required="true" />
     <column name="txRate" type="VARCHAR" size="10" phpName="TxRate" />
@@ -160,9 +160,9 @@
     </vendor>
   </table>
   <table name="rpLink" phpName="RpLink">
-    <column name="f_sourceAddrMapID" type="INTEGER" required="true" phpName="sourceAddrMapID" primaryKey="true" />
-    <column name="f_destAddrMapID" type="INTEGER" required="true" phpName="destAddrMapID" primaryKey="true" />
-    <column name="f_rpID" type="INTEGER" required="true" primaryKey="true" />
+    <column name="f_sourceAddrMapID" type="VARCHAR" size="32" required="true" phpName="sourceAddrMapID" primaryKey="true" />
+    <column name="f_destAddrMapID" type="VARCHAR" size="32" required="true" phpName="destAddrMapID" primaryKey="true" />
+    <column name="f_rpID" type="VARCHAR" size="32" required="true" primaryKey="true" />
     <column name="cost" type="DOUBLE" required="true" />
     <column name="rx" type="DOUBLE" required="true" />
     <column name="tx" type="DOUBLE" required="true" />
@@ -183,8 +183,8 @@
     </vendor>
   </table>
   <table name="rp" phpName="Rp">
-    <column name="ID_rp" type="INTEGER" required="true" primaryKey="true" autoIncrement="true" phpName="Id"/>
-    <column name="f_metricID" type="INTEGER" required="true" />
+    <column name="ID_rp" type="VARCHAR" size="32" required="true" primaryKey="true"  phpName="Id"/>
+    <column name="f_metricID" type="VARCHAR" size="32" required="true" />
     <column name="ipv" type="INTEGER" required="true" />
     <column name="name" type="VARCHAR" size="30" required="true" />
     <foreign-key foreignTable="metricType" phpName="MetricType" refPhpName="Rp">
@@ -201,7 +201,7 @@
     </vendor>
   </table>
   <table name="metricType" phpName="MetricType">
-    <column name="ID_metricType" type="INTEGER" required="true" primaryKey="true" autoIncrement="true" phpName="Id" />
+    <column name="ID_metricType" type="VARCHAR" size="32" required="true" primaryKey="true" phpName="Id" />
     <column name="name" type="VARCHAR" size="30" required="true" />
     <column name="desc" type="LONGVARCHAR" />
     <unique>
@@ -218,7 +218,6 @@
     <column name="tree" type="VARCHAR" size="32" required="true" phpName="UpgradeTree" />
     <column name="url" type="LONGVARCHAR" required="true" />
     <column name="version" type="VARCHAR" size="7" required="true" />
-    <column name="isHead" type="BOOLEAN" required="true" phpName="IsHead" defaultValue="false" />
     <column name="releaseDate" type="TIMESTAMP" phpName="ReleaseDate" required="true" />
     <behavior name="auto_add_pk" />
     <unique>
@@ -246,7 +245,7 @@
   </table>
   <table name="v_addrMapNode" phpName="AddrMapNode" skipSql="true" package="yaffmap/views" >
     <column name="ID_node" type="VARCHAR" size="32" phpName="NodeId" primaryKey="true" />
-    <column name="ID_addrMap" type="INTEGER" phpName="Id" primaryKey="true" />
+    <column name="ID_addrMap" type="VARCHAR" size="32"  phpName="Id" primaryKey="true" />
     <column name="ipv4Addr" type="VARCHAR" size="15"  />
     <column name="ipv6Addr" type="VARCHAR" size="40" />
     <column name="macAddr" type="VARCHAR" size="30" phpName="MacAddr" />

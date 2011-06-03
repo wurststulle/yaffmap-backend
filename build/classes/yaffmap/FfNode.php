@@ -24,12 +24,38 @@ class FfNode extends BaseFfNode {
 		return FfNodeQuery::create()->findOneById($id);
 	}
 	
+	public static function findOneByAddr($addr, $dbCon = null){
+		if(AddrMap::isValidIpv4Addr($addr)){
+			$addrMap = AddrMapNodeQuery::create()->findOneByIpv4addr($addr, $dbCon);
+			/* @var $addrMap AddrMapNode */
+			if($addrMap != null){
+				return $addrMap->getFfNode();
+			}
+		}elseif(AddrMap::isValidIpv6Addr($addr)){
+			$addrMap = AddrMapNodeQuery::create()->findOneByIpv6addr($addr, $dbCon);
+			/* @var $addrMap AddrMapNode */
+			if($addrMap != null){
+				return $addrMap->getFfNode();
+			}
+		}else{
+			$addrMap = AddrMapNodeQuery::create()->findOneByMacAddr($addr, $dbCon);
+			/* @var $addrMap AddrMapNode */
+			if($addrMap != null){
+				return $addrMap->getFfNode();
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * update attributes of ffNode with given update
 	 * @param unknown_type $update
 	 * @throws EUnknownAttribute
 	 */
-	public function updateNode($update){
+	public function updateNode($update, $version, $tree, $release){
+		$this->setAgentRelease($release);
+		$this->setVersion($version);
+		$this->setUpgradeTree($tree);
 		foreach(get_object_vars($update) as $key => $val){
 			if(!(is_array($val) || $key == 'id' || is_object($val))){
 				if($key == 'isHna'){
@@ -463,16 +489,50 @@ class FfNode extends BaseFfNode {
 		$n->timeout = $this->getTimeout();
 		$n->hostname = $this->getHostname();
 		$n->height = $this->getHeight();
-		$n->isHna = $this->getIsHna();
+		if($this->getIsHna()){
+			$n->isHna = 'true';
+		}else{
+			$n->isHna = 'false';
+		}
 		$n->defGateway = $this->getDefGateway();
 		$n->agentRelease = $this->getAgentRelease();
 		$n->upgradeTree = $this->getUpgradeTree();
 		$n->version = $this->getVersion();
-		$n->isGlobalUpdated = $this->getIsGlobalUpdated();
-		$n->replicatedBy = $this->getReplicatedBy();
+		if($this->getIsGlobalUpdated()){
+			$n->isGlobalUpdated = 'true';
+		}else{
+			$n->isGlobalUpdated = 'false';
+		}
+		$n->replicatedBy = $this->getReplicatedBy().'|'.YaffmapConfig::get('id');
 		$n->isDummy = $this->getIsDummy();
 		$n->createdAt = $this->getCreatedAt();
 		$n->updatedAt = $this->getUpdatedAt();
 		return $n;
+	}
+	
+	/**
+	 * @return FfNode
+	 */
+	public static function createOne($node){
+		$localNode = new FfNode();
+		$localNode->setId($node->id);
+		$localNode->setAgentRelease((($node->agentRelease == '')?NULL:$node->agentRelease));
+		$localNode->setCreatedAt($node->createdAt);
+		$localNode->setDefGateway((($node->defGateway == '')?NULL:$node->defGateway));
+		$localNode->setHeight((($node->height == '')?NULL:$node->height));
+		$localNode->setHostname((($node->hostname == '')?NULL:$node->hostname));
+		$localNode->setIsGlobalUpdated((($node->isGlobalUpdated == '')?NULL:$node->isGlobalUpdated));
+		$localNode->setIsHna((($node->isHna == '')?NULL:$node->isHna));
+		$localNode->setLatitude((($node->latitude == '')?NULL:$node->latitude));
+		$localNode->setLongitude((($node->longitude == '')?NULL:$node->longitude));
+		$localNode->setMisc((($node->misc == '')?NULL:$node->misc));
+		$localNode->setReplicatedBy((($node->replicatedBy == '')?NULL:$node->replicatedBy));
+		$localNode->setTimeout($node->timeout);
+		$localNode->setUpdatedAt($node->updatedAt);
+		$localNode->setUpgradeTree((($node->upgradeTree == '')?NULL:$node->upgradeTree));
+		$localNode->setVersion((($node->version == '')?NULL:$node->version));
+		$localNode->setUpdateIntervalNode((($node->updateIntervalNode == '')?NULL:$node->updateIntervalNode));
+		$localNode->setUpdateIntervalLink((($node->updateIntervalLink == '')?NULL:$node->updateIntervalLink));
+		return $localNode;
 	}
 } // FfNode

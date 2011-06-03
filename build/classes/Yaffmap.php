@@ -32,7 +32,7 @@ class Yaffmap{
 		}else{
 			$this->response = $response;
 		}
-		$this->allowed = array('do');
+		$this->allowed = array('do', 'release', 'tree', 'version');
 //		$this->checkAgentCompatibility();
 	}
 	
@@ -42,15 +42,16 @@ class Yaffmap{
 	}
 	
 	public function checkAgentCompatibility(){
+		$splitRelease = explode("-", $this->request['release']);
 		$versionMapping = VersionMappingAgentQuery::create()
-			->filterByAgentRelease($this->request['release'])
-			->filterByAgentSubRelease($this->request['subRelease'])
+			->filterByAgentRelease($splitRelease[0])
+			->filterByAgentSubRelease($splitRelease[1])
 			->filterByAgentUpgradeTree($this->request['tree'])
 			->filterByAgentVersion($this->request['version'])
 			->filterByBackendRelease(YaffmapConfig::get('version'))
 			->count();
 		if($versionMapping == 0){
-			throw new YaffmapException('agent('.$this->request['release'].'-'.$this->request['subRelease'].'_'.$this->request['tree'].'_'.$this->request['version'].') is not compatible to backend('.YaffmapConfig::get('version').').');
+			throw new YaffmapException('agent('.$splitRelease[0].'-'.$splitRelease[1].'_'.$this->request['tree'].'_'.$this->request['version'].') is not compatible to backend('.YaffmapConfig::get('version').').');
 		}
 	}
 	

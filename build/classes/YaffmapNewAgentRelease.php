@@ -3,7 +3,7 @@ class YaffmapNewAgentRelease extends Yaffmap{
 	
 	public function __construct($request = null, $response = null){
 		call_user_func_array('parent::__construct', array($request, $response));
-		$allowed = array('tree', 'release', 'version', 'isHead', 'uploadedFile');
+		$allowed = array('tree', 'release', 'version', 'uploadedFile');
 		$this->checkInput($allowed);
 	}
 	
@@ -15,36 +15,18 @@ class YaffmapNewAgentRelease extends Yaffmap{
 		if(!isset($this->request['tree']) || !isset($this->request['release']) || !isset($this->request['version'])){
 			throw new EIsufficientQuery('tree, release or version missing.');
 		}
-		if(isset($this->request['isHead']) && $this->request['isHead'] == 'true'){
-			$oldHead = AgentReleaseQuery::create()
-				->filterByIsHead(true)
-				->filterByUpgradeTree($this->request['tree'])
-				->filterByVersion($this->request['version'])
-				->findOne();
-			$release = AgentReleaseQuery::create()
-				->filterByUpgradeTree($this->request['tree'])
-				->filterByRelease($relName)
-				->filterBySubRelease($relSubName)
-				->filterByVersion($this->request['version'])
-				->findOneOrCreate();
-			if(!$release->isNew()){
-				throw new YaffmapLoggedException('Release already exists.');
-			}
-			$release->setIsHead(true);
+		$release = AgentReleaseQuery::create()
+			->filterByUpgradeTree($this->request['tree'])
+			->filterByRelease($relName)
+			->filterBySubRelease($relSubName)
+			->filterByVersion($this->request['version'])
+			->findOneOrCreate();
+		if(!$release->isNew()){
+			throw new YaffmapLoggedException('Release already exists.');
 		}else{
-			// release will not be head release
-			$release = AgentReleaseQuery::create()
-				->filterByUpgradeTree($this->request['tree'])
-				->filterByRelease($relName)
-				->filterBySubRelease($relSubName)
-				->filterByVersion($this->request['version'])
-				->findOneOrCreate();
-			if(!$release->isNew()){
-				throw new YaffmapLoggedException('Release already exists.');
-			}
+			$hasError = false;
 		}
-		$release->setUrl('http://wurststulle.dyndns.org/yaffmap/download/'.$relName.'/'.$this->assembleFileName());
-		$hasError = false;
+		$release->setUrl(YaffmapConfig::get('url').'/download/'.$relName.'/'.$this->assembleFileName());
 		if(!$hasError){
 			if(!is_writable(dirname(__FILE__).'/../')){
 				throw new YaffmapException('base dir not writeable.');
@@ -111,15 +93,15 @@ class YaffmapNewAgentRelease extends Yaffmap{
 		if(!($fh = fopen('sql/defaults.agentRelease.sql', 'w'))){
 			throw new YaffmapLoggedException("Can't create sql/defaults.agentRelease.sql."); 
 		}
-		fwrite($fh, "INSERT INTO `yaffmap_upgrade` (`release`, `subRelease`, `tree`, `url`, `version`, `isHead`, `releaseDate`) VALUES \n");
+		fwrite($fh, "INSERT INTO `yaffmap_upgrade` (`release`, `subRelease`, `tree`, `url`, `version`, `releaseDate`) VALUES \n");
 		$upgrades = AgentReleaseQuery::create()->find();
 		$num = $upgrades->count();
 		$i = 0;
 		foreach($upgrades as $upgrade){
 			if($num-1 == $i){
-				fwrite($fh, "('".$upgrade->getRelease()."', '".$upgrade->getSubRelease()."', '".$upgrade->getUpgradeTree()."', '".$upgrade->getUrl()."', '".$upgrade->getVersion()."', ".(($upgrade->getIsHead() == true)?'1':'0').", '".$upgrade->getReleaseDate()."');");
+				fwrite($fh, "('".$upgrade->getRelease()."', '".$upgrade->getSubRelease()."', '".$upgrade->getUpgradeTree()."', '".$upgrade->getUrl()."', '".$upgrade->getVersion()."', '".$upgrade->getReleaseDate()."');");
 			}else{
-				fwrite($fh, "('".$upgrade->getRelease()."', '".$upgrade->getSubRelease()."','".$upgrade->getUpgradeTree()."', '".$upgrade->getUrl()."', '".$upgrade->getVersion()."', ".(($upgrade->getIsHead() == true)?'1':'0').", '".$upgrade->getReleaseDate()."'),\n");
+				fwrite($fh, "('".$upgrade->getRelease()."', '".$upgrade->getSubRelease()."','".$upgrade->getUpgradeTree()."', '".$upgrade->getUrl()."', '".$upgrade->getVersion()."', '".$upgrade->getReleaseDate()."'),\n");
 			}
 			$i++;
 		}
