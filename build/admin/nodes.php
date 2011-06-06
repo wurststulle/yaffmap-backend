@@ -12,9 +12,9 @@ $nodes = FfNodeQuery::create()
 $table = new KTable();
 $table->addAttribute(array(new KAttribute('border', 1)));
 foreach($nodes as $node){
-	$table->addRow(array($node->getHostname(), $node->getAgentRelease(), new KSimpleLink('nodeDetail.php?id='.$node->getId(), 'detail')));
+	/* @var $node FfNode */
+	$table->addRow(array($node->getHostname(), $node->getAgentRelease(), $node->getUpdatedAt(), new KSimpleLink('nodeDetail.php?id='.$node->getId(), 'detail')));
 }
-
 
 echo $table;
 ?>
