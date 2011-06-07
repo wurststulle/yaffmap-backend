@@ -24,60 +24,14 @@ class YaffmapNewAgentRelease extends Yaffmap{
 		if(!$release->isNew()){
 			throw new YaffmapLoggedException('Release already exists.');
 		}else{
-			$hasError = false;
-		}
-		$release->setUrl(YaffmapConfig::get('url').'/download/'.$relName.'/'.$this->assembleFileName());
-		if(!$hasError){
-			if(!is_writable(dirname(__FILE__).'/../')){
-				throw new YaffmapException('base dir not writeable.');
-			}
-			// upload file
-			$CHUNK = 8192;
-			if(!($putData = fopen("php://input", "r"))){
-				throw new YaffmapLoggedException("Can't get PUT data."); 
-			}
-			$tot_write = 0;
-			@mkdir('download/'.$relName, 0755, true);
-			@mkdir('download/.backup/'.$relName, 0755, true);
-            $destFile = 'download/'.$relName.'/'.$this->assembleFileName(); 
-            if(!is_file($destFile)){
-                fclose(fopen($destFile, "x"));
-                if(!($fp = fopen($destFile, "w"))){
-                	throw new YaffmapLoggedException("Can't write to file");
-                }
-                while($data = fread($putData, $CHUNK)){
-                    $chunk_read = strlen($data);
-                    if(($block_write = fwrite($fp, $data)) != $chunk_read){
-                    	throw new YaffmapLoggedException("Can't write more to file");
-                    }
-                    $tot_write += $block_write;
-                }
-                if(!fclose($fp)){
-                	throw new YaffmapLoggedException("Can't close file");
-                }
-                fclose($putData);
-                unset($putData);
-            }
-            if($tot_write >= 20480){
-            	@unlink('download/'.$relName.'/'.$this->assembleFileName());
-            	throw new YaffmapLoggedException("File is bigger than 20480 byte.");
-            }
-			$this->response->setErrorCode(ResponseCodeNode::OPERATION_SUCCEDED);
-			$this->response->setErrorMsg('Operation Succeded.');
-		}
-		if(!$hasError){
-			if($oldHead != null){
-				// old head release existing, delete head flag
-				$oldHead->setIsHead(false);
-				$oldHead->save();
-				@unlink('download/yaffmap_latest_'.$this->request['version'].'_'.$this->request['tree'].'.tar.gz');
-				symlink(''.$relName.'/'.$this->assembleFileName(), 'download/yaffmap_latest_'.$this->request['version'].'_'.$this->request['tree'].'.tar.gz');
-				copy('download/'.$relName.'/'.$this->assembleFileName(),
-					'download/.backup/'.$relName.'/'.$this->assembleFileName());
-			}
+			/* @var $release agentRelease */
+			$putData = file_get_contents("php://input");
+			$release->setAgent($putData);
+			// TODO get file size
+//			$release->setAgentSize(filesize($putData));
 			$release->setReleaseDate(new DateTime("now"));
 			$release->save();
-			$this->write_sql_defaults();
+            unset($putData);
 		}
 		return $this->response;
 	}
@@ -89,23 +43,23 @@ class YaffmapNewAgentRelease extends Yaffmap{
 		return 'yaffmap_'.$relName.'-'.$relSubName.'_'.$this->request['version'].'_'.$this->request['tree'].'.tar.gz';
 	}
 	
-	public static function write_sql_defaults(){
-		if(!($fh = fopen('sql/defaults.agentRelease.sql', 'w'))){
-			throw new YaffmapLoggedException("Can't create sql/defaults.agentRelease.sql."); 
-		}
-		fwrite($fh, "INSERT INTO `yaffmap_upgrade` (`release`, `subRelease`, `tree`, `url`, `version`, `releaseDate`) VALUES \n");
-		$upgrades = AgentReleaseQuery::create()->find();
-		$num = $upgrades->count();
-		$i = 0;
-		foreach($upgrades as $upgrade){
-			if($num-1 == $i){
-				fwrite($fh, "('".$upgrade->getRelease()."', '".$upgrade->getSubRelease()."', '".$upgrade->getUpgradeTree()."', '".$upgrade->getUrl()."', '".$upgrade->getVersion()."', '".$upgrade->getReleaseDate()."');");
-			}else{
-				fwrite($fh, "('".$upgrade->getRelease()."', '".$upgrade->getSubRelease()."','".$upgrade->getUpgradeTree()."', '".$upgrade->getUrl()."', '".$upgrade->getVersion()."', '".$upgrade->getReleaseDate()."'),\n");
-			}
-			$i++;
-		}
-		fclose($fh);
-	}
+//	public static function write_sql_defaults(){
+//		if(!($fh = fopen('sql/defaults.agentRelease.sql', 'w'))){
+//			throw new YaffmapLoggedException("Can't create sql/defaults.agentRelease.sql."); 
+//		}
+//		fwrite($fh, "INSERT INTO `yaffmap_upgrade` (`release`, `subRelease`, `tree`, `url`, `version`, `releaseDate`) VALUES \n");
+//		$upgrades = AgentReleaseQuery::create()->find();
+//		$num = $upgrades->count();
+//		$i = 0;
+//		foreach($upgrades as $upgrade){
+//			if($num-1 == $i){
+//				fwrite($fh, "('".$upgrade->getRelease()."', '".$upgrade->getSubRelease()."', '".$upgrade->getUpgradeTree()."', '".$upgrade->getUrl()."', '".$upgrade->getVersion()."', '".$upgrade->getReleaseDate()."');");
+//			}else{
+//				fwrite($fh, "('".$upgrade->getRelease()."', '".$upgrade->getSubRelease()."','".$upgrade->getUpgradeTree()."', '".$upgrade->getUrl()."', '".$upgrade->getVersion()."', '".$upgrade->getReleaseDate()."'),\n");
+//			}
+//			$i++;
+//		}
+//		fclose($fh);
+//	}
 }
 ?>

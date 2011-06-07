@@ -219,6 +219,8 @@
     <column name="url" type="LONGVARCHAR" required="true" />
     <column name="version" type="VARCHAR" size="7" required="true" />
     <column name="releaseDate" type="TIMESTAMP" phpName="ReleaseDate" required="true" />
+    <column name="agent" type="BLOB" phpName="Agent" required="true" />
+    <column name="agentSize" type="VARCHAR" size="32" phpName="AgentSize" />
     <behavior name="auto_add_pk" />
     <unique>
       <unique-column name="release" />
