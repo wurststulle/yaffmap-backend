@@ -35,6 +35,7 @@ class YaffmapGlobalUpdate extends Yaffmap{
 							$addrMap->setIsGlobalUpdated(true);
 							$addrMap->save();
 							$wlIf = new WlIface();
+							$wlIf->setId(md5(mt_rand(1, 100000).$if->ipv4Addr.date('U')));
 							$wlIf->setIsDummy(1);
 							$wlIf->setAddrMap($addrMap);
 							// link address map to wl interface and store wl interface in $wlIfaces collection
@@ -59,6 +60,7 @@ class YaffmapGlobalUpdate extends Yaffmap{
 							$addrMap->setIsGlobalUpdated(true);
 							$addrMap->save();
 							$wlIf = new WlIface();
+							$wlIf->setId(md5(mt_rand(1, 100000).$if->ipv6Addr.date('U')));
 							$wlIf->setIsDummy(1);
 							$wlIf->setAddrMap($addrMap);
 							// link address map to wl interface and store wl inerface in $wlIfaces collection
