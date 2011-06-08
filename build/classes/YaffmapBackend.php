@@ -100,19 +100,27 @@ class YaffmapBackend{
 			$conns = $client->getBackendConns();
 			if(is_array($conns)){
 				foreach($conns as $conn){
-					$release = $conn->getAgentRelease(YaffmapConfig::get('version'));
-					$r = AgentReleaseQuery::create()
-						->filterByUpgradeTree($release->agentRelease->tree)
-						->filterByRelease($release->agentRelease->release)
-						->filterBySubRelease($release->agentRelease->subRelease)
-						->filterByVersion($release->agentRelease->version)
-						->findOneOrCreate();
-					if($r->isNew()){
-						/* @var $r agentRelease */
-						$r->setAgent(base64_decode($release->agentRelease->agent));
-						$r->setReleaseDate($release->agentRelease->releaseDate);
-						$r->setAgentSize($release->agentRelease->agentSize);
-						$r->save();
+					$r = $conn->getAgentRelease(YaffmapConfig::get('version'));
+					if(!is_array($r)){
+						// TODO remove workaround
+						$releases[] = $r;
+					}else{
+						$releases = $r;
+					}
+					foreach($releases as $release) {
+						$r = AgentReleaseQuery::create()
+							->filterByUpgradeTree($release->agentRelease->tree)
+							->filterByRelease($release->agentRelease->release)
+							->filterBySubRelease($release->agentRelease->subRelease)
+							->filterByVersion($release->agentRelease->version)
+							->findOneOrCreate();
+						if($r->isNew()){
+							/* @var $r agentRelease */
+							$r->setAgent(base64_decode($release->agentRelease->agent));
+							$r->setReleaseDate($release->agentRelease->releaseDate);
+							$r->setAgentSize($release->agentRelease->agentSize);
+							$r->save();
+						}
 					}
 				}
 			}
