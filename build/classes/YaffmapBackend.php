@@ -110,6 +110,8 @@ class YaffmapBackend{
 					if($r->isNew()){
 						/* @var $r agentRelease */
 						$r->setAgent(base64_decode($release->agentRelease->agent));
+						$r->setReleaseDate($release->agentRelease->releaseDate);
+						$r->setAgentSize($release->agentRelease->agentSize);
 						$r->save();
 					}
 				}
