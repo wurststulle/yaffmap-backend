@@ -4,63 +4,26 @@ Propel::init("../conf/yaffmap-conf.php");
 set_include_path("../classes" . PATH_SEPARATOR . get_include_path());
 require_once '../classes/Yaffmap.php';
 require_once '../classes/kobold/Kobold.php';
-require_once '../classes/PHPLiveX/PHPLiveX.php';
 require_once 'YaffmapAdmin.php';
 
-echo new KScript('js/jquery.min.js');
-
-class YDeleteImageButton extends KImageButton{
-	
-	public function __construct($text, $onclick, $disabled = false){
-		$this->addAttribute(array('id' => 'deleteButton'));
-		$this->addAttribute(array('src' => 'images/delete.png'));
-		$this->addAttribute(array('alt' => $text));
-		$this->addListener(new KListenerOnclick(new KAction($onclick)));
-		if($disabled){
-			$this->disabled();
-			$this->addAttribute(array('src' => 'images/delete_disabled.png'));
-		}
-		call_user_func('parent::__construct');
+if(isset($_REQUEST['getFile'])){
+	$agent = AgentReleaseQuery::create()->findOneById($_REQUEST['getFile']);
+	/* @var $agent AgentRelease */
+	if($agent != null){
+		header('Content-Disposition: attachment; filename='.'yaffmap_'.$agent->getRelease().'-'.$agent->getSubRelease().'_'.$agent->getVersion().'_'.$agent->getUpgradeTree().'.tar.gz');
+		echo stream_get_contents($agent->getAgent());
+	}else{
+		echo 'file not found!';
 	}
-}
-
-$admin = new YaffmapAdmin();
-
-$ajax = new PHPLiveX();
-$ajax->AjaxifyObjects(array('admin'));
-$ajax->Run("../classes/PHPLiveX/phplivex.js");
-
-$trees = AgentReleaseQuery::create()->groupByUpgradeTree()->find();
-echo $releases;
-
-$table = new KTable();
-$table->addAttribute(array(new KAttribute('border', 1)));
-$table->addThRow(array('Release', 'Version', 'Date', new KBlanc()));
-
-foreach($trees as $tree){
-	$td = new KTd();
-	$td->addItem('AgentReleaseTree: '.$tree->getUpgradeTree());
-	$td->addAttribute(array(new KAttributeColspan('4')));
-	$table->addThRow(array($td));
-	$releases = AgentReleaseQuery::create()->filterByUpgradeTree($tree->getUpgradeTree())
-	->filterByIsHead(true)
-	->orderByVersion()
-	->orderByRelease('desc')->orderBySubRelease('desc')->find();
-	foreach($releases as $release){
-		$table->addRow(array($release->getRelease().'-'.$release->getSubRelease(), $release->getVersion(), $release->getReleaseDate(), new KSimpleLink($release->getUrl(), 'download')));
+}else{
+	$agents = AgentReleaseQuery::create()->orderByVersion()->orderByUpgradeTree()->orderBySubRelease()->find();
+	$table = new KTable();
+	$table->addAttribute(array(new KAttribute('border', 1)));
+	$table->addThRow(array('version', 'tree', 'release', 'release date', 'download'));
+	foreach($agents as $agent) {
+		/* @var $agent AgentRelease */
+		$table->addRow(array($agent->getVersion(), $agent->getUpgradeTree(), $agent->getRelease().'_'.$agent->getSubRelease(), $agent->getReleaseDate(), new KSimpleLink('releases.php?getFile='.$agent->getId(), 'download')));
 	}
+	echo $table;
 }
-echo $table;
 ?>
-<script type="text/javascript">
-function deleteRelease(id, tree, version, item){
-	if(confirm('delete?')){
-		admin.deleteRelease(id, tree, version, {url: 'releases.php', onFinish: function(response){
-				if(getResponse(response) == 1){
-					item.parent().parent().hide();
-				}
-			}
-		});
-	}
-}
-</script>
