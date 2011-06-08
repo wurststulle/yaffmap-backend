@@ -146,12 +146,12 @@ try{
 				if(isset($_GET['url'])){
 					$backend->getVersionMappingBackend($_GET['url']);
 					$backend->getVersionMappingAgent($_GET['url']);
-					$backend->getAgentRelease($_GET['url']);
+					$response->setResponseMsg($backend->getAgentRelease($_GET['url']));
 					$response->setResponseMsg($backend->getBackends($_GET['url']));
 				}else{
 					$backend->getVersionMappingBackend();
 					$backend->getVersionMappingAgent();
-					$backend->getAgentRelease();
+					$response->setResponseMsg($backend->getAgentRelease());
 					$response->setResponseMsg($backend->getBackends());
 				}
 				echo $response;

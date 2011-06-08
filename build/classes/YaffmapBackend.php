@@ -99,30 +99,33 @@ class YaffmapBackend{
 			$client = new YaffmapSoapClient($url);
 			$conns = $client->getBackendConns();
 			if(is_array($conns)){
+				$repplicatedAgents = 0;
 				foreach($conns as $conn){
 					$r = $conn->getAgentRelease(YaffmapConfig::get('version'));
-					if(!is_array($r)){
+					if(!is_array($r->agentRelease)){
 						// TODO remove workaround
-						$releases[] = $r;
+						$releases->agentRelease[] = $r->agentRelease;
 					}else{
 						$releases = $r;
 					}
-					foreach($releases as $release) {
+					foreach($releases->agentRelease as $release) {
 						$r = AgentReleaseQuery::create()
-							->filterByUpgradeTree($release->agentRelease->tree)
-							->filterByRelease($release->agentRelease->release)
-							->filterBySubRelease($release->agentRelease->subRelease)
-							->filterByVersion($release->agentRelease->version)
+							->filterByUpgradeTree($release->tree)
+							->filterByRelease($release->release)
+							->filterBySubRelease($release->subRelease)
+							->filterByVersion($release->version)
 							->findOneOrCreate();
 						if($r->isNew()){
 							/* @var $r agentRelease */
-							$r->setAgent(base64_decode($release->agentRelease->agent));
-							$r->setReleaseDate($release->agentRelease->releaseDate);
-							$r->setAgentSize($release->agentRelease->agentSize);
+							$r->setAgent(base64_decode($release->agent));
+							$r->setReleaseDate($release->releaseDate);
+							$r->setAgentSize($release->agentSize);
 							$r->save();
+							$replicatedAgents++;
 						}
 					}
 				}
+				return '[agentReplication] '.$replicatedAgents.' agents replicated';
 			}
 		}catch(SoapFault $e){
 			throw new YaffmapSoapException($e);
