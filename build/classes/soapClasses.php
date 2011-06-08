@@ -449,17 +449,22 @@ class sAgentRelease{
 	/**
 	 * @var string
 	 */
-	public $url;
-	
-	/**
-	 * @var string
-	 */
 	public $version;
 	
 	/**
 	 * @var string
 	 */
 	public $releaseDate;
+	
+	/**
+	 * @var base64Binary
+	 */
+	public $agent;
+	
+	/**
+	 * @var string
+	 */
+	public $agentSize;
 }
 
 class sVersionMappingAgent{

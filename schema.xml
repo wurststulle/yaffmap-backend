@@ -216,7 +216,6 @@
     <column name="release" type="VARCHAR" size="4" required="true" phpName="Release" />
     <column name="subRelease" type="INTEGER" size="3" required="true" phpName="SubRelease" />
     <column name="tree" type="VARCHAR" size="32" required="true" phpName="UpgradeTree" />
-    <column name="url" type="LONGVARCHAR" required="true" />
     <column name="version" type="VARCHAR" size="7" required="true" />
     <column name="releaseDate" type="TIMESTAMP" phpName="ReleaseDate" required="true" />
     <column name="agent" type="BLOB" phpName="Agent" required="true" />

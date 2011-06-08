@@ -35,31 +35,5 @@ class YaffmapNewAgentRelease extends Yaffmap{
 		}
 		return $this->response;
 	}
-	
-	private function assembleFileName(){
-		$tmp = explode("-", $this->request['release']);
-		$relName = $tmp[0];
-		$relSubName = $tmp[1];
-		return 'yaffmap_'.$relName.'-'.$relSubName.'_'.$this->request['version'].'_'.$this->request['tree'].'.tar.gz';
-	}
-	
-//	public static function write_sql_defaults(){
-//		if(!($fh = fopen('sql/defaults.agentRelease.sql', 'w'))){
-//			throw new YaffmapLoggedException("Can't create sql/defaults.agentRelease.sql."); 
-//		}
-//		fwrite($fh, "INSERT INTO `yaffmap_upgrade` (`release`, `subRelease`, `tree`, `url`, `version`, `releaseDate`) VALUES \n");
-//		$upgrades = AgentReleaseQuery::create()->find();
-//		$num = $upgrades->count();
-//		$i = 0;
-//		foreach($upgrades as $upgrade){
-//			if($num-1 == $i){
-//				fwrite($fh, "('".$upgrade->getRelease()."', '".$upgrade->getSubRelease()."', '".$upgrade->getUpgradeTree()."', '".$upgrade->getUrl()."', '".$upgrade->getVersion()."', '".$upgrade->getReleaseDate()."');");
-//			}else{
-//				fwrite($fh, "('".$upgrade->getRelease()."', '".$upgrade->getSubRelease()."','".$upgrade->getUpgradeTree()."', '".$upgrade->getUrl()."', '".$upgrade->getVersion()."', '".$upgrade->getReleaseDate()."'),\n");
-//			}
-//			$i++;
-//		}
-//		fclose($fh);
-//	}
 }
 ?>

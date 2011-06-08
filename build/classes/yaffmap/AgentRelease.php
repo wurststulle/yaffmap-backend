@@ -24,8 +24,9 @@ class AgentRelease extends BaseAgentRelease {
 		$ar->subRelease = $this->getSubRelease();
 		$ar->releaseDate = $this->getReleaseDate();
 		$ar->tree = $this->getUpgradeTree();
-		$ar->url = $this->getUrl();
 		$ar->version = $this->getVersion();
+		$ar->agent = base64_encode(stream_get_contents($this->getAgent()));
+		$ar->agentSize = $this->getAgentSize();
 		return $ar;
 	}
 } // AgentRelease

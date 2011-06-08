@@ -88,8 +88,7 @@ class YaffmapBackend{
 	}
 	
 	/**
-	 * get head agent releases from backend with given url, or all known backends
-	 * TODO save to database
+	 * get agent releases from backend with given url, or all known backends
 	 * 
 	 * @param string $url
 	 * @throws YaffmapException
@@ -99,42 +98,21 @@ class YaffmapBackend{
 		try{
 			$client = new YaffmapSoapClient($url);
 			$conns = $client->getBackendConns();
-			if(is_writable(dirname(__FILE__).'/../')){
-				if(is_array($conns)){
-					foreach($conns as $conn){
-						$release = $conn->getAgentRelease(YaffmapConfig::get('version'));
-						$path = dirname(__FILE__).'/../download/'.$release->agentRelease->release.'/yaffmap_'.$release->agentRelease->release.'-'.$release->agentRelease->subRelease.'_'.$release->agentRelease->version.'_'.$release->agentRelease->tree.'.tar.gz';
-						if(!file_exists($path)){
-							// download remote file
-							@mkdir(dirname(__FILE__).'/../download/'.$release->agentRelease->release, 0755, true);
-						    if($fp = fopen($path, 'w')){
-							    $ch = curl_init($release->agentRelease->url);
-							    curl_setopt($ch, CURLOPT_FILE, $fp);
-							    $data = curl_exec($ch);
-							    curl_close($ch);
-							    fclose($fp);
-						    }else{
-						    	throw new YaffmapException('failed to open file.');
-						    }
-						    $oldHead = AgentReleaseQuery::create()->filterByIsHead(true)->findOne();
-						    if($oldHead != null){
-						    	$oldHead->setIsHead(false);
-						    	$oldHead->save();
-						    }
-						    $ar = new AgentRelease();
-						    $ar->setRelease($release->agentRelease->release);
-						    $ar->setSubRelease($release->agentRelease->subRelease);
-						    $ar->setUpgradeTree($release->agentRelease->tree);
-						    $ar->setVersion($release->agentRelease->version);
-						    $ar->setUrl($release->agentRelease->url);
-						    $ar->setReleaseDate($release->agentRelease->releaseDate);
-						    $ar->setIsHead(true);
-						    $ar->save();				    
-						}
+			if(is_array($conns)){
+				foreach($conns as $conn){
+					$release = $conn->getAgentRelease(YaffmapConfig::get('version'));
+					$r = AgentReleaseQuery::create()
+						->filterByUpgradeTree($release->agentRelease->tree)
+						->filterByRelease($release->agentRelease->release)
+						->filterBySubRelease($release->agentRelease->subRelease)
+						->filterByVersion($release->agentRelease->version)
+						->findOneOrCreate();
+					if($r->isNew()){
+						/* @var $r agentRelease */
+						$r->setAgent(base64_decode($release->agentRelease->agent));
+						$r->save();
 					}
 				}
-			}else{
-				throw new YaffmapException('base dir not writeable.');
 			}
 		}catch(SoapFault $e){
 			throw new YaffmapSoapException($e);
