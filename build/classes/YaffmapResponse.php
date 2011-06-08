@@ -34,7 +34,7 @@ class YaffmapResponse{
 	}
 	
 	public function setResponseMsg($msg){
-		$this->responseMsg = $msg;
+		$this->responseMsg .= ' | '.$msg;
 	}
 	
 	public function addData($data){
