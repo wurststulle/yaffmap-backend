@@ -5,25 +5,25 @@ set_include_path("../build/classes".PATH_SEPARATOR.get_include_path());
 
 $con = Propel::getConnection(ConfigPeer::DATABASE_NAME);
 $sql = "create view yaffmap_v_addrMapNode as (
-		select t4.ID_node, t1.ID_addrMap, t1.ipv4Addr, t1.ipv6Addr, t1.macAddr, t4.latitude, t4.longitude, 'wireless' as type 
+		select t4.ID_node, t1.ID_addrMap, t1.ipv4Addr, t1.ipv6Addr, t1.macAddr, t4.latitude, t4.longitude, 'wireless' as type, t4.hostname
 		FROM yaffmap_addrMap t1
 		inner join yaffmap_wlIface t2 on t1.ID_addrMap = t2.f_addrMapID 
 		inner join yaffmap_wlDevice t3 on t2.f_wlDeviceID = t3.ID_wlDevice
 		inner join yaffmap_node t4 on t3.f_nodeID = t4.ID_node
 	) union (
-		select t3.ID_node, t1.ID_addrMap, t1.ipv4Addr, t1.ipv6Addr, t1.macAddr, t3.latitude, t3.longitude, 'wired' as type 
+		select t3.ID_node, t1.ID_addrMap, t1.ipv4Addr, t1.ipv6Addr, t1.macAddr, t3.latitude, t3.longitude, 'wired' as type, t3.hostname
 		FROM yaffmap_addrMap t1
 		inner join yaffmap_wiredIface t2 on t1.ID_addrMap = t2.f_addrMapID 
 		inner join yaffmap_node t3 on t2.f_nodeID = t3.ID_node
 	) union (
-		select t4.ID_node, t1.ID_addrMap, t5.ipv4Addr, t5.ipv6Addr, t1.macAddr, t4.latitude, t4.longitude, 'wirelessAlias' as type 
+		select t4.ID_node, t1.ID_addrMap, t5.ipv4Addr, t5.ipv6Addr, t1.macAddr, t4.latitude, t4.longitude, 'wirelessAlias' as type, t4.hostname
 		FROM yaffmap_addrMap t1
 		inner join yaffmap_wlIface t2 on t1.ID_addrMap = t2.f_addrMapID 
 		inner join yaffmap_wlDevice t3 on t2.f_wlDeviceID = t3.ID_wlDevice
 		inner join yaffmap_node t4 on t3.f_nodeID = t4.ID_node
 		inner join yaffmap_ipAlias t5 on t1.ID_addrMap = t5.f_addrMapID
 	) union (
-		select t3.ID_node, t1.ID_addrMap, t4.ipv4Addr, t4.ipv6Addr, t1.macAddr, t3.latitude, t3.longitude, 'wiredAlias' as type 
+		select t3.ID_node, t1.ID_addrMap, t4.ipv4Addr, t4.ipv6Addr, t1.macAddr, t3.latitude, t3.longitude, 'wiredAlias' as type, t3.hostname
 		FROM yaffmap_addrMap t1
 		inner join yaffmap_wiredIface t2 on t1.ID_addrMap = t2.f_addrMapID 
 		inner join yaffmap_node t3 on t2.f_nodeID = t3.ID_node
