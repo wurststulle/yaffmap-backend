@@ -310,6 +310,7 @@
   </table>
   <table name="config" phpName="Config">
     <column name="url" type="VARCHAR" size="100" primaryKey="true" />
+    <column name="defaultTree" type="VARCHAR" size="100" primaryKey="true" phpName="DefaultTree" defaultValue="devel"  />
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB" />
       <parameter name="Charset" value="utf8" />
