@@ -292,14 +292,18 @@ class YaffmapSoapServer{
 	/**
 	 * @param string $version
 	 * @param string $clientId
+	 * @param string $replFrom timestamp, ab dem repliziert werden soll
 	 * @return ArrayOfFfNodes
 	 */
-	public function replicateNodes($version, $clientId){
+	public function replicateNodes($version, $clientId, $replFrom = null){
 		if(!$this->checkVersion($version)){
 			return new SoapFault(null, 'Your backend is outdated, please update it.');
 		}
 		$arrayOfNodes = new sArrayOfFfNodes();
 		$nodes = FfNodeQuery::create()
+			->_if($replFrom != null)
+				->addUsingAlias(FfNodePeer::UPDATED_AT, $replFrom, Criteria::GREATER_EQUAL)
+			->_endif()
 			->setFormatter(ModelCriteria::FORMAT_ON_DEMAND)
 			->where('FfNode.ReplicatedBy NOT LIKE ?', '%'.$clientId.'%')
 			->_or()

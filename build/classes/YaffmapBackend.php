@@ -227,6 +227,7 @@ class YaffmapBackend{
 			$dbCon->beginTransaction();
 			if(is_array($conns)){
 				foreach($conns as $conn){
+					/* @var $conn YaffmapSoapServer */
 					$n = $conn->replicateNodes(YaffmapConfig::get('version'), YaffmapConfig::get('id'))->ffNodes;
 					if(is_array($n)){
 						foreach($n as $node){
