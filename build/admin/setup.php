@@ -6,21 +6,31 @@ require_once '../classes/Yaffmap.php';
 require_once '../classes/kobold/Kobold.php';
 require_once '../classes/YaffmapConfig.php';
 
-function check($var){
+function check($var, $out = null){
 	if($var){
-		return 'ok.<br>';
+		if($out == null){
+			return '<font color="green">ok</font>.<br>';
+		}else{
+			return '<font color="green">'.$out.'</font>.<br>';
+		}
 	}else{
-		return '<font color="red">failed</font>.<br>';
+		if($out == null){
+			return '<font color="red">failed</font>.<br>';
+		}else{
+			return '<font color="red">'.$out.'</font>.<br>';
+		}
+		
 	}
 }
 
 if(isset($_REQUEST['do']) && $_REQUEST['do'] == 'setConfig'){
 	// TODO save
 }
-
-echo 'checking for soap... '.check(in_array('soap', get_loaded_extensions()));
-echo 'checking for json... '.check(in_array('json', get_loaded_extensions()));
-echo 'checking for Reflection... '.check(in_array('Reflection', get_loaded_extensions()));
+echo 'checking for php >= 5.3.2... '.check(strnatcmp(phpversion(),'5.3.2') >= 0);
+echo 'checking for soap... '.check(extension_loaded('soap'));
+echo 'checking for json... '.check(extension_loaded('json'));
+echo 'checking for rrd... '.check(extension_loaded('rrd'));
+echo 'checking for reflection... '.check(extension_loaded('Reflection'));
 echo 'checking for config... '.check($config = ConfigQuery::create()->findOne() != null);
 echo 'base dir writeable... '.check(is_writeable('../../'));
 echo '<br><br>';
