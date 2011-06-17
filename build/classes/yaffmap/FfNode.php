@@ -24,21 +24,21 @@ class FfNode extends BaseFfNode {
 		return FfNodeQuery::create()->findOneById($id);
 	}
 	
-	public static function findOneByAddr($addr, $dbCon = null){
+	public static function findOneByAddr($addr, $hostname, $dbCon = null){
 		if(AddrMap::isValidIpv4Addr($addr)){
-			$addrMap = AddrMapNodeQuery::create()->findOneByIpv4addr($addr, $dbCon);
+			$addrMap = AddrMapNodeQuery::create()->filterByIpv4addr($addr)->filterByHostname($hostname)->findOne($dbCon);
 			/* @var $addrMap AddrMapNode */
 			if($addrMap != null){
 				return $addrMap->getFfNode();
 			}
 		}elseif(AddrMap::isValidIpv6Addr($addr)){
-			$addrMap = AddrMapNodeQuery::create()->findOneByIpv6addr($addr, $dbCon);
+			$addrMap = AddrMapNodeQuery::create()->filterByIpv6addr($addr)->filterByHostname($hostname)->findOne($dbCon);
 			/* @var $addrMap AddrMapNode */
 			if($addrMap != null){
 				return $addrMap->getFfNode();
 			}
 		}else{
-			$addrMap = AddrMapNodeQuery::create()->findOneByMacAddr($addr, $dbCon);
+			$addrMap = AddrMapNodeQuery::create()->filterByMacAddr($addr)->filterByHostname($hostname)->findOne($dbCon);
 			/* @var $addrMap AddrMapNode */
 			if($addrMap != null){
 				return $addrMap->getFfNode();

@@ -251,6 +251,7 @@
     <column name="ipv6Addr" type="VARCHAR" size="40" />
     <column name="macAddr" type="VARCHAR" size="30" phpName="MacAddr" />
     <column name="type" type="LONGVARCHAR" />
+    <column name="hostname" type="VARCHAR" size="32" />
     <foreign-key foreignTable="node" skipSql="true">
       <reference local="ID_node" foreign="ID_node" />
     </foreign-key>

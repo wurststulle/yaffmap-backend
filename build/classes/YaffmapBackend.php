@@ -230,8 +230,8 @@ class YaffmapBackend{
 					$n = $conn->replicateNodes(YaffmapConfig::get('version'), YaffmapConfig::get('id'))->ffNodes;
 					if(is_array($n)){
 						foreach($n as $node){
-							/* @var $node FfNode */
-							$localNode = FfNode::findOneByAddr($node->addr, $dbCon);
+							/* @var $node sFfNode */
+							$localNode = FfNode::findOneByAddr($node->addr, $node->hostname, $dbCon);
 							if($localNode == null){
 								// node to be replicated does not exist, create it
 //								echo Kobold::dump($node);
