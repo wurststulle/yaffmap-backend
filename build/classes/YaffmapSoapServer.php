@@ -290,12 +290,14 @@ class YaffmapSoapServer{
 	}
 	
 	/**
-	 * @param string $version
-	 * @param string $clientId
-	 * @param string $replFrom timestamp, ab dem repliziert werden soll
+	 * replicate nodes
+	 * 
+	 * @param string $version version of backend that wants to replicate
+	 * @param string $clientId id of backend that wants to replicate
+	 * @param DateTime $replFrom timestamp, ab dem repliziert werden soll
 	 * @return ArrayOfFfNodes
 	 */
-	public function replicateNodes($version, $clientId, $replFrom = null){
+	public function replicateNodes($version, $clientId, DateTime $replFrom = null){
 		if(!$this->checkVersion($version)){
 			return new SoapFault(null, 'Your backend is outdated, please update it.');
 		}
