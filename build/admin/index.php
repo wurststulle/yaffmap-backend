@@ -29,7 +29,6 @@ $div->addAttribute(array(new KAttributeId('menuDiv')));
 $menu = new KMenu();
 $menu->addMenuTitle('Administration');
 $menu->addMenuItem('javascript:load(\'nodes\', false);', 'Nodes with agent');
-$menu->addMenuItem('javascript:load(\'releases\', false);', 'releases');
 $menu->addMenuItem('javascript:load(\'mapping\', false);', 'mapping');
 $menu->addMenuItem('javascript:load(\'unlocatedNodes\', false);', 'unlocatedNodes');
 $menu->addMenuItem('javascript:load(\'changeLog\', false);', 'changeLog');
