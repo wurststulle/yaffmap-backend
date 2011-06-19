@@ -9,6 +9,7 @@ require_once 'YaffmapGetFilter.php';
 require_once 'YaffmapGetConfig.php';
 require_once 'YaffmapNewAgentRelease.php';
 require_once 'YaffmapGetFrontendData.php';
+require_once 'YaffmapConfig.php';
 
 class Yaffmap{
 	

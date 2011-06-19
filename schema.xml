@@ -311,7 +311,9 @@
   </table>
   <table name="config" phpName="Config">
     <column name="url" type="VARCHAR" size="100" primaryKey="true" />
-    <column name="defaultTree" type="VARCHAR" size="100" primaryKey="true" phpName="DefaultTree" defaultValue="devel"  />
+    <column name="defaultTree" type="VARCHAR" size="32" phpName="DefaultTree" defaultValue="devel" />
+    <column name="adminUser" type="VARCHAR" size="50" phpName="adminUser" defaultValue="admin" />
+    <column name="adminPasswd" type="VARCHAR" size="50" phpName="adminPasswd" defaultValue="ae3de14d2827083cf7ea53601ff2bfb1" />
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB" />
       <parameter name="Charset" value="utf8" />
