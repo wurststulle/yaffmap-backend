@@ -22,7 +22,7 @@ if(isset($_REQUEST['getFile'])){
 	$table->addThRow(array('version', 'tree', 'release', 'release date', 'download'));
 	foreach($agents as $agent) {
 		/* @var $agent AgentRelease */
-		$table->addRow(array($agent->getVersion(), $agent->getUpgradeTree(), $agent->getRelease().'-'.$agent->getSubRelease(), $agent->getReleaseDate(), new KSimpleLink('releases.php?getFile='.$agent->getId(), 'download')));
+		$table->addRow(array($agent->getVersion(), $agent->getUpgradeTree(), $agent->getRelease().'-'.$agent->getSubRelease(), $agent->getReleaseDate(), new KSimpleLink('index.php?getFile='.$agent->getId(), 'download')));
 	}
 	echo $table;
 }
