@@ -147,12 +147,12 @@ try{
 					$backend->getVersionMappingBackend($_GET['url']);
 					$backend->getVersionMappingAgent($_GET['url']);
 					$response->setResponseMsg($backend->getAgentRelease($_GET['url']));
-					$response->setResponseMsg($backend->getBackends($_GET['url']));
+					$response->appendResponseMsg($backend->getBackends($_GET['url']));
 				}else{
 					$backend->getVersionMappingBackend();
 					$backend->getVersionMappingAgent();
 					$response->setResponseMsg($backend->getAgentRelease());
-					$response->setResponseMsg($backend->getBackends());
+					$response->appendResponseMsg($backend->getBackends());
 				}
 				echo $response;
 				break;
