@@ -12,6 +12,9 @@ require_once 'YaffmapGetFrontendData.php';
 
 class Yaffmap{
 	
+	/**
+	 * @var YaffmapResponse
+	 */
 	protected $response = null;
 	protected $request = null;
 	
@@ -36,8 +39,16 @@ class Yaffmap{
 //		$this->checkAgentCompatibility();
 	}
 	
-	public function checkInput($allowed){
-		$this->allowed = array_merge($this->allowed, $allowed);
+	public function checkInput($allowed = null){
+		if($allowed != null){
+			$this->allowed = array_merge($this->allowed, $allowed);
+		}
+		if(!array_key_exists('release', $this->request) 
+			|| !array_key_exists('tree', $this->request)
+			|| !array_key_exists('version', $this->request)
+			|| !array_key_exists('do', $this->request)){
+			throw new YaffmapException('basic query element missing.');	
+		}
 		Yaffmap::checkRequestArray($this->request, $this->allowed); // check request string for illegal stuff
 	}
 	
