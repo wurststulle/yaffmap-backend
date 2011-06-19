@@ -13,11 +13,14 @@ class KoboldUtils{
         exit();
     }
     
-	public static function httpAuth($user, $pass, $algorithm = CRYPT_SHA1, $realm = 'Secured Area'){
-		if($algorithm == CRYPT_SHA1){
+	public static function httpAuth($user, $pass, $algorithm = self::CRYPT_SHA1, $realm = 'Secured Area'){
+		if($algorithm == self::CRYPT_SHA1){
 			$securePass = sha1($_SERVER['PHP_AUTH_PW']);
-		}elseif($algorithm == CRYPT_MD5){
+		}elseif($algorithm == self::CRYPT_MD5){
 			$securePass = md5($_SERVER['PHP_AUTH_PW']);
+		}else{
+			// TODO
+			die();
 		}
         if(!(isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] == $user && $securePass == $pass)){
             header('WWW-Authenticate: Basic realm="'.$realm.'"');
