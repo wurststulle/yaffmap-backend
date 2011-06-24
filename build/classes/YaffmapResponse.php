@@ -30,6 +30,7 @@ class YaffmapResponse{
 	protected $responseCode = 1;
 	protected $responseMsg = '';
 	protected $data = '';
+	protected $severity;
 	
 	public function setResponseCode($code){
 		$this->responseCode = $code;
@@ -51,6 +52,10 @@ class YaffmapResponse{
 		}
 	}
 	
+	public function setSeverity($severity){
+		$this->severity = $severity;
+	}
+	
 	/**
 	 * @deprecated
 	 * @param unknown_type $data
@@ -66,7 +71,7 @@ class YaffmapResponse{
 	}
 	
 	public function __toString(){
-		return $this->responseCode.self::RETURNSTRING_SEPARATOR.$this->responseMsg.self::RETURNSTRING_SEPARATOR.$this->data;
+		return $this->responseCode.self::RETURNSTRING_SEPARATOR.$this->responseMsg.self::RETURNSTRING_SEPARATOR.$this->data.self::RETURNSTRING_SEPARATOR.$this->severity;
 	}
 	
 	/**

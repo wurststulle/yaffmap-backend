@@ -237,7 +237,6 @@
     <column name="request" type="LONGVARCHAR" />
     <column name="ip" type="VARCHAR" size="40" />
     <column name="message" type="LONGVARCHAR" />
-    <column name="type" type="ENUM" defaultValue="exception" valueSet="exception, warning, notice, soap, replication, json, propel" />
     <behavior name="timestampable" />
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB" />

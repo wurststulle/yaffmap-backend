@@ -48,7 +48,7 @@ class Yaffmap{
 			|| !array_key_exists('tree', $this->request)
 			|| !array_key_exists('version', $this->request)
 			|| !array_key_exists('do', $this->request)){
-			throw new YaffmapException('basic query element missing.');	
+			throw new YaffmapException('basic query element missing.', YaffmapException::SEVERITY_CRITICAL);	
 		}
 		Yaffmap::checkRequestArray($this->request, $this->allowed); // check request string for illegal stuff
 	}
@@ -63,7 +63,7 @@ class Yaffmap{
 			->filterByBackendRelease(YaffmapConfig::get('version'))
 			->count();
 		if($versionMapping == 0){
-			throw new YaffmapException('agent('.$splitRelease[0].'-'.$splitRelease[1].'_'.$this->request['tree'].'_'.$this->request['version'].') is not compatible to backend('.YaffmapConfig::get('version').').');
+			throw new YaffmapException('agent('.$splitRelease[0].'-'.$splitRelease[1].'_'.$this->request['tree'].'_'.$this->request['version'].') is not compatible to backend('.YaffmapConfig::get('version').').', YaffmapException::SEVERITY_CRITICAL);
 		}
 	}
 	

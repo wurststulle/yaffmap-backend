@@ -13,9 +13,9 @@ if($_REQUEST['with'] == 'warnings'){
 $table = new KTable();
 $table->addAttribute(array(new KAttribute('border', 1)));
 foreach($errors as $error){
-	$tr1 = $table->addThRow(array("id", "errorType", "errorMsg", "ip", "createdAt", "request"));
+	$tr1 = $table->addThRow(array("id", "errorMsg", "ip", "createdAt", "request"));
 	$tr1->addAttribute(array(new KAttributeStyleBackground('lightgreen')));
-	$table->addRow(array($error->getId(), $error->getType(), $error->getMessage(), $error->getIp(),$error->getCreatedAt(), $error->getRequest()));
+	$table->addRow(array($error->getId(), $error->getMessage(), $error->getIp(),$error->getCreatedAt(), $error->getRequest()));
 }
 echo $table;
 ?>
