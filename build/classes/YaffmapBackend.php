@@ -320,9 +320,26 @@ class YaffmapBackend{
 								continue;
 							}elseif($localNode->getIsGlobalUpdated() && $node->isGlobalUpdated == 'false'){
 								// overwrite global updated node
-								
+								// update node
+								foreach(get_object_vars($update) as $key => $val){
+									if(!(is_array($val) || $key == 'id' || is_object($val))){
+										if($key == 'isHna'){
+											if($val == 'true'){
+												$this->setIsHna(true);
+											}else{
+												$this->setIsHna(false);
+											}
+											continue;
+										}
+										try{
+											call_user_func_array(array($this, 'set'.ucfirst($key)), array($val));
+										}catch(Exception $e){
+											throw new EUnknownAttribute($key);
+										}
+									}
+								}
 							}elseif(!$localNode->getIsGlobalUpdated() && $node->isGlobalUpdated == 'true'){
-								
+								// if lastest update < now - update interval then update it else skip
 							}
 						}
 					}else{
