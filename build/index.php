@@ -39,8 +39,8 @@ try{
 				echo $getID->getID();
 				break;
 			case 'update':
-				$update = new YaffmapNodeUpdate(Yaffmap::decodeJson($_REQUEST['node']));
-				echo $update->nodeUpdate($_REQUEST['version'], $_REQUEST['tree'], $_REQUEST['release']);
+				$update = new YaffmapNodeUpdate();
+				echo $update->nodeUpdate();
 				break;
 			case 'globalUpdate':
 				$update = new YaffmapGlobalUpdate();

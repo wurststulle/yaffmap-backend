@@ -37,7 +37,7 @@ class Yaffmap{
 			$this->response = $response;
 		}
 		$this->allowed = array('do', 'release', 'tree', 'version');
-//		$this->checkAgentCompatibility();
+//		$this->checkAgentCompatibility(); // TODO enable
 	}
 	
 	public function checkInput($allowed = null){
