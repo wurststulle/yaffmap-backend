@@ -34,23 +34,33 @@ class Yaffmap{
 			$this->response = $response;
 		}
 		$this->allowed = array('do', 'release', 'tree', 'version');
-//		$this->checkAgentCompatibility(); // TODO enable
 	}
 	
-	public function checkInput($allowed = null){
+	/**
+	 * @param array $allowed
+	 * @param boolean $skipElementCheck disable check for 'release', 'tree', 'version' and 'do' in REQUEST elements
+	 * @throws YaffmapException
+	 */
+	public function checkInput($allowed = null, $skipElementCheck = false, $skipCompatibilityCheck = false){
 		if($allowed != null){
 			$this->allowed = array_merge($this->allowed, $allowed);
 		}
-		if(!array_key_exists('release', $this->request) 
-			|| !array_key_exists('tree', $this->request)
-			|| !array_key_exists('version', $this->request)
-			|| !array_key_exists('do', $this->request)){
-			throw new YaffmapException('basic query element missing.');	
+		if(!$skipElementCheck){
+			if(!array_key_exists('release', $this->request) 
+				|| !array_key_exists('tree', $this->request)
+				|| !array_key_exists('version', $this->request)
+				|| !array_key_exists('do', $this->request)){
+				throw new YaffmapException('basic query element missing.');	
+			}
 		}
 		Yaffmap::checkRequestArray($this->request, $this->allowed); // check request string for illegal stuff
+		if(!$skipCompatibilityCheck){
+			$this->checkAgentCompatibility();
+		}
+		
 	}
 	
-	public function checkAgentCompatibility(){
+	public function checkAgentCompatibility($skipCheck = false){
 		$splitRelease = explode("-", $this->request['release']);
 		$versionMapping = VersionMappingAgentQuery::create()
 			->filterByAgentRelease($splitRelease[0])
