@@ -99,7 +99,7 @@ class Yaffmap{
 		$log = new AccessLog();
 		$log->setIp($_SERVER['REMOTE_ADDR']);
 		$log->setDebug($debug);
-		$log->setRequestString(Yaffmap::dump_ret($_REQUEST));
+		$log->setRequestString(Kobold::dump_ret($_REQUEST));
 		$log->setRequest($_REQUEST['do']);
 		$log->save();
 	}

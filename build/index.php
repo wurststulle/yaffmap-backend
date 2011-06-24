@@ -187,7 +187,7 @@ try{
 	}
 }catch(PropelException $e){
 	$error = new ErrorLog();
-	$error->setRequest(Yaffmap::dump_ret($_REQUEST));
+	$error->setRequest(Kobold::dump_ret($_REQUEST));
 	$error->setMessage($message);
 	$error->setIp($_SERVER['REMOTE_ADDR']);
 	$error->setType(ErrorLogPeer::TYPE_PROPEL);
@@ -212,7 +212,7 @@ try{
 	echo $response;
 }catch(Exception $e){
 	$error = new ErrorLog();
-	$error->setRequest(Yaffmap::dump_ret($_REQUEST));
+	$error->setRequest(Kobold::dump_ret($_REQUEST));
 	$error->setMessage($message);
 	$error->setIp($_SERVER['REMOTE_ADDR']);
 	$error->setType(ErrorLogPeer::TYPE_EXCEPTION);
