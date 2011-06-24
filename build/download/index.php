@@ -9,6 +9,9 @@ if(isset($_REQUEST['getFile'])){
 	$agent = AgentReleaseQuery::create()->findOneById($_REQUEST['getFile']);
 	/* @var $agent AgentRelease */
 	if($agent != null){
+		// TODO
+//		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+//		header("Content-Length: " . filesize($filename));
 		header("Content-type: application/force-download");
 		header('Content-Disposition: attachment; filename='.'yaffmap_'.$agent->getRelease().'-'.$agent->getSubRelease().'_'.$agent->getVersion().'_'.$agent->getUpgradeTree().'.tar.gz');
 		echo stream_get_contents($agent->getAgent());
