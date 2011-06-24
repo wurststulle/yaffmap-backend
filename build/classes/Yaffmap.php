@@ -5,10 +5,7 @@ require_once 'YaffmapGetUpgrade.php';
 require_once 'YaffmapGlobalUpdate.php';
 require_once 'YaffmapNodeUpdate.php';
 require_once 'YaffmapGetID.php';
-require_once 'YaffmapGetFilter.php';
-require_once 'YaffmapGetConfig.php';
 require_once 'YaffmapNewAgentRelease.php';
-require_once 'YaffmapGetFrontendData.php';
 require_once 'YaffmapConfig.php';
 
 class Yaffmap{
@@ -84,25 +81,6 @@ class Yaffmap{
 	}
 	
 	/**
-	 * @deprecated
-	 */
-	public static function dump($var){
-		echo '<pre>'.print_r($var, true).'</pre>';
-	}
-	
-	/**
-	 * @deprecated
-	 */
-	public static function dump_ret($var){
-		$ret = null;
-		ob_start();
-		var_dump($var);
-		$ret = ob_get_clean();
-		ob_end_clean();
-		return $ret;
-	}
-	
-	/**
 	 * check that no more elements are in $request then in $allowed
 	 * 
 	 * @param array $request
@@ -125,9 +103,5 @@ class Yaffmap{
 		$log->setRequest($_REQUEST['do']);
 		$log->save();
 	}
-	
-//	public function getResponse(){
-//		return $this->response;
-//	}
 }
 ?>

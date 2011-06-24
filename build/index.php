@@ -10,7 +10,7 @@ define('DEBUG', true);
 //	
 //}else{
 //	$response = new Response();
-//	$response->setErrorCode(ResponseCodeNode::OPERATION_FAILED);
+//	$response->setErrorCode(YaffmapResponse::OPERATION_FAILED);
 //	$response->setErrorMsg('server is under maintenance.');
 //	echo $response;
 //	die();
@@ -92,7 +92,6 @@ try{
 	            }
 				break;
 			case 'announce':
-				// http://192.168.2.3/replication/build/index.php?do=announce&url=http://192.168.2.201/yaffmap/build
 				$backend = new YaffmapBackend();
 				if(isset($_GET['url'])){
 					$backend->announce($_GET['url']);
@@ -115,7 +114,6 @@ try{
 				}else{
 					$backend->getAgentRelease();
 				}
-				
 				break;
 			case 'knock':
 				$response = new YaffmapResponse();
@@ -195,21 +193,21 @@ try{
 	$error->setType(ErrorLogPeer::TYPE_PROPEL);
 	$error->save();
 	$response = new YaffmapResponse();
-	$response->setErrorCode(ResponseCodeNode::OPERATION_FAILED);
-	$response->setErrorMsg('Propel Exception: '.$e);
+	$response->setResponseCode(YaffmapResponse::OPERATION_FAILED);
+	$response->setResponseMsg('Propel Exception: '.$e);
 	echo $response;
 }catch(YaffmapSoapException $e){
 	$response = new YaffmapResponse();
-	$response->setErrorCode(ResponseCodeNode::OPERATION_FAILED);
-	$response->setErrorMsg('SOAP Exception: '.$e->getMessage());
+	$response->setResponseCode(YaffmapResponse::OPERATION_FAILED);
+	$response->setResponseMsg('SOAP Exception: '.$e->getMessage());
 	echo $response;
 }catch(YaffmapException $e){
 	$response = new YaffmapResponse();
-	$response->setErrorCode(ResponseCodeNode::OPERATION_FAILED);
+	$response->setResponseCode(YaffmapResponse::OPERATION_FAILED);
 	if(!DEBUG){
-		$response->setErrorMsg('Yaffmap Exception: '.$e->getMessage());
+		$response->setResponseMsg('Yaffmap Exception: '.$e->getMessage());
 	}else{
-		$response->setErrorMsg('Yaffmap Exception: '.$e);
+		$response->setResponseMsg('Yaffmap Exception: '.$e);
 	}
 	echo $response;
 }catch(Exception $e){
@@ -220,8 +218,8 @@ try{
 	$error->setType(ErrorLogPeer::TYPE_EXCEPTION);
 	$error->save();
 	$response = new YaffmapResponse();
-	$response->setErrorCode(ResponseCodeNode::OPERATION_FAILED);
-	$response->setErrorMsg('General Exception: '.$e);
+	$response->setResponseCode(YaffmapResponse::OPERATION_FAILED);
+	$response->setResponseMsg('General Exception: '.$e);
 	echo $response;
 }
 ?>

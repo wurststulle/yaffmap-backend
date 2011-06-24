@@ -1,5 +1,4 @@
 <?php
-
 class YaffmapGetUpgrade extends Yaffmap{
 	
 	public function __construct($request = null, $response = null){
