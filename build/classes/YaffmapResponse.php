@@ -10,7 +10,7 @@ class YaffmapResponse{
 	const DATA_SEPARATOR = ';';
 	const RETURNSTRING_SEPARATOR = '|';
 	
-	protected $responseCode = 1;
+	protected $responseCode = self::OPERATION_FAILED;
 	protected $responseMsg = '';
 	protected $data = '';
 	
@@ -35,7 +35,7 @@ class YaffmapResponse{
 	}
 	
 	public function reset(){
-		$this->responseCode = 0;
+		$this->responseCode = self::OPERATION_FAILED;
 		$this->responseMsg = '';
 		$this->data = '';
 	}
