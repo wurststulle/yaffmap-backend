@@ -8,8 +8,6 @@ class YaffmapGetID extends Yaffmap{
 	}
 	
 	/**
-	 * 
-	 * @return YaffmapResponse
 	 * @throws EAddrMissing
 	 */
 	public function getID(){
@@ -58,7 +56,6 @@ class YaffmapGetID extends Yaffmap{
 		$this->response->setResponseCode(YaffmapResponse::OPERATION_SUCCEDED);
 		$this->response->setResponseMsg('Operation Succeded.');
 		$this->response->addResponseData('id="'.$node->getId().'"');
-		return $this->response;
 	}
 }
 ?>

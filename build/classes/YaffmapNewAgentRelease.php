@@ -34,7 +34,6 @@ class YaffmapNewAgentRelease extends Yaffmap{
             unset($putData);
 		}
 		$this->response->setResponseCode(YaffmapResponse::OPERATION_SUCCEDED);
-		return $this->response;
 	}
 }
 ?>

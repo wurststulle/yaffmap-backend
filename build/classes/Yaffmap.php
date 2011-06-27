@@ -29,7 +29,7 @@ class Yaffmap{
 			$this->request = $request;
 		}
 		if($response == null){
-			$this->response = new YaffmapResponse();
+			$this->response = YaffmapResponse::getInstance();
 		}else{
 			$this->response = $response;
 		}

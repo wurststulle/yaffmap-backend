@@ -43,7 +43,6 @@ class YaffmapNodeUpdate extends Yaffmap{
 		}
 		$this->response->setResponseCode(YaffmapResponse::OPERATION_SUCCEDED);
 		$this->response->setResponseMsg('Operation Succeded.');
-		return $this->response;
 	}
 }
 ?>

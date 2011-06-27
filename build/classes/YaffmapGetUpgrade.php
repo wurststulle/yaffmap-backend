@@ -38,7 +38,6 @@ class YaffmapGetUpgrade extends Yaffmap{
 				$this->response->setResponseMsg('No new agent release found.');
 			}
 		}
-		return $this->response;
 	}
 }
 ?>

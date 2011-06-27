@@ -10,10 +10,22 @@ class YaffmapResponse{
 	const DATA_SEPARATOR = ';';
 	const RETURNSTRING_SEPARATOR = '|';
 	
+	private static $me = null;
+	
 	protected $responseCode = self::OPERATION_FAILED;
 	protected $responseMsg = '';
 	protected $data = '';
 	protected $severity;
+	
+	/**
+	 * @return YaffmapResponse
+	 */
+	public static function getInstance(){
+		if(is_null(self::$me)){
+			self::$me = new YaffmapResponse();
+		}
+		return self::$me;
+	}
 	
 	public function setResponseCode($code){
 		$this->responseCode = $code;

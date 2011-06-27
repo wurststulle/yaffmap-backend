@@ -36,19 +36,23 @@ try{
 		switch($_REQUEST['do']){
 			case 'getID':
 				$getID = new YaffmapGetID();
-				echo $getID->getID();
+				$getID->getID();
+				echo YaffmapResponse::getInstance();
 				break;
 			case 'update':
 				$update = new YaffmapNodeUpdate();
-				echo $update->nodeUpdate();
+				$update->nodeUpdate();
+				echo YaffmapResponse::getInstance();
 				break;
 			case 'globalUpdate':
 				$update = new YaffmapGlobalUpdate();
-				echo $update->globalUpdate();
+				$update->globalUpdate();
+				echo YaffmapResponse::getInstance();
 				break;
 			case 'getUpgrade':
 				$getUpgrade = new YaffmapGetUpgrade();
-				echo $getUpgrade->getUpgrade();
+				$getUpgrade->getUpgrade();
+				echo YaffmapResponse::getInstance();
 				break;
 			case 'getFilters':
 				$filter = new YaffmapGetFilter();
@@ -61,7 +65,8 @@ try{
 			case 'newAgentReleaseWithFile':
 				// Yaffmap::logAccess();
 				$new = new YaffmapNewAgentRelease();
-				echo $new->newAgentReleaseWithFile();
+				$new->newAgentReleaseWithFile();
+				echo YaffmapResponse::getInstance();
 				break;
 			case 'debugUpload':
 				// upload file
@@ -116,7 +121,7 @@ try{
 				}
 				break;
 			case 'knock':
-				$response = new YaffmapResponse();
+				$response = YaffmapResponse::getInstance();
 				$response->setResponseCode(YaffmapResponse::OPERATION_SUCCEDED);
 				$response->setResponseMsg('Yaffmap Backend v'.YaffmapConfig::get('version'));
 				echo $response;
@@ -138,19 +143,17 @@ try{
 				}
 				break;
 			case 'replicateEnv':
-				$response = new YaffmapResponse();
-				$response->setResponseCode(YaffmapResponse::OPERATION_SUCCEDED);
 				$backend = new YaffmapBackend();
 				if(isset($_GET['url'])){
 					$backend->getVersionMappingBackend($_GET['url']);
 					$backend->getVersionMappingAgent($_GET['url']);
-					$response->setResponseMsg($backend->getAgentRelease($_GET['url']));
-					$response->appendResponseMsg($backend->getBackends($_GET['url']));
+					echo $backend->getAgentRelease($_GET['url']);
+					echo $backend->getBackends($_GET['url']);
 				}else{
 					$backend->getVersionMappingBackend();
 					$backend->getVersionMappingAgent();
-					$response->setResponseMsg($backend->getAgentRelease());
-					$response->appendResponseMsg($backend->getBackends());
+					$backend->getAgentRelease();
+					$backend->getBackends();
 				}
 				echo $response;
 				break;
@@ -166,7 +169,7 @@ try{
 	}else{
 		$div = new KDiv();
 		$div->addAttribute(array(new KAttribute('align', 'center')));
-		$div->addItem('<font color="red">Y</font>et <font color="red">A</font>nother <font color="red">F</font>rei<font color="red">f</font>unk <font color="red">Map</font> Backend');
+		$div->addItem('<font color="red">Y</font>et <font color="red">A</font>nother <font color="red">F</font>rei<font color="red">f</font>unk <font color="red">Map</font> Backend ');
 		$div->addItem(array(new KHr().new KBr()));
 		$div->addItem('see '.new KSimpleLink('http://wurststulle.dyndns.org/yaffmap/trac', 'documentation').' for help');
 		$div->addItem(new KBr());
@@ -192,17 +195,17 @@ try{
 	$error->setIp($_SERVER['REMOTE_ADDR']);
 	$error->setType(ErrorLogPeer::TYPE_PROPEL);
 	$error->save();
-	$response = new YaffmapResponse();
+	$response = YaffmapResponse::getInstance();
 	$response->setResponseCode(YaffmapResponse::OPERATION_FAILED);
 	$response->setResponseMsg('Propel Exception: '.$e);
 	echo $response;
 }catch(YaffmapSoapException $e){
-	$response = new YaffmapResponse();
+	$response = YaffmapResponse::getInstance();
 	$response->setResponseCode(YaffmapResponse::OPERATION_FAILED);
 	$response->setResponseMsg('SOAP Exception: '.$e->getMessage());
 	echo $response;
 }catch(YaffmapException $e){
-	$response = new YaffmapResponse();
+	$response = YaffmapResponse::getInstance();
 	$response->setResponseCode(YaffmapResponse::OPERATION_FAILED);
 	if(!DEBUG){
 		$response->setResponseMsg('Yaffmap Exception: '.$e->getMessage());
@@ -217,7 +220,7 @@ try{
 	$error->setIp($_SERVER['REMOTE_ADDR']);
 	$error->setType(ErrorLogPeer::TYPE_EXCEPTION);
 	$error->save();
-	$response = new YaffmapResponse();
+	$response = YaffmapResponse::getInstance();
 	$response->setResponseCode(YaffmapResponse::OPERATION_FAILED);
 	$response->setResponseMsg('General Exception: '.$e);
 	echo $response;
