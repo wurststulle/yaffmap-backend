@@ -206,8 +206,8 @@ class YaffmapGlobalUpdate extends Yaffmap{
 				$rp->save();
 			}
 		}
-		$this->response->setErrorCode(ResponseCodeNode::OPERATION_SUCCEDED);
-		$this->response->setErrorMsg('Operation Succeded.');
+		$this->response->setResponseCode(YaffmapResponse::OPERATION_SUCCEDED);
+		$this->response->setResponseMsg('Operation Succeded.');
 		return $this->response;
 	}
 }

@@ -1,21 +1,4 @@
 <?php
-/**
- * @deprecated
- */
-class ResponseCodeNode{
-	
-	const OPERATION_SUCCEDED = '0';
-	const OPERATION_FAILED = '1';
-	const NODEID_NOT_FOUND = '2';
-}
-
-/**
- * @deprecated
- */
-class Response extends YaffmapResponse{
-	
-}
-
 class YaffmapResponse{
 	
 	const OPERATION_SUCCEDED = '0';
@@ -27,7 +10,7 @@ class YaffmapResponse{
 	const DATA_SEPARATOR = ';';
 	const RETURNSTRING_SEPARATOR = '|';
 	
-	protected $responseCode = 1;
+	protected $responseCode = self::OPERATION_FAILED;
 	protected $responseMsg = '';
 	protected $data = '';
 	
@@ -51,38 +34,14 @@ class YaffmapResponse{
 		}
 	}
 	
-	/**
-	 * @deprecated
-	 * @param unknown_type $data
-	 */
-	public function addData($data){
-		$this->addResponseData($data);
-	}
-	
 	public function reset(){
-		$this->responseCode = 0;
+		$this->responseCode = self::OPERATION_FAILED;
 		$this->responseMsg = '';
 		$this->data = '';
 	}
 	
 	public function __toString(){
 		return $this->responseCode.self::RETURNSTRING_SEPARATOR.$this->responseMsg.self::RETURNSTRING_SEPARATOR.$this->data;
-	}
-	
-	/**
-	 * @deprecated
-	 * @param unknown_type $msg
-	 */
-	public function setErrorMsg($msg){
-		$this->responseMsg = $msg;
-	}
-	
-	/**
-	 * @deprecated
-	 * @param unknown_type $code
-	 */
-	public function setErrorCode($code){
-		$this->responseCode = $code;
 	}
 }
 ?>

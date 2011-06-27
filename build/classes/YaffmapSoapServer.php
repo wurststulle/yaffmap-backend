@@ -53,11 +53,11 @@ class YaffmapSoapServer{
 	 * @param string $version
 	 */
 	private function checkVersion($version){
-		/*if(VersionMappingBackendQuery::create()->filterByServerRelease(YaffmapConfig::get('version'))->filterByClientRelease($version)->count() == 0){
+		if(VersionMappingBackendQuery::create()->filterByServerRelease(YaffmapConfig::get('version'))->filterByClientRelease($version)->count() == 0){
 			return false;
 		}else{
 			return true;
-		}*/
+		}
 		return true;
 	}
 	

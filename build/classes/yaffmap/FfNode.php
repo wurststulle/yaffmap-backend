@@ -182,7 +182,7 @@ class FfNode extends BaseFfNode {
 			if($sourceWlIface == null){
 //				$error = new ErrorLog();
 //				$error->setRequest($_REQUEST['do']);
-//				$error->setRequeststring(Yaffmap::dump_ret($_REQUEST));
+//				$error->setRequeststring(Kobold::dump_ret($_REQUEST));
 //				$error->setError('source wireless interface ('.$rflink->sMac.') not found while updating rfLinks in node update, skip query.');
 //				$error->setIp($_SERVER['REMOTE_ADDR']);
 //				$error->setType('warning');
