@@ -55,9 +55,9 @@ class YaffmapGetID extends Yaffmap{
 			$node->setId(md5(mt_rand(1, 1000).$macAddr.date("U")));
 			$node->save();
 		}
-		$this->response->setErrorCode(YaffmapResponse::OPERATION_SUCCEDED);
-		$this->response->setErrorMsg('Operation Succeded.');
-		$this->response->addData('id="'.$node->getId().'"');
+		$this->response->setResponseCode(YaffmapResponse::OPERATION_SUCCEDED);
+		$this->response->setResponseMsg('Operation Succeded.');
+		$this->response->addResponseData('id="'.$node->getId().'"');
 		return $this->response;
 	}
 }

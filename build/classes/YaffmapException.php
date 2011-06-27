@@ -20,7 +20,7 @@ class YaffmapLoggedException extends YaffmapException{
 	
 	public function __construct($message = null, $severity = self::SEVERITY_DEFAULT){
 		$error = new ErrorLog();
-		$error->setRequest(Yaffmap::dump_ret($_REQUEST));
+		$error->setRequest(Kobold::dump_ret($_REQUEST));
 		$error->setMessage($message);
 		$error->setIp($_SERVER['REMOTE_ADDR']);
 		$error->save();

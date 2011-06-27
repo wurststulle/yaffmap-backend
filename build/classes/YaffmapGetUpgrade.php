@@ -1,10 +1,9 @@
 <?php
-
 class YaffmapGetUpgrade extends Yaffmap{
 	
 	public function __construct($request = null, $response = null){
 		call_user_func_array('parent::__construct', array($request, $response));
-		$this->checkInput();
+		$this->checkInput(null, true, true);
 	}
 	
 	/**

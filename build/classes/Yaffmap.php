@@ -5,10 +5,7 @@ require_once 'YaffmapGetUpgrade.php';
 require_once 'YaffmapGlobalUpdate.php';
 require_once 'YaffmapNodeUpdate.php';
 require_once 'YaffmapGetID.php';
-require_once 'YaffmapGetFilter.php';
-require_once 'YaffmapGetConfig.php';
 require_once 'YaffmapNewAgentRelease.php';
-require_once 'YaffmapGetFrontendData.php';
 require_once 'YaffmapConfig.php';
 
 class Yaffmap{
@@ -37,23 +34,33 @@ class Yaffmap{
 			$this->response = $response;
 		}
 		$this->allowed = array('do', 'release', 'tree', 'version');
-//		$this->checkAgentCompatibility(); // TODO enable
 	}
 	
-	public function checkInput($allowed = null){
+	/**
+	 * @param array $allowed
+	 * @param boolean $skipElementCheck disable check for 'release', 'tree', 'version' and 'do' in REQUEST elements
+	 * @throws YaffmapException
+	 */
+	public function checkInput($allowed = null, $skipElementCheck = false, $skipCompatibilityCheck = false){
 		if($allowed != null){
 			$this->allowed = array_merge($this->allowed, $allowed);
 		}
-		if(!array_key_exists('release', $this->request) 
-			|| !array_key_exists('tree', $this->request)
-			|| !array_key_exists('version', $this->request)
-			|| !array_key_exists('do', $this->request)){
-			throw new YaffmapException('basic query element missing.', YaffmapException::SEVERITY_CRITICAL);	
+		if(!$skipElementCheck){
+			if(!array_key_exists('release', $this->request) 
+				|| !array_key_exists('tree', $this->request)
+				|| !array_key_exists('version', $this->request)
+				|| !array_key_exists('do', $this->request)){
+				throw new YaffmapException('basic query element missing.', YaffmapException::SEVERITY_CRITICAL);	
+			}
 		}
 		Yaffmap::checkRequestArray($this->request, $this->allowed); // check request string for illegal stuff
+		if(!$skipCompatibilityCheck){
+			$this->checkAgentCompatibility();
+		}
+		
 	}
 	
-	public function checkAgentCompatibility(){
+	public function checkAgentCompatibility($skipCheck = false){
 		$splitRelease = explode("-", $this->request['release']);
 		$versionMapping = VersionMappingAgentQuery::create()
 			->filterByAgentRelease($splitRelease[0])
@@ -84,25 +91,6 @@ class Yaffmap{
 	}
 	
 	/**
-	 * @deprecated
-	 */
-	public static function dump($var){
-		echo '<pre>'.print_r($var, true).'</pre>';
-	}
-	
-	/**
-	 * @deprecated
-	 */
-	public static function dump_ret($var){
-		$ret = null;
-		ob_start();
-		var_dump($var);
-		$ret = ob_get_clean();
-		ob_end_clean();
-		return $ret;
-	}
-	
-	/**
 	 * check that no more elements are in $request then in $allowed
 	 * 
 	 * @param array $request
@@ -121,13 +109,9 @@ class Yaffmap{
 		$log = new AccessLog();
 		$log->setIp($_SERVER['REMOTE_ADDR']);
 		$log->setDebug($debug);
-		$log->setRequestString(Yaffmap::dump_ret($_REQUEST));
+		$log->setRequestString(Kobold::dump_ret($_REQUEST));
 		$log->setRequest($_REQUEST['do']);
 		$log->save();
 	}
-	
-//	public function getResponse(){
-//		return $this->response;
-//	}
 }
 ?>
