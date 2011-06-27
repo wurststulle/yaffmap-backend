@@ -50,16 +50,7 @@ try{
 				$getUpgrade = new YaffmapGetUpgrade();
 				echo $getUpgrade->getUpgrade();
 				break;
-			case 'getFilters':
-				$filter = new YaffmapGetFilter();
-				echo $filter->getFilter();
-				break;
-			case 'getFrontendData':
-				$data = new YaffmapGetFrontendData();
-				echo $data->getFrontendData();
-				break;
 			case 'newAgentReleaseWithFile':
-				// Yaffmap::logAccess();
 				$new = new YaffmapNewAgentRelease();
 				echo $new->newAgentReleaseWithFile();
 				break;
@@ -166,7 +157,7 @@ try{
 	}else{
 		$div = new KDiv();
 		$div->addAttribute(array(new KAttribute('align', 'center')));
-		$div->addItem('<font color="red">Y</font>et <font color="red">A</font>nother <font color="red">F</font>rei<font color="red">f</font>unk <font color="red">Map</font> Backend');
+		$div->addItem('<font color="red">Y</font>et <font color="red">A</font>nother <font color="red">F</font>rei<font color="red">f</font>unk <font color="red">Map</font> Backend v'.YaffmapConfig::get('version'));
 		$div->addItem(array(new KHr().new KBr()));
 		$div->addItem('see '.new KSimpleLink('http://wurststulle.dyndns.org/yaffmap/trac', 'documentation').' for help');
 		$div->addItem(new KBr());
