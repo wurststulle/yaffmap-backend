@@ -14,6 +14,9 @@ development installation:
   - propel-gen convert-conf
 6) goto http://<yaffmap-server>/admin/setup.php and check your environment (not yet implemented, goto database table yaffmap_config and edit the url!!!)
 7) test it!
+8) (optional) install rrd
+  - sudo apt-get install rrdtool librrd-dev php5-dev
+  - sudo pecl install rrd
 
 update yaffmap-backend:
 
