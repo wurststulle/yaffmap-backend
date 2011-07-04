@@ -1,1 +1,3 @@
-/buildtime-conf.xml
+buildtime-conf.xml
+build.properties
+runtime-conf.xml
