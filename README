@@ -6,7 +6,9 @@ development installation:
 2) clone yaffmap-backend
 3) initialize submodules
   - git submodule add git://github.com/wurststulle/yaffmap-backend.git build/vendor/kobold
-4) edit config files (build.properties, runtime-conf.xml)
+4)- mv build.properties.default build.properties
+  - mv runtime-conf.xml.default runtime-conf.xml
+  - edit config files (build.properties, runtime-conf.xml)
 5) run
   - propel-gen om
   - propel-gen sql
