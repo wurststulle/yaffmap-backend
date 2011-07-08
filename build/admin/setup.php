@@ -33,6 +33,7 @@ echo 'checking for json... '.check(extension_loaded('json'));
 echo 'checking for rrd... '.check(extension_loaded('rrd'));
 echo 'checking for reflection... '.check(extension_loaded('Reflection'));
 echo 'checking for config... '.check($config = ConfigQuery::create()->findOne() != null);
+echo 'checking for post_max_size >= 4M... '.check(ini_get('post_max_size')> '4M');
 echo '<br><br>';
 echo 'configuration:'.new KBr();
 $form = new KForm(array(new KAttribute('method', 'post'), new KAttribute('action', 'setup.php?do=setConfig')));
