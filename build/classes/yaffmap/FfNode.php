@@ -535,4 +535,13 @@ class FfNode extends BaseFfNode {
 		$localNode->setUpdateIntervalLink((($node->updateIntervalLink == '')?NULL:$node->updateIntervalLink));
 		return $localNode;
 	}
+	
+	/**
+	* delete ffNodes that dont have been updated since $nbHours hours
+	* @param integer $nbHours
+	* @return number of deleted rows
+	*/
+	public static function deleteOld($nbHours = 12){
+		return FfNodeQuery::create()->filterByUpdatedAt(time() - $nbHours * 60 * 60, ModelCriteria::LESS_THAN)->delete();
+	}
 } // FfNode

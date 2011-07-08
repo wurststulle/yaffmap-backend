@@ -136,4 +136,13 @@ class AddrMap extends BaseAddrMap {
 		$addrMap->setUpdatedAt($device->updatedAt);
 		return $addrMap;
 	}
+	
+	/**
+	* delete AddrMaps(and constraints) that dont have been updated since $nbHours hours
+	* @param integer $nbHours
+	* @return number of deleted rows
+	*/
+	public static function deleteOld($nbHours = 12){
+		return AddrMapQuery::create()->filterByUpdatedAt(time() - $nbHours * 60 * 60, ModelCriteria::LESS_THAN)->delete();
+	}
 } // AddrMap
