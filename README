@@ -5,7 +5,8 @@ development installation:
 1) install propel (-> see http://www.propelorm.org)
 2) clone yaffmap-backend
 3) initialize submodules
-  - git submodule add git://github.com/wurststulle/yaffmap-backend.git build/vendor/kobold
+  - git submodule init
+  - git submodule update
 4) edit config files (build.properties, runtime-conf.xml)
 5) run
   - propel-gen om
