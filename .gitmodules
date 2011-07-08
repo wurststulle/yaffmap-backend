@@ -1,0 +1,3 @@
+[submodule "build/vendor/kobold"]
+	path = build/vendor/kobold
+	url = git@github.com:wurststulle/kobold.git
