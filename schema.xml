@@ -220,6 +220,7 @@
     <column name="releaseDate" type="TIMESTAMP" phpName="ReleaseDate" required="true" />
     <column name="agent" type="BLOB" phpName="Agent" required="true" />
     <column name="agentSize" type="VARCHAR" size="32" phpName="AgentSize" />
+    <column name="dlCount" type="INTEGER" phpName="DlCount" defaultValue="0" />
     <behavior name="auto_add_pk" />
     <unique>
       <unique-column name="release" />
