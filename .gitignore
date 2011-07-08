@@ -1,3 +1,7 @@
 /buildtime-conf.xml
 /runtime-conf.xml
 /build.properties
+.settings
+*~
+.buildpath
+.project
