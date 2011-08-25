@@ -1,3 +1,6 @@
 [submodule "build/vendor/kobold"]
 	path = build/vendor/kobold
 	url = git@github.com:wurststulle/kobold.git
+[submodule "build/vendor/yaffmap-map"]
+        path = build/vendor/yaffmap-map
+        url = git@github.com:wurststulle/yaffmap-map.git
