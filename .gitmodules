@@ -4,3 +4,6 @@
 [submodule "build/vendor/yaffmap-map"]
         path = build/vendor/yaffmap-map
         url = git@github.com:wurststulle/yaffmap-map.git
+[submodule "build/vendor/Propel"]
+	path = build/vendor/Propel
+	url = git://github.com/propelorm/Propel.git
