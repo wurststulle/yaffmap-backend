@@ -7,3 +7,6 @@
 [submodule "build/vendor/Propel"]
 	path = build/vendor/Propel
 	url = git://github.com/propelorm/Propel.git
+[submodule "build/vendor/PHPLiveX"]
+	path = build/vendor/PHPLiveX
+	url = git@github.com:wurststulle/phplivex.git
