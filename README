@@ -2,17 +2,17 @@ Yet Another Freifunk Map - Backend
 
 development installation:
 
-1) install propel (-> see http://www.propelorm.org)
+1) install propel dependencies
+  - pear channel-discover pear.phing.info
+  - pear install phing/phing
+  - pear install Log
 2) clone yaffmap-backend
 3) initialize submodules
   - git submodule init
   - git submodule update
 4) edit config files (build.properties, runtime-conf.xml)
-5) run
-  - propel-gen om
-  - propel-gen sql
-  - propel-gen insert-sql
-  - propel-gen convert-conf
+5) build propel environment 
+  - run ./update_om.sh
 6) goto http://<yaffmap-server>/admin/setup.php and check your environment (not yet implemented, goto database table yaffmap_config and edit the url!!!)
 7) test it!
 8) (optional) install rrd
@@ -22,6 +22,6 @@ development installation:
 update yaffmap-backend:
 
 1) fetch/pull/whatever from git
-2) goto <yaffmap-dir>/migrate
-  - execute ./migrate.sh
-3) test it!
+2) run ./migrate.sh
+3) update git submodules:
+  - run ./update_submodules.sh
