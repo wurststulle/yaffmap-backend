@@ -28,7 +28,7 @@ class YaffmapNewAgentRelease extends Yaffmap{
 			$putData = file_get_contents("php://input");
 			$release->setAgent($putData);
 			// TODO get file size
-//			$release->setAgentSize(filesize($putData));
+			$release->setAgentSize($_REQUEST['Content-Length']);
 			$release->setReleaseDate(new DateTime("now"));
 			$release->save();
             unset($putData);

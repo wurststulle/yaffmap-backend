@@ -38,7 +38,7 @@ class AddrMap extends BaseAddrMap {
 			->_if($bridgeName != null)
 				->filterByBridgeName($bridgeName)
 			->_endif()
-			->_if($ipv4 != null && $ipv6 != null)
+			->_if(!is_null($ipv4) && !is_null($ipv6))
 				->filterByIpv4addr($ipv4)
 				->filterByIpv6addr($ipv6)
 			->_elseif($ipv4 != null)

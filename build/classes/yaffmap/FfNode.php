@@ -279,11 +279,8 @@ class FfNode extends BaseFfNode {
 											// alias was previously inserted into address map by global update
 											// create new alias and add it to address map
 											$alias = new IpAlias();
-											if(isset($ipAlias->ipv4Addr)){
-												$alias->setIpv4addr($ipAlias->ipv4Addr);
-											}else{
-												$alias->setIpv6addr($ipAlias->ipv6Addr);
-											}
+											$alias->setIpv4addr($ipAlias->ipv4Addr);
+											$alias->setIpv6addr($ipAlias->ipv6Addr);
 											$alias->setAddrMap($addrMap);
 											$alias->setName($ipAlias->name);
 											// delete old address map incl interface
