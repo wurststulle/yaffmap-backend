@@ -25,10 +25,15 @@ class YaffmapNewAgentRelease extends Yaffmap{
 			throw new YaffmapLoggedException('Release already exists.');
 		}else{
 			/* @var $release agentRelease */
+			if(!is_writeable('download')){
+				throw new Exception('Directory "download" is not writeable.');
+			}
 			$putData = file_get_contents("php://input");
+			file_put_contents('download/tmp.tar.gz', $putData);
+			$size = filesize('download/tmp.tar.gz');
 			$release->setAgent($putData);
-			// TODO get file size
-			$release->setAgentSize($_REQUEST['Content-Length']);
+			$release->setAgentSize($size);
+			unlink('download/tmp.tar.gz');
 			$release->setReleaseDate(new DateTime("now"));
 			$release->save();
             unset($putData);
