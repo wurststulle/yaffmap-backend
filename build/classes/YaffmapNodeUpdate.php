@@ -30,7 +30,7 @@ class YaffmapNodeUpdate extends Yaffmap{
 			$node->updateWiredInterface($dataNode->wiredIface);
 		}
 		//update wireless interfaces
-		if(is_array($this->request['node']->wlDevice)){
+		if(is_array($dataNode->wlDevice)){
 			$node->updateWlInterface($dataNode->wlDevice);
 		}
 		// update rf links
