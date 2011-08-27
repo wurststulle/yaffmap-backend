@@ -147,9 +147,13 @@ try{
 				break;
 			case 'checkPost':
 				// returns value of posted echo key
+				// TODO not implemented in agent
 				if(isset($_POST['echo'])){
 					echo $_POST['echo'];
 				}
+				break;
+			case 'ping':
+				echo 'Yaffmap backend v'.YaffmapConfig::get('version');
 				break;
 			case 'replicateNodes':
 				$backend = new YaffmapBackend();
@@ -178,7 +182,8 @@ try{
 		$table->addThRow(array('RP Links: ', RpLinkQuery::create()->count()));
 		$rpLinks = RpQuery::create()->joinRpLink()->groupByIpv()->withColumn('count('.RpPeer::IPV.')', 'CountIpv')->find();
 		foreach($rpLinks as $t){
-			$table->addRow(array('- davon '.$t->getName().' (IPv'.$t->getIpv().')', $t->getCountIpv()));
+			/* @var $t RpLink */
+			$table->addRow(array('- davon '.$t->getName().' (IPv'.$t->getIpv().')', $t->getVirtualColumn('CountIpv')));
 		}
 		$div->addItem($table);
 		echo $div;
