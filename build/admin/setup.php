@@ -23,20 +23,20 @@ function check($var, $out = null){
 	}
 }
 
-if(isset($_REQUEST['do']) && $_REQUEST['do'] == 'setConfig'){
+if(isset($_REQUEST['do']) && $_REQUEST['do'] == 'saveConfig'){
 	// TODO save
 	echo 'saving this data is not yet implemented :(<br>';
 }
-echo 'checking for php >= 5.3.2... '.check(strnatcmp(phpversion(),'5.3.2') >= 0);
+echo 'checking for php >= 5.3.2... '.check(strnatcmp(phpversion(),'5.3.2') >= 0, 'ok ('.phpversion().')');
 echo 'checking for soap... '.check(extension_loaded('soap'));
 echo 'checking for json... '.check(extension_loaded('json'));
 echo 'checking for rrd... '.check(extension_loaded('rrd'));
 echo 'checking for reflection... '.check(extension_loaded('Reflection'));
 echo 'checking for config... '.check($config = ConfigQuery::create()->findOne() != null);
-echo 'checking for post_max_size >= 4M... '.check(ini_get('post_max_size')> '4M');
+echo 'checking for post_max_size >= 4M '.check(ini_get('post_max_size')> '4M', 'ok ('.ini_get('post_max_size').')');
 echo '<br><br>';
 echo 'configuration:'.new KBr();
-$form = new KForm(array(new KAttribute('method', 'post'), new KAttribute('action', 'setup.php?do=setConfig')));
+$form = new KForm(array(new KAttribute('method', 'post'), new KAttribute('action', 'setup.php?do=saveConfig')));
 $table = new KTable(array(new KAttribute('border', '1')));
 $table->addThRow(array('key', 'value'));
 $table->addRow(array('url', new KInputfield(array(new KAttributeName('url'), new KAttributeId('url'), new KAttributeValue(YaffmapConfig::get('url')), new Kattribute('size', '50')))));
