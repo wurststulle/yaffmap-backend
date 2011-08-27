@@ -106,12 +106,6 @@ try{
 					$backend->getAgentRelease();
 				}
 				break;
-			case 'knock':
-				$response = new YaffmapResponse();
-				$response->setResponseCode(YaffmapResponse::OPERATION_SUCCEDED);
-				$response->setResponseMsg('Yaffmap Backend v'.YaffmapConfig::get('version'));
-				echo $response;
-				break;
 			case 'getVersionMappingAgent':
 				$backend = new YaffmapBackend();
 				if(isset($_GET['url'])){
