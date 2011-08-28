@@ -6,3 +6,4 @@
 .buildpath
 .project
 /propel-gen
+/.settings/org.eclipse.php.core.prefs
