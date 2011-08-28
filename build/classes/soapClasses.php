@@ -18,7 +18,9 @@ class SoapClassMap{
 			'ArrayOfRpLinks' => 'sArrayOfRpLinks', 
 			'ArrayOfBackends' => 'sArrayOfBackends',
 			'ArrayOfWiredIfaces' => 'sArrayOfWiredIfaces',
+			'ArrayOfAddresses' => 'sArrayOfAddresses',
 			'WiredIface' => 'sWiredIface',
+			'Address' => 'sAddress',
 			'AddrMap' => 'sAddrMap',
 			'IpAlias' => 'sIpAlias',
 			'WlDevice' => 'sWlDevice',
@@ -116,9 +118,9 @@ class sFfNode{
 	/**
 	 * one of the nodes addresses(mac or ipv4/6), used to identify the node while replication
 	 * 
-	 * @var string
+	 * @var array sAddresses
 	 */
-	public $addr;
+	public $addresses;
 	
 	/**
 	 * @var string
@@ -141,6 +143,14 @@ class sFfNode{
 	public $wlDevices;
 }
 
+class sArrayOfAddresses{
+	
+	/**
+	 * @var array sAddresses
+	 */
+	public $addresses = array();
+}
+
 class sArrayOfWiredIfaces{
 	
 	/**
@@ -155,6 +165,14 @@ class sArrayOfWlDevices{
 	 * @var array sWlDevice
 	 */
 	public $wlDevices = array();
+}
+
+class sAddress{
+	
+	/**
+	 * @var string
+	 */
+	public $address;
 }
 
 class sWlDevice{

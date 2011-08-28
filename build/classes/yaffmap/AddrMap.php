@@ -57,7 +57,9 @@ class AddrMap extends BaseAddrMap {
 	 * returns one address (mac or ipv4/6) of this addressMap that is not null
 	 */
 	public function getAddr(){
-		if($this->getIpv4addr() != null && $this->getIpv4addr() != ''){
+		if($this->getIpv4addr() != null && $this->getIpv4addr() != '' && $this->getIpv6addr() != null && $this->getIpv6addr() != ''){
+			return array($this->getIpv4addr(), $this->getIpv6addr());
+		}elseif($this->getIpv4addr() != null && $this->getIpv4addr() != ''){
 			return $this->getIpv4addr();
 		}elseif($this->getIpv6addr() != null && $this->getIpv6addr() != ''){
 			return $this->getIpv6addr();
@@ -76,26 +78,7 @@ class AddrMap extends BaseAddrMap {
 	}
 	
 	public static function isValidIpv6Addr($ip){
-		if(preg_match('/^\s*((([0-9A-Fa-f]{1,4}:){7}
-(([0-9A-Fa-f]{1,4})|:))|(([0-9A-Fa-f]{1,4}:){6}
-(:|((25[0-5]|2[0-4]\d|[01]?\d{1,2})(\.(25[0-5]|2[0-4]\d|
-[01]?\d{1,2})){3})|(:[0-9A-Fa-f]{1,4})))|
-(([0-9A-Fa-f]{1,4}:){5}((:((25[0-5]|2[0-4]\d|[01]?\d{1,2})
-(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})?)|
-((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){4}
-(:[0-9A-Fa-f]{1,4}){0,1}((:((25[0-5]|2[0-4]\d|[01]?\d{1,2})
-(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})?)|
-((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){3}
-(:[0-9A-Fa-f]{1,4}){0,2}((:((25[0-5]|2[0-4]\d|[01]?\d{1,2})
-(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|
-(([0-9A-Fa-f]{1,4}:){2}(:[0-9A-Fa-f]{1,4}){0,3}((:((25[0-5]|2[0-4]\d|
-[01]?\d{1,2})(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})?)|
-((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:)(:[0-9A-Fa-f]{1,4}){0,4}
-((:((25[0-5]|2[0-4]\d|[01]?\d{1,2})(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})?)|
-((:[0-9A-Fa-f]{1,4}){1,2})))|(:(:[0-9A-Fa-f]{1,4}){0,5}((:((25[0-5]|2[0-4]\d|
-[01]?\d{1,2})(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})?)|
-((:[0-9A-Fa-f]{1,4}){1,2})))|(((25[0-5]|2[0-4]\d|[01]?\d{1,2})
-(\.(25[0-5]|2[0-4]\d|[01]?\d{1,2})){3})))(%.+)?\s*$/', $ip)){
+		if(Net_IPv6::checkIPv6($ip)){
 			return true;
 		}
 		return false;

@@ -48,6 +48,34 @@ class FfNode extends BaseFfNode {
 	}
 	
 	/**
+	 * 
+	 * @param array $addrArray array of addresses(ipv4/6/mac)
+	 * @param string $hostname
+	 * @param unknown_type $dbCon
+	 */
+	public static function findOneByAddrArray($addrArray, $hostname, $dbCon = null){
+		$addrMap = AddrMapNodeQuery::create()->filterByHostname($hostname);
+		/* @var $addrMap AddrMapNode */
+		foreach($addrArray as $addr){
+			if(AddrMap::isValidIpv4Addr($addr)){
+				$addrMap->filterByIpv4addr($addr);
+			}elseif(AddrMap::isValidIpv6Addr($addr)){
+				$addrMap->filterByIpv6addr($addr);
+			}else{
+				$addrMap->filterByMacAddr($addr);
+			}
+		}
+		$addrMap->findOne($dbCon);
+		if(!is_null($addrMap)){
+			$node = $addrMap->getFfNode();
+			if(count($node) == 1){
+				return $node;
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * update attributes of ffNode with given update
 	 * @param unknown_type $update
 	 * @throws EUnknownAttribute

@@ -232,7 +232,7 @@ class YaffmapBackend{
 					if(is_array($n)){
 						foreach($n as $node){
 							/* @var $node sFfNode */
-							$localNode = FfNode::findOneByAddr($node->addr, $node->hostname, $dbCon);
+							$localNode = FfNode::findOneByAddrArray($node->addresses, $node->hostname, $dbCon);
 							if($localNode == null){
 								// node to be replicated does not exist, create it
 //								echo Kobold::dump($node);
