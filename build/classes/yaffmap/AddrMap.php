@@ -71,7 +71,7 @@ class AddrMap extends BaseAddrMap {
 	}
 	
 	public static function isValidIpv4Addr($ip){
-		if(preg_match("/^(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$/", $ip)){
+		if(Net_IPv4::isValidIpv4Addr($ip)){
 			return true;
 		}
 		return false;
