@@ -1,1 +1,9 @@
 /buildtime-conf.xml
+/runtime-conf.xml
+/build.properties
+.settings
+*~
+.buildpath
+.project
+/propel-gen
+/.settings/org.eclipse.php.core.prefs

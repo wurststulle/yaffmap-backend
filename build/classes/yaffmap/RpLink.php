@@ -14,5 +14,13 @@
  * @package    propel.generator.ffmap
  */
 class RpLink extends BaseRpLink {
-
+	
+	/**
+	* delete RpLinks that dont have been updated since $nbHours hours
+	* @param integer $nbHours
+	* @return number of deleted rows
+	*/
+	public static function deleteOld($nbHours = 12){
+		return RpLinkQuery::create()->filterByUpdatedAt(time() - $nbHours * 60 * 60, ModelCriteria::LESS_THAN)->delete();
+	}
 } // RpLink

@@ -7,7 +7,7 @@ include dirname(__FILE__) . '/classes/Autoloader.php';
 define('DEBUG', true);
 
 //if($_SERVER['REMOTE_ADDR'] == '192.168.2.10' || $_SERVER['REMOTE_ADDR'] == '192.168.2.21'){
-//	
+//
 //}else{
 //	$response = new Response();
 //	$response->setErrorCode(YaffmapResponse::OPERATION_FAILED);
@@ -24,7 +24,7 @@ define('DEBUG', true);
 //		throw new YaffmapException($message);
 //	}
 //}
-//set_error_handler('exceptions_error_handler'); 
+//set_error_handler('exceptions_error_handler');
 
 if(DEBUG){
 	error_reporting(E_ALL & ~E_NOTICE);
@@ -58,11 +58,11 @@ try{
 				// upload file
 				$CHUNK = 8192;
 				if (!($putData = fopen("php://input", "r"))){
-					throw new YaffmapLoggedException("Can't get PUT data."); 
+					throw new YaffmapLoggedException("Can't get PUT data.");
 				}
 				$tot_write = 0;
 				@mkdir('download/debug', 0755, true);
-	            $destFile = 'download/debug/'.date('Y-m-d H:i:s').'.tar.gz'; 
+	            $destFile = 'download/debug/'.date('Y-m-d H:i:s').'.tar.gz';
 	            if(!is_file($destFile)){
 	                fclose(fopen($destFile, "x"));
 	                if(!($fp = fopen($destFile, "w"))){
@@ -106,12 +106,6 @@ try{
 					$backend->getAgentRelease();
 				}
 				break;
-			case 'knock':
-				$response = new YaffmapResponse();
-				$response->setResponseCode(YaffmapResponse::OPERATION_SUCCEDED);
-				$response->setResponseMsg('Yaffmap Backend v'.YaffmapConfig::get('version'));
-				echo $response;
-				break;
 			case 'getVersionMappingAgent':
 				$backend = new YaffmapBackend();
 				if(isset($_GET['url'])){
@@ -145,11 +139,22 @@ try{
 				}
 				echo $response;
 				break;
+			case 'checkPost':
+				// returns value of posted echo key
+				// TODO not implemented in agent
+				if(isset($_POST['echo'])){
+					echo $_POST['echo'];
+				}
+				break;
+			case 'ping':
+				echo 'Yaffmap backend v'.YaffmapConfig::get('version');
+				break;
 			case 'replicateNodes':
 				$backend = new YaffmapBackend();
 				$backend->replicateNodes('http://yaffmap.gross-holger.de');
 				break;
 			case 'test':
+				echo Kobold::dump($_REQUEST);
 				break;
 			default:
 				throw new EUnknownRequestElement($_REQUEST['do']);
@@ -171,7 +176,8 @@ try{
 		$table->addThRow(array('RP Links: ', RpLinkQuery::create()->count()));
 		$rpLinks = RpQuery::create()->joinRpLink()->groupByIpv()->withColumn('count('.RpPeer::IPV.')', 'CountIpv')->find();
 		foreach($rpLinks as $t){
-			$table->addRow(array('- davon '.$t->getName().' (IPv'.$t->getIpv().')', $t->getCountIpv()));
+			/* @var $t RpLink */
+			$table->addRow(array('- davon '.$t->getName().' (IPv'.$t->getIpv().')', $t->getVirtualColumn('CountIpv')));
 		}
 		$div->addItem($table);
 		echo $div;

@@ -24,9 +24,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 		$s = new YaffmapWsdlCreator($classmap);
 		echo $s->createWsdlSchema(YaffmapConfig::get('url'));
 		break;
-	case 'test':
-		echo Kobold::dump($_SERVER);
-		break;
 	default:
 		$client = new SoapClient(YaffmapConfig::get('url').'/soap.php?wsdl', array('location' => YaffmapConfig::get('url').'/soap.php', 'classmap' => $classmap));
 		echo Kobold::dump('====================== METHODS =============================<br>');

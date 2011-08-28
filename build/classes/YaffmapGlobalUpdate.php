@@ -17,7 +17,6 @@ class YaffmapGlobalUpdate extends Yaffmap{
 				$wlIfaces = array();
 				foreach($item->iface as $if){
 					if(isset($if->ipv4Addr)){
-						// ipv4 address given
 						if(!AddrMap::isValidIpv4Addr($if->ipv4Addr)){
 							throw new EInvalidIpAddr($if->ipv4Addr);
 						}
@@ -25,47 +24,44 @@ class YaffmapGlobalUpdate extends Yaffmap{
 							// save first ip to use it as hostname when no hostname is given
 							$firstIp = $if->ipv4Addr;
 						}
-						$node = AddrMapNodeQuery::create()->filterByIpv4addr($if->ipv4Addr)->findOne();
-						if($node == null){
-							// node does not exist
-							// create new addrMap and wl interface
-							$addrMap = new AddrMap();
-							$addrMap->setId(md5(mt_rand(1, 100000).$if->ipv4Addr.date('U')));
-							$addrMap->setIpv4addr($if->ipv4Addr);
-							$addrMap->setIsGlobalUpdated(true);
-							$addrMap->save();
-							$wlIf = new WlIface();
-							$wlIf->setId(md5(mt_rand(1, 100000).$if->ipv4Addr.date('U')));
-							$wlIf->setIsDummy(1);
-							$wlIf->setAddrMap($addrMap);
-							// link address map to wl interface and store wl interface in $wlIfaces collection
-							$wlIfaces[] = $wlIf->copy();
-						}
-					}else{
-						// ipv6 address given
+					}
+					if(isset($if->ipv6Addr)){
 						if(!AddrMap::isValidIpv6Addr($if->ipv6Addr)){
-							throw new EInvalidIpAddr($if->ipv6Addr);
+							// TODO fixme!
+// 							throw new EInvalidIpAddr($if->ipv6Addr);
 						}
-						if($firstIp != null){
+						if($firstIp == null){
 							// save first ip to use it as hostname when no hostname is given
 							$firstIp = $if->ipv6Addr;
 						}
+					}
+					if(!is_null($if->ipv4Addr) && !is_null($if->ipv6Addr)){
+						$node = AddrMapNodeQuery::create()
+							->filterByIpv4addr($if->ipv4Addr)
+							->filterByIpv6addr($if->ipv6Addr)
+							->findOne();
+					}elseif(!is_null($if->ipv4Addr)){
+						$node = AddrMapNodeQuery::create()->filterByIpv4addr($if->ipv4Addr)->findOne();
+					}elseif(!is_null($if->ipv6Addr)){
 						$node = AddrMapNodeQuery::create()->filterByIpv6addr($if->ipv6Addr)->findOne();
-						if($node == null){
-							// node does not exist
-							// create new addrMap and wl interface
-							$addrMap = new AddrMap();
-							$addrMap->setId(md5(mt_rand(1, 100000).$if->ipv4Addr.date('U')));
-							$addrMap->setIpv6addr($if->ipv6Addr);
-							$addrMap->setIsGlobalUpdated(true);
-							$addrMap->save();
-							$wlIf = new WlIface();
-							$wlIf->setId(md5(mt_rand(1, 100000).$if->ipv6Addr.date('U')));
-							$wlIf->setIsDummy(1);
-							$wlIf->setAddrMap($addrMap);
-							// link address map to wl interface and store wl inerface in $wlIfaces collection
-							$wlIfaces[] = $wlIf->copy();
-						}
+					}else{
+						throw new Exception('ipv4/6 address is null.');
+					}
+					if($node == null){
+						// node does not exist
+						// create new addrMap and wl interface
+						$addrMap = new AddrMap();
+						$addrMap->setId(md5(mt_rand(1, 100000).$if->ipv4Addr.$if->ipv6Addr.date('U')));
+						$addrMap->setIpv4addr($if->ipv4Addr);
+						$addrMap->setIpv6addr($if->ipv6Addr);
+						$addrMap->setIsGlobalUpdated(true);
+						$addrMap->save();
+						$wlIf = new WlIface();
+						$wlIf->setId(md5(mt_rand(1, 100000).$if->ipv4Addr.$if->ipv6Addr.date('U')));
+						$wlIf->setIsDummy(1);
+						$wlIf->setAddrMap($addrMap);
+						// link address map to wl interface and store wl interface in $wlIfaces collection
+						$wlIfaces[] = $wlIf->copy();
 					}
 				}
 				if($node == null){

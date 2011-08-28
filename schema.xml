@@ -220,6 +220,7 @@
     <column name="releaseDate" type="TIMESTAMP" phpName="ReleaseDate" required="true" />
     <column name="agent" type="BLOB" phpName="Agent" required="true" />
     <column name="agentSize" type="VARCHAR" size="32" phpName="AgentSize" />
+    <column name="dlCount" type="INTEGER" phpName="DlCount" defaultValue="0" />
     <behavior name="auto_add_pk" />
     <unique>
       <unique-column name="release" />
@@ -314,6 +315,9 @@
     <column name="defaultTree" type="VARCHAR" size="32" phpName="DefaultTree" defaultValue="devel" />
     <column name="adminUser" type="VARCHAR" size="50" phpName="adminUser" defaultValue="admin" />
     <column name="adminPasswd" type="VARCHAR" size="50" phpName="adminPasswd" defaultValue="ae3de14d2827083cf7ea53601ff2bfb1" />
+    <column name="deleteOldNode" type="VARCHAR" size="50" phpName="deleteOldNode" defaultValue="96" />
+    <column name="deleteOldLink" type="VARCHAR" size="50" phpName="deleteOldLink" defaultValue="12" />
+    <column name="deleteOldBackend" type="VARCHAR" size="50" phpName="deleteOldBackend" defaultValue="48" />
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB" />
       <parameter name="Charset" value="utf8" />

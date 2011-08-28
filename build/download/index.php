@@ -14,6 +14,8 @@ if(isset($_REQUEST['getFile'])){
 //		header("Content-Length: " . filesize($filename));
 		header("Content-type: application/force-download");
 		header('Content-Disposition: attachment; filename='.'yaffmap_'.$agent->getRelease().'-'.$agent->getSubRelease().'_'.$agent->getVersion().'_'.$agent->getUpgradeTree().'.tar.gz');
+		$agent->setDlCount($agent->getDlCount()+1);
+		$agent->save();
 		echo stream_get_contents($agent->getAgent());
 	}else{
 		echo 'file not found!';

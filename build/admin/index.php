@@ -4,12 +4,12 @@ Propel::init("../conf/yaffmap-conf.php");
 set_include_path("../classes" . PATH_SEPARATOR . get_include_path());
 require_once '../classes/kobold/Kobold.php';
 require_once '../classes/Yaffmap.php';
-require_once '../classes/PHPLiveX/PHPLiveX.php';
+require_once '../vendor/PHPLiveX/PHPLiveX.php';
 
 KoboldUtils::httpAuth(YaffmapConfig::get('adminUser'), YaffmapConfig::get('adminPasswd'), KoboldUtils::CRYPT_MD5);
 
 $ajax = new PHPLiveX();
-$ajax->Run("../classes/PHPLiveX/phplivex.js");
+$ajax->Run("../vendor/PHPLiveX/phplivex.js");
 
 echo KMenu::includeCss();
 echo new KLink('style.css');
