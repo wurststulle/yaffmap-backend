@@ -303,6 +303,12 @@ class YaffmapSoapServer{
 		}
 		$arrayOfNodes = new sArrayOfFfNodes();
 		$nodes = FfNodeQuery::create()
+			// TODO remove
+// 			->where('FfNode.Hostname LIKE ?', '%Mallorci5G%')
+// 			->limit(3)
+// 			->_or()
+// 			->where('FfNode.Hostname LIKE ?', '%glocke-AP%')
+			// ^^
 			->_if($replFrom != null)
 				->addUsingAlias(FfNodePeer::UPDATED_AT, $replFrom, Criteria::GREATER_EQUAL)
 			->_endif()
@@ -321,12 +327,25 @@ class YaffmapSoapServer{
 					$wif = $wiredIface->getSoapClass();
 					$addrMap = $wiredIface->getAddrMap();
 					/* @var $addrMap AddrMap */
-// 					$n->addresses[] = $addrMap->getAddr();
-					array_push($n->addresses, $addrMap->getAddr());
+					$a = $addrMap->getAddr();
+					if(is_array($a)){
+						foreach($a as $ip){
+							array_push($n->addresses, $ip);
+						}
+					}else{
+						array_push($n->addresses, $a);
+					}
 					$wif->addrMap = $addrMap->getSoapClass();
 					$ipAlias = $addrMap->getIpAliass();
 					foreach($ipAlias as $alias){
+						/* @var $alias IpAlias */
 						$wif->addrMap->ipAlias[] = $alias->getSoapClass();
+						if(!is_null($alias->getIpv4addr())){
+							array_push($n->addresses, $alias->getIpv4addr());
+						}
+						if(!is_null($alias->getIpv6addr())){
+							array_push($n->addresses, $alias->getIpv6addr());
+						}
 					}
 					$n->wiredIfaces[] = $wif;
 				}
@@ -338,12 +357,24 @@ class YaffmapSoapServer{
 						$wli = $wlIface->getSoapClass();
 						$addrMap = $wlIface->getAddrMap();
 						/* @var $addrMap AddrMap */
-// 						$n->addresses[] = $addrMap->getAddr();
-						array_push($n->addresses, $addrMap->getAddr());
+						$a = $addrMap->getAddr();
+						if(is_array($a)){
+							foreach($a as $ip){
+								array_push($n->addresses, $ip);
+							}
+						}else{
+							array_push($n->addresses, $a);
+						}
 						$wli->addrMap = $addrMap->getSoapClass();
 						$ipAlias = $addrMap->getIpAliass();
 						foreach($ipAlias as $alias){
 							$wli->addrMap->ipAlias[] = $alias->getSoapClass();
+							if(!is_null($alias->getIpv4addr())){
+								array_push($n->addresses, $alias->getIpv4addr());
+							}
+							if(!is_null($alias->getIpv6addr())){
+								array_push($n->addresses, $alias->getIpv6addr());
+							}
 						}
 						$wld->wlIfaces[] = $wli;
 					}

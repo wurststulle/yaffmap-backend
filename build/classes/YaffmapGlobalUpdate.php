@@ -27,8 +27,7 @@ class YaffmapGlobalUpdate extends Yaffmap{
 					}
 					if(isset($if->ipv6Addr)){
 						if(!AddrMap::isValidIpv6Addr($if->ipv6Addr)){
-							// TODO fixme!
-// 							throw new EInvalidIpAddr($if->ipv6Addr);
+							throw new EInvalidIpAddr($if->ipv6Addr);
 						}
 						if($firstIp == null){
 							// save first ip to use it as hostname when no hostname is given
@@ -92,6 +91,7 @@ class YaffmapGlobalUpdate extends Yaffmap{
 					// node was found, add all items of addrMaps to this node
 					// ifaces are added to a random device
 					$ffNode = $node->getFfNode();
+					/* @var $ffNode FfNode */
 					// update existing (dummy) node
 					if($item->name == ""){
 						// no hostname given, use first ip
@@ -110,6 +110,7 @@ class YaffmapGlobalUpdate extends Yaffmap{
 						// update global update interval of global updated nodes
 						$ffNode->setUpdateIntervalNode($globalUpdateInterval);
 					}
+					$ffNode->setReplicatedBy('');
 					$ffNode->save();
 					$wlDevice = $ffNode->getWlDevices()->getFirst();
 					foreach($wlIfaces as $wlIface){

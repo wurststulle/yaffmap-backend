@@ -151,10 +151,9 @@ try{
 				break;
 			case 'replicateNodes':
 				$backend = new YaffmapBackend();
-				$backend->replicateNodes('http://yaffmap.gross-holger.de');
+				$backend->replicateNodes();
 				break;
 			case 'test':
-				echo Kobold::dump($_REQUEST);
 				break;
 			default:
 				throw new EUnknownRequestElement($_REQUEST['do']);

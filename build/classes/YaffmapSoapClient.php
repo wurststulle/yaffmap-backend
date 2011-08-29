@@ -27,7 +27,7 @@ class YaffmapSoapClient{
 		$this->checkEnv();
 	}
 	
-	public function checkEnv(){
+	protected function checkEnv(){
 		if(YaffmapConfig::get('url') == ''){
 			// check existing of backend identification id
 			throw new YaffmapReplicationException('backend env check failed.');

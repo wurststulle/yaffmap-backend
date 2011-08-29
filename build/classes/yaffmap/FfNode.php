@@ -54,20 +54,40 @@ class FfNode extends BaseFfNode {
 	 * @param unknown_type $dbCon
 	 */
 	public static function findOneByAddrArray($addrArray, $hostname, $dbCon = null){
+		$tmp = null;
 		$addrMap = AddrMapNodeQuery::create()->filterByHostname($hostname);
 		/* @var $addrMap AddrMapNode */
+		$oneFound = false;
+		if(!is_array($addrArray)){
+			$tmp = $addrArray;
+			$addrArray = array();
+			$addrArray[] = $tmp;
+			unset($tmp);
+		}
 		foreach($addrArray as $addr){
 			if(AddrMap::isValidIpv4Addr($addr)){
+				if($oneFound){
+					$addrMap->_or();
+				}
 				$addrMap->filterByIpv4addr($addr);
+				$oneFound = true;
 			}elseif(AddrMap::isValidIpv6Addr($addr)){
+				if($oneFound){
+					$addrMap->_or();
+				}
 				$addrMap->filterByIpv6addr($addr);
+				$oneFound = true;
 			}else{
+				if($oneFound){
+					$addrMap->_or();
+				}
 				$addrMap->filterByMacAddr($addr);
+				$oneFound = true;
 			}
 		}
-		$addrMap->findOne($dbCon);
-		if(!is_null($addrMap)){
-			$node = $addrMap->getFfNode();
+		$addrMapNode = $addrMap->findOne($dbCon);
+		if(!is_null($addrMapNode)){
+			$node = $addrMapNode->getFfNode();
 			if(count($node) == 1){
 				return $node;
 			}

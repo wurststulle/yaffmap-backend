@@ -223,19 +223,33 @@ class YaffmapBackend{
 		try{
 			$client = new YaffmapSoapClient($url);
 			$conns = $client->getBackendConns();
-			$dbCon = Propel::getConnection(FfNodePeer::DATABASE_NAME);
-			$dbCon->beginTransaction();
 			if(is_array($conns)){
 				foreach($conns as $conn){
 					/* @var $conn YaffmapSoapServer */
-					$n = $conn->replicateNodes(YaffmapConfig::get('version'), YaffmapConfig::get('id'))->ffNodes;
-					if(is_array($n)){
-						foreach($n as $node){
-							/* @var $node sFfNode */
+					$n = $conn->replicateNodes(YaffmapConfig::get('version'), YaffmapConfig::get('id'));
+					/* @var $n sArrayOfFfNodes */
+					if(!is_array($n->ffNodes)){
+						$tmp = $n->ffNodes;
+						$n->ffNodes = array();
+						$n->ffNodes[] = $tmp;
+						unset($tmp);
+					}
+					$countNewNodes = 0;
+					$countUpdatedReplicatedNodes = 0;
+					$countSkipedNodes = 0;
+					$countErrors = 0;
+					foreach($n->ffNodes as $node){
+						/* @var $node sFfNode */
+						if(count($node->addresses) == 0){
+							continue;
+						}
+						$dbCon = Propel::getConnection(VersionMappingBackendPeer::DATABASE_NAME);
+						$dbCon->beginTransaction();
+						try{
 							$localNode = FfNode::findOneByAddrArray($node->addresses, $node->hostname, $dbCon);
-							if($localNode == null){
+							if(is_null($localNode)){
 								// node to be replicated does not exist, create it
-//								echo Kobold::dump($node);
+								$countNewNodes++;
 								$localNode = FfNode::createOne($node);
 								$localNode->save($dbCon);
 								$wlDevices = array();
@@ -261,7 +275,9 @@ class YaffmapBackend{
 									}
 									foreach($wlIfaces as $wli){
 										// check, if addrMap belongs to a bridge
-										$addrMap = AddrMapQuery::create()->filterById($wli->addrMap->id)->findOne($dbCon);
+										$addrMap = AddrMapQuery::create()
+											->filterById($wli->addrMap->id)
+											->findOne($dbCon);
 										if($addrMap == null){
 											$addrMap = AddrMap::createOne($wli->addrMap);
 											$addrMap->save($dbCon);
@@ -294,7 +310,9 @@ class YaffmapBackend{
 								}
 								foreach($wiredIfaces as $wiredIface){
 									// check, if addrMap belongs to a bridge
-									$addrMap = AddrMapQuery::create()->filterById($wiredIface->addrMap->id)->findOne($dbCon);
+									$addrMap = AddrMapQuery::create()
+										->filterById($wiredIface->addrMap->id)
+										->findOne($dbCon);
 									if($addrMap == null){
 										$addrMap = AddrMap::createOne($wiredIface->addrMap);
 										$addrMap->save($dbCon);
@@ -315,40 +333,258 @@ class YaffmapBackend{
 										$ipa->save($dbCon);
 									}
 								}
-							}elseif($localNode->getIsGlobalUpdated() && $node->isGlobalUpdated == 'true'){
+							}elseif($localNode->getIsGlobalUpdated() && $node->isGlobalUpdated == 'true' 
+								&& is_null($localNode->getReplicatedBy())){
 								// local and to be replicated node are global updated, skip!
+								$countSkipedNodes++;
 								continue;
 							}elseif($localNode->getIsGlobalUpdated() && $node->isGlobalUpdated == 'false'){
 								// overwrite global updated node
-								// update node
-								foreach(get_object_vars($update) as $key => $val){
-									if(!(is_array($val) || $key == 'id' || is_object($val))){
+								echo 'overwrite global updated node with not global updated node';
+// 								foreach(get_object_vars($update) as $key => $val){
+// 									if(!(is_array($val) || $key == 'id' || is_object($val))){
+// 										if($key == 'isHna'){
+// 											if($val == 'true'){
+// 												$this->setIsHna(true);
+// 											}else{
+// 												$this->setIsHna(false);
+// 											}
+// 											continue;
+// 										}
+// 										try{
+// 											call_user_func_array(array($this, 'set'.ucfirst($key)), array($val));
+// 										}catch(Exception $e){
+// 											throw new EUnknownAttribute($key);
+// 										}
+// 									}
+// 								}
+							}elseif(!$localNode->getIsGlobalUpdated() && $node->isGlobalUpdated == 'true'){
+								// if lastest update < now - update interval then update it else skip
+								echo 'update node with global update';
+							}elseif(!is_null($localNode->getReplicatedBy())){
+								// update previously replicated nodes
+								$countUpdatedReplicatedNodes++;
+								foreach(get_object_vars($node) as $key => $val){
+									if(!(is_array($val) || $key == 'id' || is_object($val) 
+										|| $key == 'addresses' || $key == 'wiredIfaces' 
+										|| $key == '$wlDevices')){
 										if($key == 'isHna'){
 											if($val == 'true'){
-												$this->setIsHna(true);
+												$localNode->setIsHna(true);
 											}else{
-												$this->setIsHna(false);
+												$localNode->setIsHna(false);
 											}
 											continue;
 										}
 										try{
-											call_user_func_array(array($this, 'set'.ucfirst($key)), array($val));
+											call_user_func_array(array($localNode, 'set'.ucfirst($key)), array($val));
 										}catch(Exception $e){
 											throw new EUnknownAttribute($key);
 										}
 									}
 								}
-							}elseif(!$localNode->getIsGlobalUpdated() && $node->isGlobalUpdated == 'true'){
-								// if lastest update < now - update interval then update it else skip
+								$localNode->setUpdatedAt(new DateTime("now"));
+								$localNode->save($dbCon);
+								if(is_array($node->wiredIfaces)){
+									foreach($node->wiredIfaces as $wiredIface){
+										/* @var $wiredIface sWiredIface */
+										// update wired interface
+										$wifQuery = WiredIfaceQuery::create()
+											->filterByFfNode($localNode)
+											->filterByName($wiredIface->name);
+										if($wiredIface->bridgeName != ''){
+											$wifQuery->filterByBridgeName($wiredIface->bridgeName);
+										}
+										$wif = $wifQuery->findoneOrCreate($dbCon);
+										/* @var $wif WiredIface */
+										$wif->setUpdatedAt(new DateTime("now"));
+										// update address map
+										$addrMapQuery = AddrMapQuery::create()->filterByWiredIface($wif);
+										if($wiredIface->addrMap->ipv4Addr != ''){
+											$addrMapQuery->filterByIpv4addr($wiredIface->addrMap->ipv4Addr);
+										}
+										if($wiredIface->addrMap->ipv6Addr != ''){
+											$addrMapQuery->filterByIpv6addr($wiredIface->addrMap->ipv6Addr);
+										}
+										if($wiredIface->addrMap->macAddr != ''){
+											$addrMapQuery->filterByMacAddr($wiredIface->addrMap->macAddr);
+										}
+										$addrMap = $addrMapQuery->findOneOrCreate($dbCon);
+										$addrMap->setUpdatedAt(new DateTime("now"));
+										$addrMap->setBridgeName($wiredIface->addrMap->bridgeName);
+										if($wiredIface->addrMap->isGlobalUpdated == 'true'){
+											$addrMap->setIsGlobalUpdated(true);
+										}else{
+											$addrMap->setIsGlobalUpdated(false);
+										}
+										$addrMap->save($dbCon);
+										$wif->setAddrMap($addrMap);
+										$wif->save($dbCon);
+										if(!is_array($wlIface->addrMap->ipAlias) && $wlIface->addrMap->ipAlias != ''){
+											$tmp = $wlIface->addrMap->ipAlias;
+											$wlIface->addrMap->ipAlias = array();
+											$wlIface->addrMap->ipAlias[] = $tmp;
+											unset($tmp);
+										}
+										if(is_array($wiredIface->addrMap->ipAlias)){
+											// update ip alias
+											foreach($wiredIface->addrMap->ipAlias as $ipAlias){
+												/* @var $ipAlias sIpAlias */
+												$ipAliasQuery = IpAliasQuery::create()->filterByAddrMap($addrMap);
+												if($ipAlias->ipv4Addr != ''){
+													$ipAliasQuery->filterByIpv4addr($ipAlias->ipv4Addr);
+												}
+												if($ipAlias->ipv6Addr != ''){
+													$ipAliasQuery->filterByIpv6addr($ipAlias->ipv6Addr);
+												}
+												$ipA = $ipAliasQuery->findOneOrCreate($dbCon);
+												$ipA->setName($ipAlias->name);
+												/* @var $ipA IpAlias */
+												$ipA->setUpdatedAt(new DateTime("now"));
+												$ipA->save($dbCon);
+											}
+										}
+									}
+								}
+								if(!is_array($node->wlDevices) && $node->wlDevices != ''){
+									$tmp = $node->wlDevices;
+									$node->wlDevices = array();
+									$node->wlDevices[] = $tmp;
+									unset($tmp);
+								}
+								if(is_array($node->wlDevices)){
+									foreach($node->wlDevices as $wlDevice){
+										/* @var $wlDevice sWlDevice */
+										// update wireless devices
+										$wlD = WlDeviceQuery::create()
+											->filterByFfNode($localNode)
+											->filterByName($wlDevice->name)
+											->findOneOrCreate($dbCon);
+										/* @var $wlD WlDevice */
+										$wlD->setTxpower($wlDevice->txpower);
+										$wlD->setAntDirection($wlDevice->antDirection);
+										$wlD->setAntbeamh($wlDevice->antBeamH);
+										$wlD->setAntbeamv($wlDevice->antBeamV);
+										$wlD->setAntgain($wlDevice->antGain);
+										$wlD->setAnttilt($wlDevice->antTilt);
+										$wlD->setAntpol($wlDevice->antPol);
+										$wlD->setChannel($wlDevice->channel);
+										$wlD->setWirelessStandard($wlDevice->wirelessStandard);
+										$wlD->setFrequency($wlDevice->frequency);
+										$wlD->setAvailfrequency($wlDevice->availFrequency);
+										$wlD->setUpdatedAt(new DateTime("now"));
+										$wlD->save($dbCon);
+										// update wireless Interface
+										if(!is_array($wlDevice->wlIfaces)){
+											$tmp = $wlDevice->wlIfaces;
+											$wlDevice->wlIfaces = array();
+											$wlDevice->wlIfaces[] = $tmp;
+											unset($tmp);
+										}
+										foreach($wlDevice->wlIfaces as $wlIface){
+											/* @var $wlIface sWlIface */
+											$wlI = WlIfaceQuery::create()->filterByWlDevice($wlD)
+												->filterByWlMacAddr($wlIface->wlMacAddr)
+												->filterByName($wlIface->name)
+												->findOneOrCreate($dbCon);
+											/* @var $wlI WlIface */
+											$wlI->setWlMode($wlIface->wlMode);
+											$wlI->setBssid($wlIface->bssid);
+											$wlI->setEssid($wlIface->essid);
+											$wlI->setBridgeName($wlIface->bridgeName);
+											$wlI->setUpdatedAt(new DateTime("now"));
+											// update address map
+											$addrMapQuery = null;
+											$addrMapQuery = AddrMapQuery::create();
+											if($wlIface->addrMap->ipv4Addr != ''){
+												$addrMapQuery->filterByIpv4addr($wlIface->addrMap->ipv4Addr);
+											}
+											if($wlIface->addrMap->ipv6Addr != ''){
+												$addrMapQuery->filterByIpv6addr($wlIface->addrMap->ipv6Addr);
+											}
+											if($wlIface->addrMap->macAddr != ''){
+												$addrMapQuery->filterByMacAddr($wlIface->addrMap->macAddr);
+											}
+											$addrMap = $addrMapQuery->findOneOrCreate($dbCon);
+											$addrMap->setUpdatedAt(new DateTime("now"));
+											$addrMap->setBridgeName($wlIface->addrMap->bridgeName);
+											if($wlIface->addrMap->isGlobalUpdated == 'true'){
+												$addrMap->setIsGlobalUpdated(true);
+											}else{
+												$addrMap->setIsGlobalUpdated(false);
+											}
+											if($addrMap->isNew()){
+												/**
+												 * zu bestehendem device ist ein addreemap hinzugekommen, 
+												 * also muss auch das wireless interface neu sein.
+												 * bei global upgedateten knoten lassen sich die wireless 
+												 * interfaces eines devices nicht unterscheiden, somit kann
+												 * das oben gesuchte wireless interface das falsche sein.
+												 * es muss ein neues wireless interface erstellt werden.
+												 */
+												$wlI = new WlIface();
+												$wlI->setWlDevice($wlD);
+												$wlI->setWlMacAddr($wlIface->wlMacAddr);
+												$wlI->setName($wlIface->name);
+												$wlI->setWlMode($wlIface->wlMode);
+												$wlI->setBssid($wlIface->bssid);
+												$wlI->setEssid($wlIface->essid);
+												$wlI->setBridgeName($wlIface->bridgeName);
+												$wlI->setUpdatedAt(new DateTime("now"));
+												$wlI->setAddrMap($addrMap);
+											}
+											$addrMap->save($dbCon);
+											if($wlI->isNew()){
+												$wlI->setAddrMap($addrMap);
+											}
+											$wlI->save($dbCon);
+											if(!is_array($wlIface->addrMap->ipAlias) && $wlIface->addrMap->ipAlias != ''){
+												$tmp = $wlIface->addrMap->ipAlias;
+												$wlIface->addrMap->ipAlias = array();
+												$wlIface->addrMap->ipAlias[] = $tmp;
+												unset($tmp);
+											}
+											if(is_array($wlIface->addrMap->ipAlias)){
+												// update ip alias
+												foreach($wlIface->addrMap->ipAlias as $ipAlias){
+													/* @var $ipAlias sIpAlias */
+													$ipAliasQuery = IpAliasQuery::create()->filterByAddrMap($addrMap);
+													if($ipAlias->ipv4Addr != ''){
+														$ipAliasQuery->filterByIpv4addr($ipAlias->ipv4Addr);
+													}
+													if($ipAlias->ipv6Addr != ''){
+														$ipAliasQuery->filterByIpv6addr($ipAlias->ipv6Addr);
+													}
+													$ipA = $ipAliasQuery->findOneOrCreate($dbCon);
+													$ipA->setName($ipAlias->name);
+													/* @var $ipA IpAlias */
+													$ipA->setUpdatedAt(new DateTime("now"));
+													$ipA->save($dbCon);
+												}
+											}
+										}
+									}
+								}
+							}else{
+								
 							}
+							$dbCon->commit();
+						}catch (Exception $e) {
+							echo Kobold::dump($node);
+							$dbCon->rollback();
+							$error = new ErrorLog();
+							$error->setMessage($e);
+							$error->setType('replication');
+							$error->save();
+							$countErrors++;
 						}
-					}else{
-						
 					}
-//					echo Kobold::dump($n);
+					echo 'new nodes: '.$countNewNodes.'<br>';
+					echo 'countUpdatedReplicatedNodes: '.$countUpdatedReplicatedNodes.'<br>';
+					echo 'countSkipedNodes: '.$countSkipedNodes.'<br>';
+					echo 'countErrors: '.$countErrors.'<br>';
 				}
 			}
-			$dbCon->commit();
 		}catch(SoapFault $e){
 			throw new YaffmapSoapException($e->getMessage());
 		}catch(Exception $e){

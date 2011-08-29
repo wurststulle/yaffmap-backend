@@ -17,7 +17,7 @@ class AddrMap extends BaseAddrMap {
 	
 	public function preInsert(PropelPDO $con = null){
 		if($this->getId() == null){
-		 	$this->setId(md5(mt_rand(1, 1000).date('U')));
+		 	$this->setId(md5(mt_rand(1, 10000).md5(date('U'))));
 		}
     	return true;
 	}
@@ -60,18 +60,18 @@ class AddrMap extends BaseAddrMap {
 		if($this->getIpv4addr() != null && $this->getIpv4addr() != '' && $this->getIpv6addr() != null && $this->getIpv6addr() != ''){
 			return array($this->getIpv4addr(), $this->getIpv6addr());
 		}elseif($this->getIpv4addr() != null && $this->getIpv4addr() != ''){
-			return $this->getIpv4addr();
+			return array($this->getIpv4addr());
 		}elseif($this->getIpv6addr() != null && $this->getIpv6addr() != ''){
-			return $this->getIpv6addr();
+			return array($this->getIpv6addr());
 		}elseif($this->getMacAddr() != null && $this->getMacAddr() != ''){
-			return $this->getMacAddr();
+			return array($this->getMacAddr());
 		}else{
 			return null;
 		}
 	}
 	
 	public static function isValidIpv4Addr($ip){
-		if(Net_IPv4::isValidIpv4Addr($ip)){
+		if(Net_IPv4::validateIP($ip)){
 			return true;
 		}
 		return false;

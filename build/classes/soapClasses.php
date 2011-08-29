@@ -120,7 +120,7 @@ class sFfNode{
 	 * 
 	 * @var array sAddresses
 	 */
-	public $addresses;
+	public $addresses = array();
 	
 	/**
 	 * @var string
@@ -146,7 +146,7 @@ class sFfNode{
 class sArrayOfAddresses{
 	
 	/**
-	 * @var array sAddresses
+	 * @var array sAddress
 	 */
 	public $addresses = array();
 }
