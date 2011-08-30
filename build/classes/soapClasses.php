@@ -266,32 +266,32 @@ class sWlIface{
 	public $id;
 	
 	/**
-	 * @var array sWlIface
+	 * @var string
 	 */
 	public $wlMacAddr;
 	
 	/**
-	 * @var array sWlIface
+	 * @var string
 	 */
 	public $name;
 	
 	/**
-	 * @var array sWlIface
+	 * @var string
 	 */
 	public $wlMode;
 	
 	/**
-	 * @var array sWlIface
+	 * @var string
 	 */
 	public $bssid;
 	
 	/**
-	 * @var array sWlIface
+	 * @var string
 	 */
 	public $essid;
 	
 	/**
-	 * @var array sWlIface
+	 * @var string
 	 */
 	public $bridgeName;
 	
@@ -309,6 +309,11 @@ class sWlIface{
 	 * @var object sAddrMap
 	 */
 	public $addrMap;
+	
+	/**
+	 * @var array sRfLinksOneWay
+	 */
+	public $rfLinksOneWay;
 }
 
 class sWiredIface{
@@ -622,5 +627,41 @@ class sArrayOfRpLinks{
 	 * @var array sRfLink
 	 */
 	public $arrayOfRpLinks = array();
+}
+
+class sRfLinkOneWay{
+	
+	/**
+	* @var string
+	*/
+	public $destMac;
+	
+	/**
+	 * @var string
+	 */
+	public $rssi;
+	
+	/**
+	 * @var string
+	 */
+	public $txRate;
+	
+	/**
+	 * @var string
+	 */
+	public $createdAt;
+	
+	/**
+	 * @var string
+	 */
+	public $updatedAt;
+}
+
+class sArrayOfRfLinksOneWay{
+	
+	/**
+	* @var array sRfLinkOneWay
+	*/
+	public $arrayOfRfLinkOneWay = array();
 }
 ?>

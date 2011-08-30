@@ -46,6 +46,7 @@ class YaffmapSoapClient{
 			throw new YaffmapSoapException('Can not connect to service '.$url.$this->path.'/soap.php?wsdl');
 		}
 	}
+	
 	private function http_file_exists($url){
 		$f = @fopen($url, "r");
 		if($f){

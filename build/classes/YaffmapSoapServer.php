@@ -307,7 +307,7 @@ class YaffmapSoapServer{
 // 			->where('FfNode.Hostname LIKE ?', '%Mallorci5G%')
 // 			->limit(3)
 // 			->_or()
-// 			->where('FfNode.Hostname LIKE ?', '%glocke-AP%')
+// 			->where('FfNode.Hostname LIKE ?', 'RepeaterKV')
 			// ^^
 			->_if($replFrom != null)
 				->addUsingAlias(FfNodePeer::UPDATED_AT, $replFrom, Criteria::GREATER_EQUAL)
@@ -354,6 +354,7 @@ class YaffmapSoapServer{
 					$wld = $wlDevice->getSoapClass();
 					$wlIfaces = $wlDevice->getWlIfaces();
 					foreach($wlIfaces as $wlIface){
+						/* @var $wlIface WlIface */
 						$wli = $wlIface->getSoapClass();
 						$addrMap = $wlIface->getAddrMap();
 						/* @var $addrMap AddrMap */

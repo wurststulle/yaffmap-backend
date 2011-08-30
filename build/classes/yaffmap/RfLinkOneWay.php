@@ -23,4 +23,14 @@ class RfLinkOneWay extends BaseRfLinkOneWay {
 	public static function deleteOld($nbHours = 12){
 		return RfLinkOneWayQuery::create()->filterByUpdatedAt(time() - $nbHours * 60 * 60, ModelCriteria::LESS_THAN)->delete();
 	}
+	
+	public function getSoapClass(){
+		$n = new sRfLinkOneWay();
+		$n->createdAt = $this->getCreatedAt();
+		$n->destMac = $this->getDestMac();
+		$n->rssi = $this->getRssi();
+		$n->txRate = $this->getTxRate();
+		$n->updatedAt = $this->getUpdatedAt();
+		return $n;
+	}
 } // RfLinkOneWay

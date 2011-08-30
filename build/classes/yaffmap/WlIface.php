@@ -68,6 +68,13 @@ class WlIface extends BaseWlIface {
 		$n->bridgeName = $this->getBridgeName();
 		$n->createdAt = $this->getCreatedAt();
 		$n->updatedAt = $this->getUpdatedAt();
+		$rfLinksOneWay = RfLinkOneWayQuery::create()->filterBySourceWlIfaceOneWay($this)->find();
+		if(!is_null($rfLinksOneWay)){
+			foreach($rfLinksOneWay as $rfLinkOneWay){
+				/* @var $rfLinkOneWay RfLinkOneWay */
+				$n->rfLinksOneWay[] = $rfLinkOneWay->getSoapClass();
+			}
+		}
 		return $n;
 	}
 } // WlIface
