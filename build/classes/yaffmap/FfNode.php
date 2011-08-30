@@ -306,6 +306,11 @@ class FfNode extends BaseFfNode {
 								$addrMap = AddrMap::findOneAddrMapByAddr(null, $wlIface->ipv4Addr, $wlIface->ipv6Addr, false, true);
 								$addrMap->save();
 							}
+							// TODO bugtracking
+							if($wlIface->wlMacAddr == ''){
+								throw new YaffmapLoggedException('wirelessMacAddr missing! 
+								'.$this->getHostname().'(wlDevice: '.$wlDevice->getName().', WlIface:'.$wlIface->name.')');
+							}
 							$wlInterface = WlIfaceQuery::create()
 								->filterByWlDevice($wlDevice)
 								->filterByWlMacAddr($wlIface->wlMacAddr)
