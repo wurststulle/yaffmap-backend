@@ -292,41 +292,43 @@ class YaffmapBackend{
 											$wli->rfLinksOneWay[] = $tmp;
 											unset($tmp);
 										}
-										foreach($wli->rfLinksOneWay as $rfLinkOneWay){
-											/* @var $rfLinkOneWay sRfLinkOneWay */
-											$existing1wLinks = RfLinkOneWayQuery::create()->findByDestMac($wlIface->getWlMacAddr());
-											/* @var $existing1wLinks RfLinkOneWay */
-											if($existing1wLinks->count() == 0){
-												// $wlIface NICHT als destination in onewaylinks vorhanden
-												$destWlIface = WlIfaceQuery::create()->findByWlMacAddr($rfLinkOneWay->destMac);
-												if($destWlIface->count() == 0){
-													// destination mac nicht in WlIfaces vorhanden
-													$rfLink1Way = new RfLinkOneWay();
-													/* @var $rfLink1Way RfLinkOneWay */
-													$rfLink1Way->setDestMac($rfLinkOneWay->destMac);
-													$rfLink1Way->setRssi($rfLinkOneWay->rssi);
-													$rfLink1Way->setSourceWlIfaceOneWay($wlIface);
-													$rfLink1Way->setTxRate($rfLinkOneWay->txRate);
-													$rfLink1Way->save();
-												}elseif($destWlIface->count() == 1){
-													// destination mac in WlIfaces vorhanden
+										if(is_array($wli->rfLinksOneWay)){
+											foreach($wli->rfLinksOneWay as $rfLinkOneWay){
+												/* @var $rfLinkOneWay sRfLinkOneWay */
+												$existing1wLinks = RfLinkOneWayQuery::create()->findByDestMac($wlIface->getWlMacAddr());
+												/* @var $existing1wLinks RfLinkOneWay */
+												if($existing1wLinks->count() == 0){
+													// $wlIface NICHT als destination in onewaylinks vorhanden
+													$destWlIface = WlIfaceQuery::create()->findByWlMacAddr($rfLinkOneWay->destMac);
+													if($destWlIface->count() == 0){
+														// destination mac nicht in WlIfaces vorhanden
+														$rfLink1Way = new RfLinkOneWay();
+														/* @var $rfLink1Way RfLinkOneWay */
+														$rfLink1Way->setDestMac($rfLinkOneWay->destMac);
+														$rfLink1Way->setRssi($rfLinkOneWay->rssi);
+														$rfLink1Way->setSourceWlIfaceOneWay($wlIface);
+														$rfLink1Way->setTxRate($rfLinkOneWay->txRate);
+														$rfLink1Way->save();
+													}elseif($destWlIface->count() == 1){
+														// destination mac in WlIfaces vorhanden
+														$rfLink = new RfLink();
+														$rfLink->setDestWlIface($destWlIface->getFirst());
+														$rfLink->setSourceWlIface($wlIface);
+														$rfLink->setRssi($rfLinkOneWay->rssi);
+														$rfLink->setTxRate($rfLinkOneWay->txRate);
+														$rfLink->save();
+													}// else $destWlIface->count() > 1 => mehrere gleine wlMacAddr gefunden, überspringen
+												}else{
+													// $wlIface als destination in onewaylinks vorhanden, 
+													// erstelle neuen rfLink und lösche rfLinkOneWay
 													$rfLink = new RfLink();
-													$rfLink->setDestWlIface($destWlIface->getFirst());
-													$rfLink->setSourceWlIface($wlIface);
-													$rfLink->setRssi($rfLinkOneWay->rssi);
-													$rfLink->setTxRate($rfLinkOneWay->txRate);
+													$rfLink->setDestWlIface($wlIface);
+													$rfLink->setSourceWlIface($existing1wLinks->getSourceWlIfaceOneWay());
+													$rfLink->setRssi($existing1wLinks->getRssi());
+													$rfLink->setTxRate($existing1wLinks->getTxRate());
 													$rfLink->save();
-												}// else $destWlIface->count() > 1 => mehrere gleine wlMacAddr gefunden, überspringen
-											}else{
-												// $wlIface als destination in onewaylinks vorhanden, 
-												// erstelle neuen rfLink und lösche rfLinkOneWay
-												$rfLink = new RfLink();
-												$rfLink->setDestWlIface($wlIface);
-												$rfLink->setSourceWlIface($existing1wLinks->getSourceWlIfaceOneWay());
-												$rfLink->setRssi($existing1wLinks->getRssi());
-												$rfLink->setTxRate($existing1wLinks->getTxRate());
-												$rfLink->save();
-												$existing1wLinks->delete();
+													$existing1wLinks->delete();
+												}
 											}
 										}
 										$ipAliase = array();
@@ -594,28 +596,30 @@ class YaffmapBackend{
 												$wlIface->rfLinksOneWay[] = $tmp;
 												unset($tmp);
 											}
-											foreach($wlIface->rfLinksOneWay as $rfLinkOneWay){
-												/* @var $rfLinkOneWay sRfLinkOneWay */
-												// check if oneWayLink can be converted to rfLink
-												$existing1wLinks = RfLinkOneWayQuery::create()->findByDestMac($wlI->getWlMacAddr());
-												/* @var $existing1wLinks RfLinkOneWay */
-												if($existing1wLinks->count() == 0){
-													// update rfOneWayLink
-													$rfOneWayLink = RfLinkOneWayQuery::create()->filterBySourceWlIfaceOneWay($wlI)->filterByDestMac($rfLinkOneWay->destMac)->findOneOrCreate();
-													/* @var $rfOneWayLink RfLinkOneWay */
-													$rfOneWayLink->setRssi($rfLinkOneWay->rssi);
-													$rfOneWayLink->setTxRate($rfLinkOneWay->txRate);
-// 													$rfOneWayLink->save();
-												}elseif($existing1wLinks->count() == 1){
-													// $wlIface als destination in onewaylinks vorhanden,
-													// erstelle neuen rfLink und lösche rfLinkOneWay
-													$rfLink = new RfLink();
-													$rfLink->setDestWlIface($wlI);
-													$rfLink->setSourceWlIface($existing1wLinks->getSourceWlIfaceOneWay());
-													$rfLink->setRssi($existing1wLinks->getRssi());
-													$rfLink->setTxRate($existing1wLinks->getTxRate());
-													$rfLink->save();
-													$existing1wLinks->delete();
+											if(is_array($wlIface->rfLinksOneWay)){
+												foreach($wlIface->rfLinksOneWay as $rfLinkOneWay){
+													/* @var $rfLinkOneWay sRfLinkOneWay */
+													// check if oneWayLink can be converted to rfLink
+													$existing1wLinks = RfLinkOneWayQuery::create()->findByDestMac($wlI->getWlMacAddr());
+													/* @var $existing1wLinks RfLinkOneWay */
+													if($existing1wLinks->count() == 0){
+														// update rfOneWayLink
+														$rfOneWayLink = RfLinkOneWayQuery::create()->filterBySourceWlIfaceOneWay($wlI)->filterByDestMac($rfLinkOneWay->destMac)->findOneOrCreate();
+														/* @var $rfOneWayLink RfLinkOneWay */
+														$rfOneWayLink->setRssi($rfLinkOneWay->rssi);
+														$rfOneWayLink->setTxRate($rfLinkOneWay->txRate);
+// 														$rfOneWayLink->save();
+													}elseif($existing1wLinks->count() == 1){
+														// $wlIface als destination in onewaylinks vorhanden,
+														// erstelle neuen rfLink und lösche rfLinkOneWay
+														$rfLink = new RfLink();
+														$rfLink->setDestWlIface($wlI);
+														$rfLink->setSourceWlIface($existing1wLinks->getSourceWlIfaceOneWay());
+														$rfLink->setRssi($existing1wLinks->getRssi());
+														$rfLink->setTxRate($existing1wLinks->getTxRate());
+														$rfLink->save();
+														$existing1wLinks->delete();
+													}
 												}
 											}
 											if(!is_array($wlIface->addrMap->ipAlias) && $wlIface->addrMap->ipAlias != ''){
