@@ -3,7 +3,7 @@ class YaffmapNewAgentRelease extends Yaffmap{
 	
 	public function __construct($request = null, $response = null){
 		call_user_func_array('parent::__construct', array($request, $response));
-		$allowed = array('tree', 'release', 'version', 'uploadedFile');
+		$allowed = array('uploadedFile', 'mapping');
 		$this->checkInput($allowed, false, true);
 	}
 	
@@ -37,6 +37,15 @@ class YaffmapNewAgentRelease extends Yaffmap{
 			$release->setReleaseDate(new DateTime("now"));
 			$release->save();
             unset($putData);
+            if($this->request['mapping'] == '1'){
+	            $mapping = new VersionMappingAgent();
+	            $mapping->setAgentRelease($relName);
+	            $mapping->setAgentSubRelease($relSubName);
+	            $mapping->setAgentUpgradeTree($this->request['tree']);
+	            $mapping->setAgentVersion($this->request['version']);
+	            $mapping->setBackendRelease(YaffmapConfig::get('version'));
+	            $mapping->save();
+            }
 		}
 		$this->response->setResponseCode(YaffmapResponse::OPERATION_SUCCEDED);
 		return $this->response;
