@@ -138,6 +138,15 @@ class FfNode extends BaseFfNode {
 	
 	public function updateRpLink($request){
 		foreach($request as $rpName => $rpAttr){
+			if($rpAttr->metric == ''){
+				throw new YaffmapLoggedException('metric name is empty while updating rp links.');
+			}
+			if($rpName == ''){
+				throw new YaffmapLoggedException('routing protocol name is empty while updating rp links.');
+			}
+			if($rpAttr->ipv == ''){
+				throw new YaffmapLoggedException('routing protocolversion is empty while updating rp links.');
+			}
 			$metricType = MetricTypeQuery::create()
 				->filterByName($rpAttr->metric)
 				->findOneOrCreate();
