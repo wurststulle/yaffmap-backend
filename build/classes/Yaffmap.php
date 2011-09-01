@@ -42,7 +42,9 @@ class Yaffmap{
 	 * @throws YaffmapException
 	 */
 	public function checkInput($allowed = null, $skipElementCheck = false, $skipCompatibilityCheck = false){
-		$this->allowed = array_merge($this->allowed, $allowed);
+		if($allowed != null){
+			$this->allowed = array_merge($this->allowed, $allowed);
+		}
 		if(!$skipElementCheck){
 			if(!array_key_exists('release', $this->request) 
 				|| !array_key_exists('tree', $this->request)
