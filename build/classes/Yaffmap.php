@@ -20,7 +20,7 @@ class Yaffmap{
 	 * allowed keys in request
 	 * @var array
 	 */
-	protected $allowed = null;
+	protected $allowed = array();
 	
 	public function __construct($request = null, $response = null){
 		if($request == null){
@@ -42,9 +42,7 @@ class Yaffmap{
 	 * @throws YaffmapException
 	 */
 	public function checkInput($allowed = null, $skipElementCheck = false, $skipCompatibilityCheck = false){
-		if($allowed != null){
-			$this->allowed = array_merge($this->allowed, $allowed);
-		}
+		$this->allowed = array_merge($this->allowed, $allowed);
 		if(!$skipElementCheck){
 			if(!array_key_exists('release', $this->request) 
 				|| !array_key_exists('tree', $this->request)
