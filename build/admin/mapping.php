@@ -39,7 +39,7 @@ switch($_REQUEST['do']){
 		break;
 }
 
-$mappingAgentRelease = VersionMappingAgentQuery::create()->find();
+$mappingAgentRelease = VersionMappingAgentQuery::create()->orderByAgentRelease(Criteria::DESC)->orderByAgentSubRelease(Criteria::DESC)->find();
 if($mappingAgentRelease != null){
 	$table = new KTable();
 	$table->addThRow(array('agent', new KBlanc(), 'backend', new KBlanc()));
