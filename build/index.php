@@ -174,13 +174,13 @@ try{
 		$table->addRow(array('- davon ohne Koordinaten', FfNodeQuery::create()->filterByLatitude(null)->count()));
 		$table->addThRow(array('RP Links: ', RpLinkQuery::create()->count()));
 		$rpLinks = RpQuery::create()->joinRpLink()->groupByIpv()->withColumn('count('.RpPeer::IPV.')', 'CountIpv')->find();
-		if(is_array($rpLinks)){
+		if(!is_null($rpLinks)){
 			foreach($rpLinks as $t){
 				/* @var $t RpLink */
 				$table->addRow(array('- davon '.$t->getName().' (IPv'.$t->getIpv().')', $t->getVirtualColumn('CountIpv')));
 			}
 		}
-		$table->addThRow(array('RF Links: ', RfLinkQuery::create()->count()));
+		$table->addThRow(array('RF Links: ', RfLinkQuery::create()->count().' '));
 		$table->addThRow(array('RF OneWay Links: ', RfLinkOneWayQuery::create()->count()));
 		$div->addItem($table);
 		echo $div;
