@@ -15,7 +15,7 @@ class YaffmapLoggedException extends YaffmapException{
 	public function __construct($message = null, $type = null){
 		$error = new ErrorLog();
 		$error->setRequest(Kobold::dump_ret($_REQUEST));
-		$error->setMessage($message);
+		$error->setMessage($message.'|'.$this);
 		$error->setIp($_SERVER['REMOTE_ADDR']);
 		if($type == null){
 			$error->setType(ErrorLogPeer::TYPE_EXCEPTION);
