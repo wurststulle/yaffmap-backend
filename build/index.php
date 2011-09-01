@@ -163,7 +163,7 @@ try{
 		$div->addAttribute(array(new KAttribute('align', 'center')));
 		$div->addItem('<font color="red">Y</font>et <font color="red">A</font>nother <font color="red">F</font>rei<font color="red">f</font>unk <font color="red">Map</font> Backend v'.YaffmapConfig::get('version'));
 		$div->addItem(array(new KHr().new KBr()));
-		$div->addItem('see '.new KSimpleLink('http://wurststulle.dyndns.org/yaffmap/trac', 'documentation').' for help');
+		$div->addItem('see '.new KSimpleLink('https://github.com/wurststulle/yaffmap-backend', 'github').' for help');
 		$div->addItem(new KBr());
 		$div->addItem(new KBr());
 		$table = new KTable();
@@ -174,10 +174,14 @@ try{
 		$table->addRow(array('- davon ohne Koordinaten', FfNodeQuery::create()->filterByLatitude(null)->count()));
 		$table->addThRow(array('RP Links: ', RpLinkQuery::create()->count()));
 		$rpLinks = RpQuery::create()->joinRpLink()->groupByIpv()->withColumn('count('.RpPeer::IPV.')', 'CountIpv')->find();
-		foreach($rpLinks as $t){
-			/* @var $t RpLink */
-			$table->addRow(array('- davon '.$t->getName().' (IPv'.$t->getIpv().')', $t->getVirtualColumn('CountIpv')));
+		if(is_array($rpLinks)){
+			foreach($rpLinks as $t){
+				/* @var $t RpLink */
+				$table->addRow(array('- davon '.$t->getName().' (IPv'.$t->getIpv().')', $t->getVirtualColumn('CountIpv')));
+			}
 		}
+		$table->addThRow(array('RF Links: ', RfLinkQuery::create()->count()));
+		$table->addThRow(array('RF OneWay Links: ', RfLinkOneWayQuery::create()->count()));
 		$div->addItem($table);
 		echo $div;
 	}
