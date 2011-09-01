@@ -168,7 +168,7 @@ try{
 		$div->addItem(new KBr());
 		$table = new KTable();
 		$table->addAttribute(array(new KAttribute('border', 1)));
-		$table->addThRow(array('Knoten: ', FfNodeQuery::create()->count()));
+		$table->addThRow(array('Knoten: ', FfNodeQuery::create()->count().' '));
 		$table->addRow(array('- davon mit Agent', FfNodeQuery::create()->filterByAgentRelease(null, Criteria::NOT_EQUAL)->count()));
 		$table->addRow(array('- davon mit Koordinaten', FfNodeQuery::create()->filterByLatitude(null, Criteria::NOT_EQUAL)->count()));
 		$table->addRow(array('- davon ohne Koordinaten', FfNodeQuery::create()->filterByLatitude(null)->count()));
@@ -177,11 +177,11 @@ try{
 		if(!is_null($rpLinks)){
 			foreach($rpLinks as $t){
 				/* @var $t RpLink */
-				$table->addRow(array('- davon '.$t->getName().' (IPv'.$t->getIpv().')', $t->getVirtualColumn('CountIpv')));
+				$table->addRow(array('- davon '.$t->getName().' (IPv'.$t->getIpv().')', $t->getVirtualColumn('CountIpv').' '));
 			}
 		}
 		$table->addThRow(array('RF Links: ', RfLinkQuery::create()->count().' '));
-		$table->addThRow(array('RF OneWay Links: ', RfLinkOneWayQuery::create()->count()));
+		$table->addThRow(array('RF OneWay Links: ', RfLinkOneWayQuery::create()->count().' '));
 		$div->addItem($table);
 		echo $div;
 	}
