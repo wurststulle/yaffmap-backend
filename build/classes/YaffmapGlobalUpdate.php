@@ -17,7 +17,7 @@ class YaffmapGlobalUpdate extends Yaffmap{
 				$wlIfaces = array();
 				foreach($item->iface as $if){
 					if(isset($if->ipv4Addr)){
-						if(!AddrMap::isValidIpv4Addr($if->ipv4Addr)){
+						if(!Net_IPv4::validateIP($if->ipv4Addr)){
 							throw new EInvalidIpAddr($if->ipv4Addr);
 						}
 						if($firstIp == null){
@@ -26,7 +26,7 @@ class YaffmapGlobalUpdate extends Yaffmap{
 						}
 					}
 					if(isset($if->ipv6Addr)){
-						if(!AddrMap::isValidIpv6Addr($if->ipv6Addr)){
+						if(!Net_IPv6::checkIPv6($if->ipv6Addr)){
 							throw new EInvalidIpAddr($if->ipv6Addr);
 						}
 						if($firstIp == null){
@@ -124,10 +124,10 @@ class YaffmapGlobalUpdate extends Yaffmap{
 			$request = Yaffmap::decodeJson($this->request['link']);
 			foreach($request->link as $link){
 				if($request->ipv == 4){
-					if(!AddrMap::isValidIpv4Addr($link->sAddr)){
+					if(!Net_IPv4::validateIP($link->sAddr)){
 						throw new EInvalidIpAddr($link->sAddr);
 					}
-					if(!AddrMap::isValidIpv4Addr($link->dAddr)){
+					if(!Net_IPv4::validateIP($link->dAddr)){
 						throw new EInvalidIpAddr($link->dAddr);
 					}
 					// ipv4 source address given

@@ -25,13 +25,13 @@ class FfNode extends BaseFfNode {
 	}
 	
 	public static function findOneByAddr($addr, $hostname, $dbCon = null){
-		if(AddrMap::isValidIpv4Addr($addr)){
+		if(Net_IPv4::validateIP($addr)){
 			$addrMap = AddrMapNodeQuery::create()->filterByIpv4addr($addr)->filterByHostname($hostname)->findOne($dbCon);
 			/* @var $addrMap AddrMapNode */
 			if($addrMap != null){
 				return $addrMap->getFfNode();
 			}
-		}elseif(AddrMap::isValidIpv6Addr($addr)){
+		}elseif(Net_IPv6::checkIPv6($addr)){
 			$addrMap = AddrMapNodeQuery::create()->filterByIpv6addr($addr)->filterByHostname($hostname)->findOne($dbCon);
 			/* @var $addrMap AddrMapNode */
 			if($addrMap != null){
@@ -65,13 +65,13 @@ class FfNode extends BaseFfNode {
 			unset($tmp);
 		}
 		foreach($addrArray as $addr){
-			if(AddrMap::isValidIpv4Addr($addr)){
+			if(Net_IPv4::validateIP($addr)){
 				if($oneFound){
 					$addrMap->_or();
 				}
 				$addrMap->filterByIpv4addr($addr);
 				$oneFound = true;
-			}elseif(AddrMap::isValidIpv6Addr($addr)){
+			}elseif(Net_IPv6::checkIPv6($addr)){
 				if($oneFound){
 					$addrMap->_or();
 				}
