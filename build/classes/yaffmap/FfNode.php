@@ -37,12 +37,14 @@ class FfNode extends BaseFfNode {
 			if($addrMap != null){
 				return $addrMap->getFfNode();
 			}
-		}else{
+		}elseif(Net_MAC::check($addr)){
 			$addrMap = AddrMapNodeQuery::create()->filterByMacAddr($addr)->filterByHostname($hostname)->findOne($dbCon);
 			/* @var $addrMap AddrMapNode */
 			if($addrMap != null){
 				return $addrMap->getFfNode();
 			}
+		}else{
+			throw new EInvalidAddr($addr);
 		}
 		return null;
 	}
@@ -77,12 +79,14 @@ class FfNode extends BaseFfNode {
 				}
 				$addrMap->filterByIpv6addr($addr);
 				$oneFound = true;
-			}else{
+			}elseif(Net_MAC::check($addr)){
 				if($oneFound){
 					$addrMap->_or();
 				}
 				$addrMap->filterByMacAddr($addr);
 				$oneFound = true;
+			}else{
+				throw new EInvalidAddr($addr);
 			}
 		}
 		$addrMapNode = $addrMap->findOne($dbCon);

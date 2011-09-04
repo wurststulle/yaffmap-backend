@@ -67,6 +67,13 @@ class EInvalidIpAddr extends YaffmapLoggedException{
 	}
 }
 
+class EInvalidAddr extends YaffmapLoggedException{
+	
+	public function __construct($addr){
+		parent::__construct('Invalid address "'.$addr.'" given.');
+	}
+}
+
 class YaffmapSoapException extends YaffmapException{
 	
 	public function __construct($msg){
