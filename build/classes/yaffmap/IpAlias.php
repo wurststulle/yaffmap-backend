@@ -82,4 +82,12 @@ class IpAlias extends BaseIpAlias {
 		$ipAlias->setAddrMap($addrMap);
 		return $addrMap;
 	}
+	
+	public function save(PropelPDO $dbCon = null){
+		if($this->validate()){
+			parent::save($dbCon);
+		}else{
+			throw new YaffmapValidationException($this->getValidationFailures());
+		}
+	}
 } // IpAlias

@@ -128,6 +128,12 @@
       <unique-column name="ipv6Addr" />
       <unique-column name="f_addrMapID" />
     </unique>
+    <validator column="ipv4Addr">
+		<rule name="class" class="validators.Ipv4Validator" message="Invalid ipv4 address!" />
+	</validator>
+	<validator column="ipv6Addr">
+		<rule name="class" class="validators.Ipv6Validator" message="Invalid ipv6 address!" />
+	</validator>
     <foreign-key foreignTable="addrMap" phpName="AddrMap" onDelete="cascade" onUpdate="cascade">
       <reference local="f_addrMapID" foreign="ID_addrMap" />
     </foreign-key>
