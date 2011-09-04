@@ -16,35 +16,25 @@ class YaffmapGlobalUpdate extends Yaffmap{
 				$node = null;
 				$wlIfaces = array();
 				foreach($item->iface as $if){
-					if(isset($if->ipv4Addr)){
-						if(!Net_IPv4::validateIP($if->ipv4Addr)){
-							throw new EInvalidIpAddr($if->ipv4Addr);
-						}
-						if($firstIp == null){
-							// save first ip to use it as hostname when no hostname is given
+					if($firstIp == null && $item->name == ""){
+						if(Net_IPv4::validateIP($if->ipv4Addr)){
 							$firstIp = $if->ipv4Addr;
 						}
-					}
-					if(isset($if->ipv6Addr)){
-						if(!Net_IPv6::checkIPv6($if->ipv6Addr)){
-							throw new EInvalidIpAddr($if->ipv6Addr);
-						}
-						if($firstIp == null){
-							// save first ip to use it as hostname when no hostname is given
+						if(Net_IPv6::checkIPv6($if->ipv6Addr)){
 							$firstIp = $if->ipv6Addr;
 						}
 					}
-					if(!is_null($if->ipv4Addr) && !is_null($if->ipv6Addr)){
+					if(Net_IPv6::checkIPv6($if->ipv6Addr) && Net_IPv4::validateIP($if->ipv4Addr)){
 						$node = AddrMapNodeQuery::create()
 							->filterByIpv4addr($if->ipv4Addr)
 							->filterByIpv6addr($if->ipv6Addr)
 							->findOne();
-					}elseif(!is_null($if->ipv4Addr)){
+					}elseif(Net_IPv6::checkIPv6($if->ipv6Addr)){
 						$node = AddrMapNodeQuery::create()->filterByIpv4addr($if->ipv4Addr)->findOne();
-					}elseif(!is_null($if->ipv6Addr)){
+					}elseif(Net_IPv4::validateIP($if->ipv4Addr)){
 						$node = AddrMapNodeQuery::create()->filterByIpv6addr($if->ipv6Addr)->findOne();
 					}else{
-						throw new Exception('ipv4/6 address is null.');
+						throw new Exception('ipv4/6 address is invalid.');
 					}
 					if($node == null){
 						// node does not exist
