@@ -80,3 +80,11 @@ class YaffmapSoapException extends YaffmapException{
 		parent::__construct($msg, ErrorLogPeer::TYPE_SOAP);
 	}
 }
+
+class YaffmapValidationException extends YaffmapLoggedException{
+	
+	public function __construct($failures){
+		$f = array_pop($failures);
+		parent::__construct($f->getMessage());
+	}
+}

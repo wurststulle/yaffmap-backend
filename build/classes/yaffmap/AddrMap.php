@@ -70,20 +70,6 @@ class AddrMap extends BaseAddrMap {
 		}
 	}
 	
-	public static function isValidIpv4Addr($ip){
-		if(Net_IPv4::validateIP($ip)){
-			return true;
-		}
-		return false;
-	}
-	
-	public static function isValidIpv6Addr($ip){
-		if(Net_IPv6::checkIPv6($ip)){
-			return true;
-		}
-		return false;
-	}
-	
 	/**
 	 * @return sAddrMap
 	 */
@@ -127,5 +113,13 @@ class AddrMap extends BaseAddrMap {
 	*/
 	public static function deleteOld($nbHours = 12){
 		return AddrMapQuery::create()->filterByUpdatedAt(time() - $nbHours * 60 * 60, ModelCriteria::LESS_THAN)->delete();
+	}
+	
+	public function save(PropelPDO $dbCon = null){
+		if($this->validate()){
+			parent::save($dbCon);
+		}else{
+			throw new YaffmapValidationException($this->getValidationFailures());
+		}
 	}
 } // AddrMap

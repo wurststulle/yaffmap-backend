@@ -103,6 +103,15 @@
       <unique-column name="ipv6Addr" />
       <unique-column name="macAddr" />
     </unique>
+	<validator column="ipv4Addr">
+		<rule name="class" class="validators.Ipv4Validator" message="Invalid ipv4 address!" />
+	</validator>
+	<validator column="ipv6Addr">
+		<rule name="class" class="validators.Ipv6Validator" message="Invalid ipv6 address!" />
+	</validator>
+	<validator column="macAddr">
+		<rule name="class" class="validators.MacValidator" message="Invalid mac address!" />
+	</validator>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB" />
       <parameter name="Charset" value="utf8" />
