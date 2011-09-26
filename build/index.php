@@ -3,6 +3,7 @@ require_once 'propel/Propel.php';
 Propel::init("conf/yaffmap-conf.php");
 set_include_path("classes".PATH_SEPARATOR.get_include_path());
 include dirname(__FILE__) . '/classes/Autoloader.php';
+include dirname(__FILE__) . '/vendor/kobold/Kobold.php';
 
 define('DEBUG', true);
 
