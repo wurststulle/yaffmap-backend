@@ -608,7 +608,7 @@ class YaffmapBackend{
 														/* @var $rfOneWayLink RfLinkOneWay */
 														$rfOneWayLink->setRssi($rfLinkOneWay->rssi);
 														$rfOneWayLink->setTxRate($rfLinkOneWay->txRate);
-// 														$rfOneWayLink->save();
+														$rfOneWayLink->save();
 													}elseif($existing1wLinks->count() == 1){
 														// $wlIface als destination in onewaylinks vorhanden,
 														// erstelle neuen rfLink und lösche rfLinkOneWay
