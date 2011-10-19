@@ -6,6 +6,7 @@ if(DEBUG){
 	ini_set('display_errors','On');
 }
 
+require_once 'classes/YaffmapException.php';
 require_once 'propel/Propel.php';
 Propel::init("conf/yaffmap-conf.php");
 set_include_path("classes".PATH_SEPARATOR.get_include_path());
