@@ -4,7 +4,10 @@ ini_set("soap.wsdl_cache_enabled", "0");
 require_once 'propel/Propel.php';
 Propel::init("conf/yaffmap-conf.php");
 set_include_path("classes" . PATH_SEPARATOR . get_include_path());
-include dirname(__FILE__).'/classes/Autoloader.php';
+include dirname(__FILE__).'/classes/soapClasses.php';
+include dirname(__FILE__).'/classes/YaffmapWsdlGenerator.php';
+include dirname(__FILE__).'/classes/YaffmapSoapServer.php';
+include dirname(__FILE__).'/classes/YaffmapConfig.php';
 
 $server = new YaffmapSoapServer();
 
