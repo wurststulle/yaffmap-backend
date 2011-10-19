@@ -1,12 +1,12 @@
 [submodule "build/vendor/kobold"]
 	path = build/vendor/kobold
-	url = git@github.com:wurststulle/kobold.git
+	url = https://wurststulle@github.com/wurststulle/kobold.git
 [submodule "build/vendor/yaffmap-map"]
         path = build/vendor/yaffmap-map
-        url = git@github.com:wurststulle/yaffmap-map.git
+        url = https://wurststulle@github.com/wurststulle/yaffmap-map.git
 [submodule "build/vendor/Propel"]
 	path = build/vendor/Propel
-	url = git://github.com/propelorm/Propel.git
+	url = https://github.com/propelorm/Propel.git
 [submodule "build/vendor/PHPLiveX"]
 	path = build/vendor/PHPLiveX
-	url = git@github.com:wurststulle/phplivex.git
+	url = https://wurststulle@github.com/wurststulle/phplivex.git
