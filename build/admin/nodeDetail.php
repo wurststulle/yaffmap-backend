@@ -3,7 +3,7 @@ require_once '../propel/Propel.php';
 Propel::init("../conf/yaffmap-conf.php");
 set_include_path("../classes" . PATH_SEPARATOR . get_include_path());
 require_once '../classes/Yaffmap.php';
-require_once '../classes/kobold/Kobold.php';
+require_once '../vendor/vendor.php';
 
 function echoPre($var){
 	echo '<pre>'.$var.'</pre><br>------------------------------------------<br>';

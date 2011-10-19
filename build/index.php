@@ -1,11 +1,23 @@
 <?php
+define('DEBUG', true);
+if(DEBUG){
+	//error_reporting(E_ALL & ~E_NOTICE);
+	error_reporting(E_ALL);
+	ini_set('display_errors','On');
+}
+
 require_once 'propel/Propel.php';
 Propel::init("conf/yaffmap-conf.php");
 set_include_path("classes".PATH_SEPARATOR.get_include_path());
-include dirname(__FILE__) . '/classes/Autoloader.php';
-include dirname(__FILE__) . '/vendor/kobold/Kobold.php';
 
-define('DEBUG', true);
+class Autoloader{
+	public static function load($classname){
+		include $classname.'.php';
+	}
+}
+spl_autoload_register('Autoloader::load');
+
+include dirname(__FILE__) . '/vendor/vendor.php';
 
 //if($_SERVER['REMOTE_ADDR'] == '192.168.2.10' || $_SERVER['REMOTE_ADDR'] == '192.168.2.21'){
 //
@@ -16,21 +28,6 @@ define('DEBUG', true);
 //	echo $response;
 //	die();
 //}
-
-//function exceptions_error_handler($severity, $message, $filename, $lineno){
-//	if(error_reporting() == 0){
-//    	return;
-//	}
-//	if(error_reporting() & $severity){
-//		throw new YaffmapException($message);
-//	}
-//}
-//set_error_handler('exceptions_error_handler');
-
-if(DEBUG){
-	error_reporting(E_ALL & ~E_NOTICE);
-	ini_set('display_errors','On');
-}
 
 try{
 	if(isset($_REQUEST['do'])){
@@ -155,6 +152,11 @@ try{
 				$backend->replicateNodes();
 				break;
 			case 'test':
+				
+				if(Net_IPv4::isValidIpv4Addr('192.168.2.3'))
+					echo 'ja';
+				else 
+					echo 'nein';
 				break;
 			default:
 				throw new EUnknownRequestElement($_REQUEST['do']);
