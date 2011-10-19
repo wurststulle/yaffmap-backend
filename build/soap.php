@@ -8,6 +8,7 @@ include dirname(__FILE__).'/classes/soapClasses.php';
 include dirname(__FILE__).'/classes/YaffmapWsdlGenerator.php';
 include dirname(__FILE__).'/classes/YaffmapSoapServer.php';
 include dirname(__FILE__).'/classes/YaffmapConfig.php';
+include dirname(__FILE__).'/vendor/kobold/Kobold.php';
 
 $server = new YaffmapSoapServer();
 
