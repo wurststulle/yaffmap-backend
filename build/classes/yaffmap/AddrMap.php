@@ -30,7 +30,7 @@ class AddrMap extends BaseAddrMap {
 	 * @param boolean $create
 	 * @return AddrMap
 	 */
-	public static function findOneAddrMapByAddr($mac, $ipv4, $ipv6, $bridgeName = null, $create = false){
+	public static function findOneAddrMapByAddr($mac, $ipv4, $ipv6, $bridgeName = null, $create = false, $dbCon = null){
 		$addrMap = AddrMapQuery::create()
 			->_if($mac != null)
 				->filterByMacAddr($mac)
@@ -47,9 +47,9 @@ class AddrMap extends BaseAddrMap {
 				->filterByIpv6addr($ipv6)
 			->_endif();
 		if(!$create){
-			return $addrMap->findOne();
+			return $addrMap->findOne($dbCon);
 		}else{
-			return $addrMap->findOneOrCreate();
+			return $addrMap->findOneOrCreate($dbCon);
 		}
 	}
 	

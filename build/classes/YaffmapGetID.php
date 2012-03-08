@@ -1,4 +1,10 @@
 <?php
+/**
+ * @deprecated
+ * Enter description here ...
+ * @author wurst
+ *
+ */
 class YaffmapGetID extends Yaffmap{
 	
 	public function __construct($request = null, $response = null){

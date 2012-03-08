@@ -31,7 +31,7 @@ class IpAlias extends BaseIpAlias {
 	 * @param unknown_type $ipv6
 	 * @param unknown_type $create
 	 */
-	public static function findOneIpAlias($addrMap, $name, $ipv4, $ipv6, $create = false){
+	public static function findOneIpAlias($addrMap, $name, $ipv4, $ipv6, $create = false, $dbCon = null){
 		$ipAlias =  IpAliasQuery::create()
 			->_if($name != null)
 				->filterByName($name)
@@ -48,9 +48,9 @@ class IpAlias extends BaseIpAlias {
 				->filterByIpv6Addr($ipv6)
 			->_endif();
 		if(!$create){
-			return $ipAlias->findOne();
+			return $ipAlias->findOne($dbCon);
 		}else{
-			return $ipAlias->findOneOrCreate();
+			return $ipAlias->findOneOrCreate($dbCon);
 		}
 	}
 	

@@ -12,7 +12,13 @@ class YaffmapResponse{
 	
 	protected $responseCode = self::OPERATION_FAILED;
 	protected $responseMsg = '';
-	protected $data = '';
+	protected $responseData = '';
+	
+	public function __construct($code = null, $msg = '', $data = ''){
+		$this->responseCode = $code;
+		$this->responseMsg = $msg;
+		$this->responseData = $data;
+	}
 	
 	public function setResponseCode($code){
 		$this->responseCode = $code;
@@ -27,21 +33,21 @@ class YaffmapResponse{
 	}
 	
 	public function addResponseData($data){
-		if($this->data == ''){
-			$this->data = $data;
+		if($this->$responseData == ''){
+			$this->$responseData = $data;
 		}else{
-			$this->data .= self::DATA_SEPARATOR.$data;
+			$this->$responseData .= self::DATA_SEPARATOR.$data;
 		}
 	}
 	
 	public function reset(){
 		$this->responseCode = self::OPERATION_FAILED;
 		$this->responseMsg = '';
-		$this->data = '';
+		$this->$responseData = '';
 	}
 	
 	public function __toString(){
-		return $this->responseCode.self::RETURNSTRING_SEPARATOR.$this->responseMsg.self::RETURNSTRING_SEPARATOR.$this->data;
+		return $this->responseCode.self::RETURNSTRING_SEPARATOR.$this->responseMsg.self::RETURNSTRING_SEPARATOR.$this->$responseData;
 	}
 }
 ?>

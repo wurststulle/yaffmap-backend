@@ -34,13 +34,22 @@ try{
 	if(isset($_REQUEST['do'])){
 		switch($_REQUEST['do']){
 			case 'getID':
-				$getID = new YaffmapGetID();
-				echo $getID->getID();
-				break;
+				$node = FfNode::findOneByAddrSet($_REQUEST['addressSet']);
+				$response = new YaffmapResponse(YaffmapResponse::OPERATION_SUCCEDED, 'Operation Succeded.', 'id="'.$node->getId().'"');
+				echo $response;
+			break;
 			case 'update':
-				$update = new YaffmapNodeUpdate();
-				echo $update->nodeUpdate();
-				break;
+				$nodeData = $_REQUEST['node'];
+				$node = FfNode::getNodeById($nodeData->id);
+				if($node == null){
+					// node was not found in database, tell agent to run getID
+					$response = new YaffmapResponse(YaffmapResponse::NODEID_NOT_FOUND, 'NodeID not found, please run getID.');
+					echo $response;
+				}
+				$node->updateNode($nodeData, $nodeData->version, $nodeData->tree, $nodeData->release);
+				$response = new YaffmapResponse(YaffmapResponse::OPERATION_SUCCEDED, 'Operation Succeded.', 'id="'.$node->getId().'"');
+				echo $response;
+			break;
 			case 'globalUpdate':
 				$update = new YaffmapGlobalUpdate();
 				echo $update->globalUpdate();

@@ -15,6 +15,50 @@
  */
 class FfNode extends BaseFfNode {
 	
+	public static function findOneByAddrSet($addrSet){
+		$addressSets = Yaffmap::decodeJson($addrSet);
+		$addrMapNode = null;
+		$node = null;
+		if(count($addressSets) == 0){
+			throw new EAddrMissing();
+		}else{
+			$addrMapNode = AddrMapNodeQuery::create();
+			$numElements = count($addressSets);
+			$i = 0;
+			foreach($addressSets as $addressSet){
+				if($i != 0){
+					$addrMapNode->_or();
+				}
+				$addrMapNode
+					->_if(isset($addressSet->macAddr))
+						->filterByMacAddr($addressSet->macAddr)
+					->_endif()
+					->_if(isset($addressSet->ipv4Addr))
+						->filterByIpv4addr($addressSet->ipv4Addr)
+					->_endif()
+					->_if(isset($addressSet->ipv6Addr))
+						->filterByIpv6addr($addressSet->ipv6Addr)
+					->_endif();
+				$i++;
+			}
+			$addrMapNode->find();
+			if($addrMapNode->size() == 1){
+				$node = $addrMapNode->getFirst()->getFfNode();
+				if($node->getIsGlobalUpdated()){
+					$node = new FfNode();
+					$node->setId(md5(mt_rand(1, 1000).$macAddr.date("U")));
+					$node->save();
+				}
+			}
+			if($node == null){
+				$node = new FfNode();
+				$node->setId(md5(mt_rand(1, 1000).$macAddr.date("U")));
+				$node->save();
+			}
+			return $node;
+		}
+	}
+
 	/**
 	 * return ffNode by given id
 	 * @param string $id
@@ -105,6 +149,8 @@ class FfNode extends BaseFfNode {
 	 * @throws EUnknownAttribute
 	 */
 	public function updateNode($update, $version, $tree, $release){
+		$dbCon = Propel::getConnection(FfNodePeer::DATABASE_NAME);
+		$dbCon->beginTransaction();
 		$this->setAgentRelease($release);
 		$this->setVersion($version);
 		$this->setUpgradeTree($tree);
@@ -125,22 +171,36 @@ class FfNode extends BaseFfNode {
 				}
 			}
 		}
+		$this->save($dbCon);
+		if(isset($update->wiredIface) && is_array($update->wiredIface)){
+			$this->updateWiredInterface($update->wiredIface, $dbCon);
+		}
+		if(isset($update->wlDevice) && is_array($update->wlDevice)){
+			$this->updateWlInterface($dataNode->wlDevice, $dbCon);
+		}
+		if(isset($update->rfNeighbour) && is_array($update->rfNeighbour)){
+			$this->updateRfLink($dataNode->rfNeighbour, $dbCon);
+		}
+		if(isset($update->neighbour) && is_array($update->neighbour)){
+			$this->updateRpLink($dataNode->neighbour, $dbCon);
+		}
+		$dbCon->commit();
 	}
 	
 	/**
 	 * delete all AddrMaps of ffNode
 	 */
-	public function deleteAddrMaps(){
-		$guWlDevices = $this->getWlDevices();
+	public function deleteAddrMaps($dbCon){
+		$guWlDevices = $this->getWlDevices(null, $dbCon);
 		foreach($guWlDevices as $guDevice){
-			$guWlIfaces = $guDevice->getWlIfaces();
+			$guWlIfaces = $guDevice->getWlIfaces(null, $dbCon);
 			foreach($guWlIfaces as $guWlIface){
-				$guWlIface->getAddrMap()->delete();
+				$guWlIface->getAddrMap(null, $dbCon)->delete($dbCon);
 			}
 		}
 	}
 	
-	public function updateRpLink($request){
+	public function updateRpLink($request, $dbCon){
 		foreach($request as $rpName => $rpAttr){
 			if($rpAttr->metric == ''){
 				throw new YaffmapLoggedException('metric name is empty while updating rp links.');
@@ -154,55 +214,55 @@ class FfNode extends BaseFfNode {
 			$metricType = MetricTypeQuery::create()
 				->filterByName($rpAttr->metric)
 				->findOneOrCreate();
-			$metricType->save();
+			$metricType->save($dbCon);
 			$rp = RpQuery::create()
 				->filterByName($rpName)
 				->filterByIpv($rpAttr->ipv)
 				->filterByMetricType($metricType)
 				->findOneOrCreate();
-			$rp->save();
+			$rp->save($dbCon);
 			foreach($rpAttr->link as $link){
 				if($rp->getIpv() == 4){
 					// ipv4 address given
 					$source = AddrMapQuery::create()
 						->filterByIpv4addr($link->sourceAddr)
-						->findOne();
+						->findOne($dbCon);
 					$dest = AddrMapQuery::create()
 						->filterByIpv4addr($link->destAddr)
-						->findOneOrCreate();
+						->findOneOrCreate($dbCon);
 				}elseif($rp->getIpv() == 6){
 					// ipv6 address given
 					$source = AddrMapQuery::create()
 						->filterByIpv6addr($link->sourceAddr)
-						->findOne();
+						->findOne($dbCon);
 					$dest = AddrMapQuery::create()
 						->filterByIpv6addr($link->destAddr)
-						->findOneOrCreate();
+						->findOneOrCreate($dbCon);
 				}else{
 					// mac address given (layer2 rp)
 					$source = AddrMapQuery::create()
 						->filterByMacAddr($link->sourceAddr)
-						->findOne();
+						->findOne($dbCon);
 					$dest = AddrMapQuery::create()
 						->filterByMacAddr($link->destAddr)
-						->findOneOrCreate();
+						->findOneOrCreate($dbCon);
 				}
 				if($dest->isNew()){
 					// destination address map not found, create dummy node + device + interface
 					$dest->setIsGlobalUpdated(true);
-					$dest->save();
+					$dest->save($dbCon);
 					$node = new FfNode();
 					$node->setHostname($link->destAddr);
 					$node->setId(md5($link->destAddr.date('U')));
 					$node->setIsGlobalUpdated(true);
-					$node->save();
+					$node->save($dbCon);
 					$wlDevice = new WlDevice();
 					$wlDevice->setFfNode($node);
-					$wlDevice->save();
+					$wlDevice->save($dbCon);
 					$wlIface = new WlIface();
 					$wlIface->setWlDevice($wlDevice);
 					$wlIface->setAddrMap($dest);
-					$wlIface->save();
+					$wlIface->save($dbCon);
 				}
 				if($source == null || $dest == null){
 					// source or destination not found, skipping
@@ -213,7 +273,7 @@ class FfNode extends BaseFfNode {
 					->filterBySourceAddrMap($source)
 					->filterByDestAddrMap($dest)
 					->filterByRp($rp)
-					->findOneOrCreate();
+					->findOneOrCreate($dbCon);
 				$rplink->setUpdatedAt(new DateTime("now"));
 				foreach($link as $key => $val){
 					if(!($key == 'sourceAddr' || $key == 'destAddr')){
@@ -224,22 +284,22 @@ class FfNode extends BaseFfNode {
 						}
 					}
 				}
-				$rplink->save();
+				$rplink->save($dbCon);
 			}
 		}
 	}
 
-	public function updateRfLink($request){
+	public function updateRfLink($request, $dbCon){
 		foreach($request as $key => $rflink){
 			$sourceWlIface = WlIfaceQuery::create()
 				->filterByWlMacAddr($rflink->sMac)
 				->useWlDeviceQuery()
 					->filterByFfNode($this)
 				->endUse()
-				->findOne();
+				->findOne($dbCon);
 			$destWlIface = WlIfaceQuery::create()
 				->filterByWlMacAddr($rflink->dMac)
-				->find();
+				->find($dbCon);
 			if($sourceWlIface == null){
 //				$error = new ErrorLog();
 //				$error->setRequest($_REQUEST['do']);
@@ -259,13 +319,13 @@ class FfNode extends BaseFfNode {
 				$rf = RfLinkOneWayQuery::create()
 					->filterBySourceWlIfaceOneWay($sourceWlIface)
 					->filterByDestMac($rflink->dMac)
-					->findOneOrCreate();
+					->findOneOrCreate($dbCon);
 			}else{
 				// create normal rf link
 				$rf = RfLinkQuery::create()
 					->filterBySourceWlIface($sourceWlIface)
 					->filterByDestWlIface($destWlIface->getFirst())
-					->findOneOrCreate();
+					->findOneOrCreate($dbCon);
 			}
 			$sourceWlIface->setUpdatedAt(new DateTime("now"));
 			$rf->setUpdatedAt(new DateTime("now"));
@@ -278,20 +338,20 @@ class FfNode extends BaseFfNode {
 					}
 				}
 			}
-			$rf->save();
+			$rf->save($dbCon);
 		}
 	}
 	
-	public function updateWlInterface($request){
+	public function updateWlInterface($request, $dbCon){
 		foreach($request as $wlDevices){
 			// get or create wireless device
 			$wlDevice = WlDeviceQuery::create()
 				->filterByFfNode($this)
 				->filterByName($wlDevices->name)
-				->findOneOrCreate();
+				->findOneOrCreate($dbCon);
 			// update timestamp and save
 			$wlDevice->setUpdatedAt(new DateTime("now"));
-			$wlDevice->save();
+			$wlDevice->save($dbCon);
 			// process wireless device attributes
 			foreach($wlDevices as $key => $val){
 				if($key == 'wlIface'){
@@ -299,7 +359,7 @@ class FfNode extends BaseFfNode {
 					foreach($val as $wlIface){
 						if(!isset($wlIface->bridgeName)){
 							// wireless interface is NOT part of a bridge
-							$addrMap = AddrMap::findOneAddrMapByAddr(null, $wlIface->ipv4Addr, $wlIface->ipv6Addr, false, true);
+							$addrMap = AddrMap::findOneAddrMapByAddr(null, $wlIface->ipv4Addr, $wlIface->ipv6Addr, false, true, $dbCon);
 							if(!($addrMap->isNew()) && $addrMap->getIsGlobalUpdated()){
 								// addrMap is not new AND global updated
 								// get dummynode of addrMap
@@ -309,15 +369,16 @@ class FfNode extends BaseFfNode {
 											->filterByAddrMap($addrMap)
 										->endUse()
 									->endUse()
-									->findOne();
+									->findOne($dbCon);
 								// move all wireless interface of this dummy node to the "real" node
+								/* @var $oldnode FfNode */
 								if($oldnode == null){
 									throw new Exception('kein node mit addrMap found ->'.$wlIface->ipv4Addr.' addrMapID:'.$addrMap->getId().' ifaceID:'.$oldIface->getId().' deviceID:'.$oldDevice->getId());
 								}
-								$oldnode->deleteAddrMaps();
-								$oldnode->delete();
-								$addrMap = AddrMap::findOneAddrMapByAddr(null, $wlIface->ipv4Addr, $wlIface->ipv6Addr, false, true);
-								$addrMap->save();
+								$oldnode->deleteAddrMaps($dbCon);
+								$oldnode->delete($dbCon);
+								$addrMap = AddrMap::findOneAddrMapByAddr(null, $wlIface->ipv4Addr, $wlIface->ipv6Addr, false, true, $dbCon);
+								$addrMap->save($dbCon);
 							}
 							// TODO bugtracking
 							if($wlIface->wlMacAddr == ''){
@@ -327,20 +388,20 @@ class FfNode extends BaseFfNode {
 							$wlInterface = WlIfaceQuery::create()
 								->filterByWlDevice($wlDevice)
 								->filterByWlMacAddr($wlIface->wlMacAddr)
-								->findOneOrCreate();
+								->findOneOrCreate($dbCon);
 							// update addrMap
 							$addrMap->setMacAddr($wlIface->macAddr);
 							$addrMap->setUpdatedAt(new DateTime("now"));
 							$addrMap->setIsGlobalUpdated(false);
-							$addrMap->save();
+							$addrMap->save($dbCon);
 							foreach($wlIface as $key1 => $val1){
 								if($key1 == 'ipAlias'){
 									// process ip alias
 									foreach($val1 as $ipAlias){
-										$guAlias = IpAlias::findOneIpAlias(null, null, $ipAlias->ipv4Addr, $ipAlias->ipv6Addr);
+										$guAlias = IpAlias::findOneIpAlias(null, null, $ipAlias->ipv4Addr, $ipAlias->ipv6Addr, null, $dbCon);
 										if($guAlias == null){
 											// alias was not previously inserted into address map by global update
-											$alias = IpAlias::findOneIpAlias($addrMap, $ipAlias->name, $ipAlias->ipv4Addr, $ipAlias->ipv6Addr, true);
+											$alias = IpAlias::findOneIpAlias($addrMap, $ipAlias->name, $ipAlias->ipv4Addr, $ipAlias->ipv6Addr, true, $dbCon);
 										}else{
 											// alias was previously inserted into address map by global update
 											// create new alias and add it to address map
@@ -350,11 +411,11 @@ class FfNode extends BaseFfNode {
 											$alias->setAddrMap($addrMap);
 											$alias->setName($ipAlias->name);
 											// delete old address map incl interface
-											$guAlias->delete();
+											$guAlias->delete($dbCon);
 										}
 										// update ip alias timestamp and save
 										$alias->setUpdatedAt(new DateTime("now"));
-										$alias->save();
+										$alias->save($dbCon);
 									}
 								}elseif($key1 != 'ipv4Addr' && $key1 != 'ipv6Addr' && $key1 != 'macAddr'){
 									// set or update wireless interface attributes
@@ -367,7 +428,7 @@ class FfNode extends BaseFfNode {
 							}
 							$wlInterface->setUpdatedAt(new DateTime("now"));
 							$wlInterface->setAddrMap($addrMap);
-							$wlInterface->save();
+							$wlInterface->save($dbCon);
 						}else{
 							// wireless interface is part of a bridge
 							$addrMap = AddrMap::findOneAddrMapByAddr(null, $wlIface->ipv4Addr, $wlIface->ipv6Addr, false, true);
@@ -463,7 +524,7 @@ class FfNode extends BaseFfNode {
 		}
 	}
 	
-	public function updateWiredInterface($request){
+	public function updateWiredInterface($request, $dbCon){
 		foreach($request as $item){
 			if($item->name == 'lo'){
 				// ignore loopback interface
@@ -479,7 +540,7 @@ class FfNode extends BaseFfNode {
 				$wiredIface = WiredIfaceQuery::create()
 					->filterByFfNode($this)
 					->filterByName($item->name)
-					->findOneOrCreate();
+					->findOneOrCreate($dbCon);
 				if($wiredIface->isNew()){
 					// wired interface was created, create new address map
 					$addMap = new AddrMap();
@@ -488,40 +549,40 @@ class FfNode extends BaseFfNode {
 					$addMap->setIpv6addr($item->ipv6Addr);
 				}else{
 					// wired interface found, update address map
-					$addMap = AddrMap::findOneAddrMapByAddr($item->macAddr, $item->ipv4Addr, $item->ipv6Addr, false, true);
+					$addMap = AddrMap::findOneAddrMapByAddr($item->macAddr, $item->ipv4Addr, $item->ipv6Addr, false, true, $dbCon);
 					$addMap->setUpdatedAt(new DateTime("now"));
 				}
-				$addMap->save();
+				$addMap->save($dbCon);
 				$wiredIface->setUpdatedAt(new DateTime("now"));
 				$wiredIface->setAddrMap($addMap);
-				$wiredIface->save();
+				$wiredIface->save($dbCon);
 				if(isset($item->ipAlias)){
 					// ip address alias found, create or update them
 					foreach($item->ipAlias as $ipAlias){
-						$alias = IpAlias::findOneIpAlias($addMap, $ipAlias->name, $ipAlias->ipv4Addr, $ipAlias->ipv6Addr, true);
+						$alias = IpAlias::findOneIpAlias($addMap, $ipAlias->name, $ipAlias->ipv4Addr, $ipAlias->ipv6Addr, true, $dbCon);
 						$alias->setUpdatedAt(new DateTime("now"));
 						$alias->save();
 					}
 				}
 			}else{
 				// interface is a bridge
-				$addMap = AddrMap::findOneAddrMapByAddr($item->macAddr, $item->ipv4Addr, $item->ipv6Addr, $item->bridgeName, true);
+				$addMap = AddrMap::findOneAddrMapByAddr($item->macAddr, $item->ipv4Addr, $item->ipv6Addr, $item->bridgeName, true, $dbCon);
 				$addMap->setUpdatedAt(new DateTime("now"));
-				$addMap->save();
+				$addMap->save($dbCon);
 				$wiredIface = WiredIfaceQuery::create()
 					->filterByFfNode($this)
 					->filterByName($item->name)
 					->filterByBridgeName($item->bridgeName)
-					->findOneOrCreate();
+					->findOneOrCreate($dbCon);
 				$wiredIface->setUpdatedAt(new DateTime("now"));
 				$wiredIface->setAddrMap($addMap);
-				$wiredIface->save();
+				$wiredIface->save($dbCon);
 				if(isset($item->ipAlias)){
 					// ip address alias found, create or update them
 					foreach($item->ipAlias as $ipAlias){
-						$alias = IpAlias::findOneIpAlias($addMap, $ipAlias->name, $ipAlias->ipv4Addr, $ipAlias->ipv6Addr, true);
+						$alias = IpAlias::findOneIpAlias($addMap, $ipAlias->name, $ipAlias->ipv4Addr, $ipAlias->ipv6Addr, true, $dbCon);
 						$alias->setUpdatedAt(new DateTime("now"));
-						$alias->save();
+						$alias->save($dbCon);
 					}
 				}
 			}
