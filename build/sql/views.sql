@@ -55,7 +55,17 @@ create view yaffmap_v_unlocatedNodes as (
 		WHERE t4.ipv4Addr is null AND t1.latitude is null AND t1.longitude is null
 		group by t1.ID_node
 	);
-	
+
+DROP VIEW IF EXISTS `yaffmap_v_replicationRfLinks`;
+
+create view yaffmap_v_replicationRfLinks as (
+	select t1.*, t4.ipv4Addr as sourceIpv4Addr, t4.ipv6Addr as sourceIpv6Addr, t4.macAddr as sourceMacAddr, t4.hostname as sourceHostname, t5.ipv4Addr as destIpv4Addr, t5.ipv6Addr as destIpv6Addr, t5.macAddr as destMacAddr, t5.hostname as destHostname from yaffmap_rfLink t1
+	inner join yaffmap_wlIface t2 on t1.f_sourceWlIfaceID = t2.ID_wlIface
+	inner join yaffmap_wlIface t3 on t1.f_destWlIfaceID = t3.ID_wlIface
+	inner join yaffmap_v_addrMapNode t4 on t2.f_addrMapID = t4.ID_addrMap
+	inner join yaffmap_v_addrMapNode t5 on t3.f_addrMapID = t5.ID_addrMap
+);
+
 
 --	select * from yaffmap_node where hostname = (select hostname from (SELECT *, count(hostname) as c FROM yaffmap_node group by hostname) t1 where t1.c > 1)
 
