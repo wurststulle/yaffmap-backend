@@ -153,11 +153,7 @@ try{
 				$backend->replicateNodes();
 				break;
 			case 'test':
-				
-				if(Net_IPv4::isValidIpv4Addr('192.168.2.3'))
-					echo 'ja';
-				else 
-					echo 'nein';
+				echo Kobold::dump(Yaffmap::decodeJson('[{"macAddr":"00:1D:0F:A5:48:39","ipv4Addr":"104.13.5.1"},{"macAddr":"00:1D:0F:A5:48:39","ipv4Addr":"104.13.5.1"}]'));
 				break;
 			default:
 				throw new EUnknownRequestElement($_REQUEST['do']);
